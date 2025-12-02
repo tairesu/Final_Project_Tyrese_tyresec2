@@ -23,58 +23,58 @@
             {% endblock %}
         </div>
     </div>
+    {% comment %} No longer supporting dual modal and offscreen setup 
+        <!-- Offcanvas Bottom Menu appears on sm devices only -->
+        <div class="offcanvas offcanvas-bottom d-md-none bg-secondary p-4 gap-4 h-auto" tabindex="-1" id="offcanvasBottom" id="popupOffcanvas" aria-labelledby="offcanvasBottomLabel">
 
+            <!-- Header div for offcanvas-bottom -->
+            <div class="offcanvas-header p-0 ">
+                <h5 class="offcanvas-title p-0 fs-3" id="offcanvasBottomLabel">
+                    {% block popup-heading-text %}{% endblock %}
+                </h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
 
-    <!-- Offcanvas Bottom Menu appears on sm devices only -->
-    <div class="offcanvas offcanvas-bottom d-md-none bg-secondary p-4 gap-4 h-auto" tabindex="-1" id="offcanvasBottom" id="popupOffcanvas" aria-labelledby="offcanvasBottomLabel">
+            <!-- Content div for offcanvas-bottom -->
+            <div class="offcanvas-body p-0">
+                {% block popup-content %}{% endblock %}
+            </div>
 
-        <!-- Header div for offcanvas-bottom -->
-        <div class="offcanvas-header p-0 ">
-            <h5 class="offcanvas-title p-0 fs-3" id="offcanvasBottomLabel">
-                {% block offcanvas-bottom-heading-text %}
-                    
-                {% endblock %}
-                
-            </h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <!-- Div for offcanvas-bottom button -->
+            <div>
+                <button class="btn btn-primary py-3 btn-md w-100 ">
+                    {% block popup-button-text %} {% endblock %}
+                </button>
+            </div>
         </div>
+    {% endcomment %}
 
-        <!-- Content div for offcanvas-bottom -->
-        <div class="offcanvas-body p-0">
-            {% block offcanvas-bottom-content %}
-                    
-            {% endblock %}
-        </div>
-
-        <!-- Div for offcanvas-bottom button -->
-        <div>
-            <button class="btn btn-primary py-3 btn-md w-100 ">
-                {% block offcanvas-bottom-button-text %}
-                    
-                {% endblock %}
-            </button>
-        </div>
-    </div>
-
-
-    <!-- Modal appears on md+ devices.-->
-    <div class="modal" tabindex="-1" id="popupModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- The Dynamic Popup Modal -->
+    <div class="modal fade px-4" tabindex="-1" id="popupModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4 gap-4">
+                <div class="modal-header border-0 p-0">
+                    <h5 class="modal-title">
+                        {% block popup-heading-text %}{% endblock %}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <p>Modal body text goes here.</p>
+                <div class="modal-body p-0">
+                    {% block popup-content %}{% endblock %}
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0 p-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary">
+                        {% block popup-button-text %}{% endblock %}
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+
     <!-- Global JS files -->
     <script src="{% static 'js/bootstrap.bundle.min.js'%}?v={{tz}}"></script>
 </body>
