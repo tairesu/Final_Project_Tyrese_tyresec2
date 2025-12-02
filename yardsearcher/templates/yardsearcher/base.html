@@ -23,6 +23,21 @@
             {% endblock %}
         </div>
     </div>
+    <!-- Offcanvas nav appears on sm only -->
+    <div class="offcanvas offcanvas-bottom d-md-none bg-secondary p-4 gap-4" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+        <div class="offcanvas-header p-0 ">
+            <h5 class="offcanvas-title p-0 fs-3" id="offcanvasBottomLabel">
+                {% block offcanvas-bottom-heading-text %}
+                    
+                {% endblock %}
+                
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body small p-0">
+            Content for the bottom offcanvas goes here.
+        </div>
+    </div>
     <script src="{% static 'js/bootstrap.bundle.min.js'%}?v={{tz}}"></script>
     
 </body>
