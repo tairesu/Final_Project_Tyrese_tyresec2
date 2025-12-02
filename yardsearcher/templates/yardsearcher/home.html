@@ -18,9 +18,24 @@
     </div>
     <div class="row mb-3 ">
         <div class="col text-center ">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Filter Junkyards</button>
-        </div>
-        
+
+            <!-- This btn toggles bottom offscreen nav on mobile devices.. -->
+            <button type="button" class=" d-md-none btn btn-sm btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Filter Junkyards</button>
+           
+            <!--  and overlay on md and up  -->
+            <button type="button" class="d-none d-md-inline-block btn btn-sm btn-outline-secondary">Filter Junkyards</button>
+        </div> 
+    </div>
+</div>
+
+<!-- Offcanvas nav appears on sm only -->
+<div class="offcanvas offcanvas-bottom d-md-none bg-secondary" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas from the bottom</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        Content for the bottom offcanvas goes here.
     </div>
 </div>
 {% endblock %}
