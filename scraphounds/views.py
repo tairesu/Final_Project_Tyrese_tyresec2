@@ -3,4 +3,4 @@ from django.http.response import HttpResponse
 
 # Create your views here.
 def root_view(request):
-    return HttpResponse("<h1>Home Page Coming Soon...</h1>")
+    return render(request, "yardsearcher/base.html")
