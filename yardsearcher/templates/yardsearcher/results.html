@@ -1,17 +1,27 @@
 {% extends 'yardsearcher/base.html' %}
 {% block main_content %}
-    <div class="d-flex flex-column gap-4 px-4">
-        <div class="map bg-secondary position-relative d-flex p-2" id="resultsMap">
-            <div class="d-flex flex-col gap-2">
-                <input type="text" value="{{ query }}">
-                <div class="d-flex flex-row gap-2"></div>
+    <div class="d-flex bg-primary flex-column p-4 vh-100 gap-4 overflow-y-auto align-items-center col-12 col-md-8 col-lg-10 ">
+        <!-- This'll be the map w/ searchbar, btns and controls for this page -->
+        <div class="map bg-secondary position-relative h-75 d-flex p-3 col col-md-10 col-lg-9 " id="resultsMap">
+            <!-- This is the input and btns div -->
+            <div class="d-flex flex-column gap-3 col">
+                <form action="" method="get" class="p-0" >
+                    <div class="input-group input-group-lg">
+                        
+                        <input type="text" name="q" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                        <button type="submit" class="input-group-text" id="inputGroup-sizing-lg"><i class="bi bi-search"></i></button>
+                    </div>
+                </form> 
+                <div class="d-flex flex-row gap-2">
+                    <button class="btn btn-sm bg-white py-1" data-bs-toggle="modal" data-bs-target="#popupModal" aria-controls="popupModal">Manage Junkyards</button>
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
 
-{% block popup-heading-text %}  {% endblock %}
+{% block popup-heading-text %} Manage Junkyards {% endblock %}
 {% block popup-button-text %} Save Changes {% endblock %}
 {% block popup-content %}
     <div class="d-grid gap-2" style="grid-template-columns: 1fr 1fr;">
