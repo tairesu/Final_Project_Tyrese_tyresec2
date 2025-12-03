@@ -21,5 +21,6 @@ from scraphounds import views as project_views
 
 urlpatterns = [
     path('', project_views.root_view, name='home_urlpattern'),
+    path('', include('yardsearcher.urls')),
     path('admin/', admin.site.urls),
 ]
