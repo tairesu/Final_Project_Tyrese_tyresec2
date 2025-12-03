@@ -1,0 +1,26 @@
+{% extends 'yardsearcher/base.html' %}
+{% block main_content %}
+    <div class="d-flex flex-column gap-4 px-4">
+        <div class="map bg-secondary position-relative d-flex p-2" id="resultsMap">
+            <div class="d-flex flex-col gap-2">
+                <input type="text">
+                <div class="d-flex flex-row gap-2"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block popup-heading-text %}  {% endblock %}
+{% block popup-button-text %} Save Changes {% endblock %}
+{% block popup-content %}
+    <div class="d-grid gap-2" style="grid-template-columns: 1fr 1fr;">
+        <div class="form-check d-flex gap-2">
+            <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+            <label class="form-check-label d-flex flex-column" for="checkDefault">
+                <span class="">Joliet U pullit</span>
+                <span>X miles away</span>
+            </label>
+        </div>
+    </div>
+{% endblock %}
