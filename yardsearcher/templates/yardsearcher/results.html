@@ -22,70 +22,65 @@
             </div>
         </div>
         <div class=" d-flex flex-column col-12 col-md-10 col-lg-9 gap-4 px-4 px-md-0"  >
-            <div class="yardResult bg-white p-4 accordion" id="yardAccordion">
-                <div class="accordion-item border-0">
-                    <!-- Header / Yard Meta -->
-                    <div class="yardMeta d-flex flex-row gap-2 align-items-center">
-                        <img src="" alt="" style="width:5rem; height:5rem" class="logo">
-                        <div class="d-flex flex-column gap-2">
-                            <h3 class="mb-0">Joliet U Pull-it</h3>
-                            <p class="mb-0">8 results in 0.27 seconds</p>
-                        </div>
-                    </div>
-            
-                    <!-- Collapse Button -->
-                    <div class="text-end">
-                        <button class="btn btn-link p-0"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#jap"
-                            aria-expanded="true"
-                            aria-controls="jap">
-                            Collapse
-                        </button>
-                    </div>
-            
-                    <!-- Collapsible Section -->
-                    <div id="jap"
-                         class="accordion-collapse collapse show"
-                         data-bs-parent="#yardAccordion">
-            
-                        <div class="accordion-body p-0">
-                            <div class="table-responsive">
-                                <table class="table text-nowrap mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Mark</th>
-                                            <th>Year</th>
-                                            <th>Make</th>
-                                            <th>Model</th>
-                                            <th>Row</th>
-                                            <th>Row</th>
-                                            <th>Row</th>
-                                            <th>Date Entered</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                            <td>nionc</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            {% for yard in fetched_yard_data %}
+
+                <div class="yardResult bg-white p-4 accordion" id="{{yard.elem_id}}-accordion">
+                    <div class="accordion-item border-0">
+                        <!-- Header / Yard Meta -->
+                        <div class="yardMeta d-flex flex-row gap-2 align-items-center">
+                            <img src="" alt="" style="width:5rem; height:5rem" class="logo">
+                            <div class="d-flex flex-column gap-2">
+                                <h3 class="mb-0">{{yard.name|capfirst}}</h3>
+                                <p class="mb-0">{{yard.num_results}} result(s) in {{yard.time_elapsed}} seconds</p>
                             </div>
                         </div>
-            
+                
+                        <!-- Collapse Button -->
+                        <div class="text-end">
+                            <button class="btn btn-link p-0"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#{{yard.elem_id}}"
+                                aria-expanded="true"
+                                aria-controls="{{yard.elem_id}}">
+                                Collapse
+                            </button>
+                        </div>
+                
+                        <!-- Collapsible Section -->
+                        <div id="{{yard.elem_id}}"
+                            class="accordion-collapse collapse show"
+                            data-bs-parent="#{{yard.elem_id}}-accordion">
+                
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap mb-0">
+                                        <thead>
+                                            <tr>
+                                                {% for header in yard.result_headers %}
+                                                    <th>{{header|capfirst}}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for result_tuple in yard.results %}
+                                                <tr>
+                                                    {% for item in result_tuple %}
+                                                        <td>{{item|capfirst}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                        </div>
+                
                     </div>
-            
+                
                 </div>
             
-            </div>
-            
+            {% endfor%}
         </div>
     </div>
 {% endblock %}
