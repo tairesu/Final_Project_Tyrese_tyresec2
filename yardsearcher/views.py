@@ -18,6 +18,10 @@ def results_view(request):
 				"result_headers" : ("make","model","year","date entered","stk"),
 				"results" : [
         			("Honda", "Civic", 1977, "11/22/2000", 234243),
+        			("Honda", "Civic", 1977, "11/22/2000", 234243),
+        			("Honda", "Civic", 1977, "11/22/2000", 234243),
+        			("Honda", "Civic", 1977, "11/22/2000", 234243),
+        			("Honda", "Civic", 1977, "11/22/2000", 234243),
            		],
             },
       ]
