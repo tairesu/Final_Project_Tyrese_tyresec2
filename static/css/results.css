@@ -1,0 +1,7 @@
+.yardResult {
+    /* Allows yard results to shrink when parent's diplay is grid */
+    min-width:0;
+}
+.map {
+    height:60%!important;
+}
