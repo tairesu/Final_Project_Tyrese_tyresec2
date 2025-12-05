@@ -22,44 +22,70 @@
             </div>
         </div>
         <div class=" d-flex flex-column bg-danger col-12 col-md-10 col-lg-9 gap-4"  >
-            <div class="yardResult bg-white p-4">
-                <div class="yardMeta d-flex flex-row gap-2">
-                    <img src="" alt="" style="width:5rem; height:5rem" class="logo">
-                    <div class="d-flex flex-column">
-                        <h3>Joliet U Pull-it</h3>
-                        <p>8 results in 0.27 seconds</p>
+            <div class="yardResult bg-white p-4 accordion" id="yardAccordion">
+                <div class="accordion-item border-0">
+                    <!-- Header / Yard Meta -->
+                    <div class="yardMeta d-flex flex-row gap-2">
+                        <img src="" alt="" style="width:5rem; height:5rem" class="logo">
+                        <div class="d-flex flex-column">
+                            <h3>Joliet U Pull-it</h3>
+                            <p>8 results in 0.27 seconds</p>
+                        </div>
                     </div>
+            
+                    <!-- Collapse Button -->
+                    <div class="text-end">
+                        <button class="btn btn-link p-0"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#jap"
+                            aria-expanded="true"
+                            aria-controls="jap">
+                            Collapse
+                        </button>
+                    </div>
+            
+                    <!-- Collapsible Section -->
+                    <div id="jap"
+                         class="accordion-collapse collapse show"
+                         data-bs-parent="#yardAccordion">
+            
+                        <div class="accordion-body p-0">
+                            <div class="table-responsive">
+                                <table class="table text-nowrap mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Mark</th>
+                                            <th>Year</th>
+                                            <th>Make</th>
+                                            <th>Model</th>
+                                            <th>Row</th>
+                                            <th>Row</th>
+                                            <th>Row</th>
+                                            <th>Date Entered</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                            <td>nionc</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+            
+                    </div>
+            
                 </div>
-                <div class="text-end">
-                    <a href="#">Collapse</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table text-nowrap">
-                        <thead>
-                            <th>Mark</th>
-                            <th>Year</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Row</th>
-                            <th>Row</th>
-                            <th>Row</th>
-                            <th>date entered</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                                <td>nionc</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            
             </div>
+            
         </div>
     </div>
 {% endblock %}
