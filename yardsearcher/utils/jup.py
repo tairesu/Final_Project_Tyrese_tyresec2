@@ -106,6 +106,8 @@ class YardSearch:
         conditionals['model'] = ' '.join(semantics)
         return conditionals
 
+    
+
 
     def results_as_tuple(self):
         if not self.results:
@@ -138,9 +140,10 @@ class Jup(YardSearch):
         model  = conditionals['model'].upper()
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
         inventory_html_soup = super().fetch_inventory_html_soup()
-        self.handle_inventory_soup(inventory_html_soup, conditionals)
+        inventory_table_rows= self.extract_inventory_table_rows(inventory_html_soup, conditionals)
+        results = self.filter_inventory_table_rows(inventory_table_rows)
 
-    def handle_inventory_soup(self, inventory_soup, conditionals):
+    def extract_inventory_table_rows(self, inventory_soup, conditionals):
         # Jup holds ther inventory in a table w/ id 'cars-table'
         inventory_table = inventory_soup.find(id="cars-table")
         # If the table doesn't exists
@@ -148,14 +151,26 @@ class Jup(YardSearch):
             # Let it be known
             print(f"[!] Could not find results for {conditionals['original_query']}")
             return ''
-    
-        # If self.inventory_headers is empty, set them to table headers
-        if len(self.inventory_headers) == 0:
-            super().set_inventory_headers(inventory_table.find_all('th'))
+
+        if self.inventory_headers == ():
+            th_elems = inventory_table.find_all('th')
+            inventory_headers = tuple([th.get_text(strip=True).lower() for th in th_elems])
+            self.set_inventory_headers(inventory_headers)
 
         inventory_table_rows = inventory_table.find_all('tr')[1:]
-        print('inventory_table_rows:', inventory_table_rows)
-        return ''
+        return inventory_table_rows
+
+    def filter_inventory_table_rows(self, inventory_table_rows, conditionals):
+        for i, inventory_table_row in enumerate(inventory_table_rows):
+            # List every <td> within this inventory_table_row
+            td_elems = inventory_table_row.find_all('td')
+            # Extract a tuple containing the text of those <td> elements (not the <td></td> tags)
+            inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
+            # if(super().satisfies_conditionals(inventory_vehicle, conditionals):
+            #     self.add_to_results(inventory_vehicle)
+
+            print('filter_inv_table_rows result: ', inventory_vehicle)
+
 
     # def parse_site_table_rows(self, table_rows, con):
     #     if mode != 'csv':
