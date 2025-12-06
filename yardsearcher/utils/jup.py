@@ -19,12 +19,14 @@ class YardSearch:
         self.queries = self.searched_query.strip().split(',')
         self.base_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9"
         }
         self.results = []
         self.base_url = ''
         self.base_params = {}
-        self.results_columns = ()
+        self.inventory_headers = ()
+
+    def set_inventory_headers(self, inventory_headers):
+        self.inventory_headers = inventory_headers
 
     def set_url(self, new_url=""):
         self.base_url = new_url
@@ -98,6 +100,7 @@ class YardSearch:
             conditionals['minYear'], conditionals['maxYear'] = self.parse_car_year_range(query)
             semantics.pop(0)
         
+        conditionals['original_query'] = query
         conditionals['make'] = semantics[0]
         semantics.pop(0)
         conditionals['model'] = ' '.join(semantics)
@@ -112,17 +115,16 @@ class YardSearch:
 
     def handle_queries(self, queries=[]):
         queries = queries if len(queries) > 0 else self.queries
-        for query in queries:
+        for query_iteration, query in enumerate(queries):
             conditionals = self.extract_conditionals(query)
             #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
-            print(self.fetch_inventory_data(conditionals=conditionals))
+            print(self.fetch_inventory_html_soup(conditionals=conditionals))
 
-    def fetch_inventory_data(self, conditionals={}):
+    def fetch_inventory_html_soup(self, conditionals={}):
         session = requests.Session()
         response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
         soup = BeautifulSoup(response.text, "lxml")
         session.close()
-        print(f" Soup from query '{self.searched_query}': {soup}")
         return soup
 
 
@@ -131,9 +133,52 @@ class Jup(YardSearch):
     def __init__(self, query_str):
         super().__init__(query_str)
 
-    def fetch_inventory_data(self,conditionals={}):
-        super().set_url(f"https://www.jolietupullit.com/inventory/?make={conditionals['make']}&model={conditionals['model']}")
-        super().fetch_inventory_data()
+    def fetch_inventory_html_soup(self,conditionals):
+        make = conditionals['make'].upper()
+        model  = conditionals['model'].upper()
+        super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
+        inventory_html_soup = super().fetch_inventory_html_soup()
+        self.handle_inventory_soup(inventory_html_soup, conditionals)
+
+    def handle_inventory_soup(self, inventory_soup, conditionals):
+        # Jup holds ther inventory in a table w/ id 'cars-table'
+        inventory_table = inventory_soup.find(id="cars-table")
+        # If the table doesn't exists
+        if not inventory_table or not inventory_table.find(['td']):
+            # Let it be known
+            print(f"[!] Could not find results for {conditionals['original_query']}")
+            return ''
+    
+        # If self.inventory_headers is empty, set them to table headers
+        if len(self.inventory_headers) == 0:
+            super().set_inventory_headers(inventory_table.find_all('th'))
+
+        inventory_table_rows = inventory_table.find_all('tr')[1:]
+        print('inventory_table_rows:', inventory_table_rows)
+        return ''
+
+    # def parse_site_table_rows(self, table_rows, con):
+    #     if mode != 'csv':
+    #         raise ValueError("Only CSV mode is currently supported.")
+    #     cleaned_data = ''
+    #     for i, table_row in enumerate(table_rows):
+    #         #Grab all th and td elements from a table row 
+    #         cells = table_row.find_all(['th', 'td'])
+    #         #Creates a list of inner text from the table row elements)
+    #         cols = [cell.get_text(strip=True) for cell in cells]
+    #         #If first time looping, and a table header element exists 
+    #         if i == 0 and table_row.find('th'):
+    #             #set row headers to the table header text list 
+    #             self.row_headers = cols
+    #             #format table header text list to CSV 
+    #             cleaned_data = ','.join(cols) + '\n'
+    #         elif len(cols) >= 6:
+    #             cleaned_data += self.filter_vehicle(cols, year, min_year, max_year)
+                
+    #     return cleaned_data
+
+
+
 
 #     def add_to_history(self, search):
 #         with open(".search_history.txt", "a") as search_history_file:
