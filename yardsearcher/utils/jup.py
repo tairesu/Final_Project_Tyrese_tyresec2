@@ -24,6 +24,9 @@ class YardSearch:
         self.base_url = ''
         self.base_params = {}
         self.inventory_headers = ()
+        self.name = ''
+        self.elem_id = ''
+        self.time_elapsed = 0
 
     def set_inventory_headers(self, inventory_headers):
         self.inventory_headers = inventory_headers
@@ -40,6 +43,9 @@ class YardSearch:
     def update_params(self, new_params={}):
         self.base_params.update(new_params)
         print("Base params After Update:", self.base_params)
+
+    def set_time_elapsed(self, time_elapsed):
+        self.time_elapsed = time_elapsed
 
     def replace_em_dashes(self, query="") -> str:
         """
@@ -111,10 +117,13 @@ class YardSearch:
 
     def satisfies_conditionals(self, inventory_vehicle_tuple, conditionals):
         """
-        Given extracted vehicle tuple, return True if the vehicle tuple satifies passed all conditonals
+        Given extracted vehicle tuple, return True if the vehicle tuple passes year based conditonals
         """
+        # Let's find the year of the given tuple
         try:
+            # Grabbing the index of 'year' from this junkyard's inventory headers (int)
             vehicle_year_index = self.inventory_headers.index('year')
+            # Locate the vehicle's year from the given tuple using that index (str)
             vehicle_year = inventory_vehicle_tuple[vehicle_year_index]
             
         except ValueError as e:
@@ -130,31 +139,43 @@ class YardSearch:
         else: 
             return False
 
-    def results_as_tuple(self):
-        if not self.results:
-            return ''
-
-        return self.results
-
     def handle_queries(self, queries=[]):
         queries = queries if len(queries) > 0 else self.queries
+        t0 = time.time()
         for query_iteration, query in enumerate(queries):
             conditionals = self.extract_conditionals(query)
             #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
             self.fetch_inventory_html_soup(conditionals=conditionals)
+        t1 = time.time()
+        self.set_time_elapsed(t1-t0)
+
 
     def fetch_inventory_html_soup(self, conditionals={}):
+        """ 
+        Requests junkyard's page and returns prettified version of it's HTML (BeautifulSoup)
+        """
         session = requests.Session()
         response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
         soup = BeautifulSoup(response.text, "lxml")
         session.close()
         return soup
 
+    def data_as_dict(self):
+        return {
+            "name": self.name, 
+            "elem_id" : self.elem_id,
+            "num_results": len(self.results),
+            "time_elapsed": self.time_elapsed,
+            "result_headers": self.inventory_headers,
+            "results": self.results,
+        }
 
 
 class Jup(YardSearch):
     def __init__(self, query_str):
         super().__init__(query_str)
+        self.name = "Joliet U-Pull It"
+        self.elem_id = "jap"
 
     def fetch_inventory_html_soup(self,conditionals):
         make = conditionals['make'].upper()
