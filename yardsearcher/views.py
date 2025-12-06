@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
-
+from yardsearcher.utils.jup import *
 
 def results_view(request):
 	"""
@@ -8,22 +8,14 @@ def results_view(request):
 	"""
 	context = {}
 	if request.method == "GET":
-		context['query'] = request.GET.get('q') or " "
-		context['fetched_yard_data'] = [
-      		{
-				"name" : "Joliet U-Pull It",
-				"elem_id" : "jap",
-				"num_results" : 0,
-				"time_elapsed" : 1.3,
-				"result_headers" : ("make","model","year","date entered","stk"),
-				"results" : [
-        			("Honda", "Civic", 1977, "11/22/2000", 234243),
-        			("Honda", "Civic", 1977, "11/22/2000", 234243),
-        			("Honda", "Civic", 1977, "11/22/2000", 234243),
-        			("Honda", "Civic", 1977, "11/22/2000", 234243),
-        			("Honda", "Civic", 1977, "11/22/2000", 234243),
-           		],
-            },
-      ]
+		query = request.GET.get('q') or " "
+		fetched_yard_data = []
+
+		jup_search = Jup(query)
+		jup_search.handle_queries()
+		fetched_yard_data.append(jup_search.data_as_dict())
+
+		context['fetched_yard_data'] = fetched_yard_data
+		context['query'] = query
 
 	return render(request, 'yardsearcher/results.html', context)
