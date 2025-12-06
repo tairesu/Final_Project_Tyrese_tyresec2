@@ -16,9 +16,25 @@ class YardSearch:
     """
     def __init__(self, query_str):
         self.searched_query = self.replace_em_dashes(query_str)
+        self.queries = self.searched_query.strip().split(',')
+        self.base_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9"
+        }
         self.results = []
         self.base_url = ''
+        self.base_params = {}
         self.results_columns = ()
+
+    def set_url(self, new_url=""):
+        self.base_url = new_url
+
+    def update_headers(self, new_headers={}):
+        self.base_headers.update(new_headers)
+
+    def update_params(self, new_params={}):
+        self.base_params.update(new_params)
+        print("Base params After Update:", self.base_params)
 
     def replace_em_dashes(self, query="") -> str:
         """
@@ -81,8 +97,11 @@ class YardSearch:
         elif not self.is_year_present(query) and self.is_year_range_present(query):
             conditionals['minYear'], conditionals['maxYear'] = self.parse_car_year_range(query)
             semantics.pop(0)
-        extracted_query = ' '.join(semantics)
-        return conditionals, extracted_query)
+        
+        conditionals['make'] = semantics[0]
+        semantics.pop(0)
+        conditionals['model'] = ' '.join(semantics)
+        return conditionals
 
 
     def results_as_tuple(self):
@@ -91,17 +110,30 @@ class YardSearch:
 
         return self.results
 
+    def handle_queries(self, queries=[]):
+        queries = queries if len(queries) > 0 else self.queries
+        for query in queries:
+            conditionals = self.extract_conditionals(query)
+            #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
+            print(self.fetch_inventory_data(conditionals=conditionals))
 
-    
+    def fetch_inventory_data(self, conditionals={}):
+        session = requests.Session()
+        response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
+        soup = BeautifulSoup(response.text, "lxml")
+        session.close()
+        print(f" Soup from query '{self.searched_query}': {soup}")
+        return soup
 
-# class JunkyardScraper:
-#     def __init__(self):
-#         self.headers = {
-#             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-#         }
-#         self.results = ""
-#         self.cached_results = []
-#         self.row_headers = []
+
+
+class Jup(YardSearch):
+    def __init__(self, query_str):
+        super().__init__(query_str)
+
+    def fetch_inventory_data(self,conditionals={}):
+        super().set_url(f"https://www.jolietupullit.com/inventory/?make={conditionals['make']}&model={conditionals['model']}")
+        super().fetch_inventory_data()
 
 #     def add_to_history(self, search):
 #         with open(".search_history.txt", "a") as search_history_file:
@@ -439,7 +471,7 @@ class YardSearch:
 
 #         return True
 
-# Run it
-if __name__ == "__main__":
-    scraper = JunkyardScraper()
-    cProfile.run('scraper.fetch_results("2001-2005 honda civic, 02-05 chevrolet tahoe")')
+# # Run it
+# if __name__ == "__main__":
+#     scraper = JunkyardScraper()
+#     cProfile.run('scraper.fetch_results("2001-2005 honda civic, 02-05 chevrolet tahoe")')
