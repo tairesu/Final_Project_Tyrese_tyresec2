@@ -31,6 +31,9 @@ class YardSearch:
     def set_url(self, new_url=""):
         self.base_url = new_url
 
+    def add_result(self, inventory_vehicle):
+        self.results.append(inventory_vehicle)
+
     def update_headers(self, new_headers={}):
         self.base_headers.update(new_headers)
 
@@ -106,8 +109,26 @@ class YardSearch:
         conditionals['model'] = ' '.join(semantics)
         return conditionals
 
-    
+    def satisfies_conditionals(self, inventory_vehicle_tuple, conditionals):
+        """
+        Given extracted vehicle tuple, return True if the vehicle tuple satifies passed all conditonals
+        """
+        try:
+            vehicle_year_index = self.inventory_headers.index('year')
+            vehicle_year = inventory_vehicle_tuple[vehicle_year_index]
+            
+        except ValueError as e:
+            return False
 
+        vehicle_matches_year = ('year' in conditionals.keys() and vehicle_year == conditionals['year'])
+        vehicle_in_year_range = ('minYear' in conditionals.keys() and int(vehicle_year) in range(int(conditionals['minYear']), int(conditionals['maxYear']) + 1))
+        ignore_year_and_range = ('minYear' not in conditionals.keys()) and ('year' not in conditionals.keys())
+
+        #print(f'extracted_year: {vehicle_year} \n conditionals: {conditionals} \n match_year:{vehicle_matches_year} \n vehicle_in_range:{vehicle_in_year_range} \n ignore_year_and_range: {ignore_year_and_range}')
+        if(vehicle_matches_year or vehicle_in_year_range or ignore_year_and_range):
+            return True
+        else: 
+            return False
 
     def results_as_tuple(self):
         if not self.results:
@@ -120,7 +141,7 @@ class YardSearch:
         for query_iteration, query in enumerate(queries):
             conditionals = self.extract_conditionals(query)
             #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
-            print(self.fetch_inventory_html_soup(conditionals=conditionals))
+            self.fetch_inventory_html_soup(conditionals=conditionals)
 
     def fetch_inventory_html_soup(self, conditionals={}):
         session = requests.Session()
@@ -141,7 +162,7 @@ class Jup(YardSearch):
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
         inventory_html_soup = super().fetch_inventory_html_soup()
         inventory_table_rows= self.extract_inventory_table_rows(inventory_html_soup, conditionals)
-        results = self.filter_inventory_table_rows(inventory_table_rows)
+        self.filter_inventory_table_rows(inventory_table_rows, conditionals)
 
     def extract_inventory_table_rows(self, inventory_soup, conditionals):
         # Jup holds ther inventory in a table w/ id 'cars-table'
@@ -166,10 +187,8 @@ class Jup(YardSearch):
             td_elems = inventory_table_row.find_all('td')
             # Extract a tuple containing the text of those <td> elements (not the <td></td> tags)
             inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
-            # if(super().satisfies_conditionals(inventory_vehicle, conditionals):
-            #     self.add_to_results(inventory_vehicle)
-
-            print('filter_inv_table_rows result: ', inventory_vehicle)
+            if(super().satisfies_conditionals(inventory_vehicle, conditionals)):
+                self.add_result(inventory_vehicle)
 
 
     # def parse_site_table_rows(self, table_rows, con):
