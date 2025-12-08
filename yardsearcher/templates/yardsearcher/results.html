@@ -105,7 +105,9 @@
 {% endblock %}
 {% block extra_scripts %}
 <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var avg_lat = {{avg_lat}}
+    var avg_long = {{ avg_long }}
+    var map = L.map('map').setView(center=[avg_lat, avg_long], 9);
     var myIcon = L.icon({
         iconUrl: '/static/marker.png',
         iconSize: [30, 50],
@@ -117,7 +119,7 @@
     }).addTo(map);
     {% for yard in fetched_yard_data %}
         L.marker([{{yard.lat}}, {{yard.long}}], {icon:myIcon}).addTo(map)
-            .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+            .bindPopup("{{ yard.name }}")
             .openPopup();
     {% endfor%}
 </script>
