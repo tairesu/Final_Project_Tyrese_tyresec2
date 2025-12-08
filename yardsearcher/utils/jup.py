@@ -1,4 +1,4 @@
-from base import YardSearch
+from yardsearcher.utils.base import YardSearch
 
 class Jup(YardSearch):
     def __init__(self, query_str):
