@@ -160,7 +160,6 @@ class YardSearch:
         time.sleep(random.uniform(1.0,2.0))
         response = self.session.get(self.base_url, headers=self.base_headers, params=self.base_params)
         soup = BeautifulSoup(response.text, "lxml")
-        print(soup)
         return soup
 
     def data_as_dict(self):
