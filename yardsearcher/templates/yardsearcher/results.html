@@ -28,7 +28,7 @@
         <div class=" d-flex flex-column col-12 col-md-10 col-lg-9 gap-4 px-4 px-md-0"  >
             {% for yard in fetched_yard_data %}
 
-                <div class="yardResult bg-white rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
+                <div class="yardResult bg-white shadow-sm rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
                     <div class="accordion-item border-0">
                         <!-- Header / Yard Meta -->
                         <div class="yardMeta d-flex flex-row gap-2 align-items-center">
@@ -109,7 +109,7 @@
     var avg_long = {{ avg_long }}
     var map = L.map('map').setView(center=[avg_lat, avg_long], 9);
     var myIcon = L.icon({
-        iconUrl: '/static/marker.png',
+        iconUrl: '/static/marker.png?v={{ tz }}',
         iconSize: [30, 50],
         iconAnchor: [22, 94],
         popupAnchor: [-3, -100],
