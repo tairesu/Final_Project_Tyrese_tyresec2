@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import time
 import cProfile
+import random
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -154,8 +155,10 @@ class YardSearch:
         Returns prettified version of junkyard site HTML (BeautifulSoup)
         """
         session = requests.Session()
-        response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
+        time.sleep(random.uniform(1.5, 3.5))
+        response = session.get(self.base_url, headers=self.base_headers, params=self.base_params)
         soup = BeautifulSoup(response.text, "lxml")
+        print(soup)
         session.close()
         return soup
 
@@ -176,22 +179,11 @@ class Jup(YardSearch):
         self.name = "Joliet U-Pull It"
         self.elem_id = "jap"
         self.base_headers = {
-            "authority": "www.jolietupullit.com",
-            "method": "GET",
-            "scheme": "https",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "en-US,en;q=0.9","priority": "u=0, i",
-            "referer": "https://www.jolietupullit.com/inventory/",
-            "sec-ch-ua": '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"macOS"',
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://www.jolietupullit.com/inventory/",
         }
     
     # Override parent method
