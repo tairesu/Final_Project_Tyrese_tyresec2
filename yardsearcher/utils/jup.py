@@ -149,7 +149,7 @@ class YardSearch:
             #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
             self.fetch_inventory_html_soup(conditionals=conditionals)
         t1 = time.time()
-        self.set_time_elapsed(t1-t0)
+        self.set_time_elapsed(round(t1-t0, 2))
 
 
     def fetch_inventory_html_soup(self, conditionals={}):
