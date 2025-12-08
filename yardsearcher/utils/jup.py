@@ -193,29 +193,25 @@ class Jup(YardSearch):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
         }
-        
+    
     # Override parent method
     def fetch_inventory_html_soup(self,conditionals):
-        # Grab the make from conditionals dict
         make = conditionals['make'].upper()
-        # Grab the model from conditionals dict
         model  = conditionals['model'].upper()
-        # Use both to construct Jup's inventory url
+        # Jup requires make & model params
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
-        # Grab soup (prettified HTML) of Jup's inventory url
         inventory_html_soup = super().fetch_inventory_html_soup()
-        # Extract all table rows from inventory soup
-        inventory_table_rows = self.extract_inventory_table_rows(inventory_html_soup, conditionals)
+        inventory_table_rows = self.extract_inventory_table_rows(inventory_html_soup)
         # extract vehicle data matching table rows conditionals  
         self.filter_inventory_table_rows(inventory_table_rows, conditionals)
 
-    def extract_inventory_table_rows(self, inventory_soup, conditionals):
+    def extract_inventory_table_rows(self, inventory_soup):
         # Grab Jups inventory table (table#cars-table)
         inventory_table = inventory_soup.find(id="cars-table")
         # If the table doesn't exists
         if not inventory_table or not inventory_table.find(['td']):
             # Let it be known
-            print(f"[!] Could not find results for {conditionals['original_query']}")
+            print(f"[!] Could not find results for {self.searched_query}")
             return ''
 
         # If inventory_headers (column names) arent set
@@ -239,8 +235,7 @@ class Jup(YardSearch):
             # Extract the text of each cell into a tuple
             inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
             # If the vehicle tuple satisfies the conditionals 
-            if(super().satisfies_conditionals(inventory_vehicle, conditionals)):
-                # Append vehicle tuple to results list 
+            if super().satisfies_conditionals(inventory_vehicle, conditionals):
                 self.add_result(inventory_vehicle)
 
 
