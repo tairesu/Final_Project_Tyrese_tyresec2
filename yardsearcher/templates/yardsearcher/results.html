@@ -2,11 +2,18 @@
 {% load static %}
 {% block extra_links %}
     <link rel="stylesheet" href="{% static 'css/results.css' %}?v={{tz}}"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
 {% endblock %}
 {% block main_content %}
     <div class="d-flex bg-primary flex-column p-0 vh-100 overflow-y-auto align-items-center col-12 col-md-10 col-lg-10 gap-4 ">
         <!-- This'll be the map w/ searchbar, btns and controls for this page -->
-        <div class="map bg-secondary position-relative mt-md-4 d-flex p-4 col-12 col-md-10 col-lg-9 " id="resultsMap">
+        <div id="map" class="map bg-secondary position-relative mt-md-4 d-flex p-4 col-12 col-md-10 col-lg-9 " id="resultsMap">
             <!-- This is the input and btns div -->
             <div class="d-flex flex-column gap-3 col">
                 <form action="" method="get" class="p-0" >
@@ -98,4 +105,17 @@
             </label>
         </div>
     </div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    L.marker([51.5, -0.09]).addTo(map)
+        .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+        .openPopup();
+</script>
 {% endblock %}
