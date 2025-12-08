@@ -14,6 +14,8 @@ class YardSearch:
     The base class used in every junkyard search
     
     """
+    lats = []
+    longs = []
     def __init__(self, query_str):
         self.searched_query = self.replace_em_dashes(query_str)
         self.queries = self.searched_query.strip().split(',')
@@ -32,6 +34,10 @@ class YardSearch:
         self.session = requests.Session()
         self.session.headers.update(self.base_headers)
 
+    def appendLocation(self):
+        YardSearch.lats.append(self.lat)
+        YardSearch.longs.append(self.long)
+        
     def set_inventory_headers(self, inventory_headers):
         self.inventory_headers = inventory_headers
 

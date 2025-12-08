@@ -7,7 +7,7 @@ class Jup(YardSearch):
         self.elem_id = "jap"
         self.lat = 41.5225
         self.long = -88.0561
-        
+        super().appendLocation()
     
     # Override parent method
     def fetch_inventory(self,conditionals):
