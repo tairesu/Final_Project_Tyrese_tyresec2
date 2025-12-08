@@ -10,7 +10,7 @@
 {% block main_content %}
     <div class="d-flex bg-primary flex-column p-0 vh-100 overflow-y-auto align-items-center col-12 col-md-10 col-lg-10 gap-4 ">
         <!-- This'll be the map w/ searchbar, btns and controls for this page -->
-        <div id="map" class="map bg-secondary position-relative mt-md-4 d-flex p-4 col-12 col-md-10 col-lg-9 " id="resultsMap">
+        <div id="map" class="map rounded-3 bg-secondary position-relative mt-md-4 d-flex p-4 col-12 col-md-10 col-lg-9 " id="resultsMap">
             <!-- This is the input and btns div -->
             <div class="d-flex flex-column gap-3 col" id="mapInput">
                 <form action="" method="get" class="p-0" >
@@ -28,7 +28,7 @@
         <div class=" d-flex flex-column col-12 col-md-10 col-lg-9 gap-4 px-4 px-md-0"  >
             {% for yard in fetched_yard_data %}
 
-                <div class="yardResult bg-white p-4 accordion" id="{{yard.elem_id}}-accordion">
+                <div class="yardResult bg-white rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
                     <div class="accordion-item border-0">
                         <!-- Header / Yard Meta -->
                         <div class="yardMeta d-flex flex-row gap-2 align-items-center">
@@ -41,7 +41,7 @@
                 
                         <!-- Collapse Button -->
                         <div class="text-end">
-                            <button class="btn btn-link p-0"
+                            <button class="btn btn-link p-0 color-secondary"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#{{yard.elem_id}}"
                                 aria-expanded="true"
