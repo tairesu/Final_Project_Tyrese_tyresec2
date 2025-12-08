@@ -28,6 +28,8 @@ class YardSearch:
         self.name = ''
         self.elem_id = ''
         self.time_elapsed = 0
+        self.session = requests.Session()
+        self.session.headers.update(self.base_headers)
 
     def set_inventory_headers(self, inventory_headers):
         self.inventory_headers = inventory_headers
@@ -154,12 +156,10 @@ class YardSearch:
         """ 
         Returns prettified version of junkyard site HTML (BeautifulSoup)
         """
-        session = requests.Session()
         time.sleep(random.uniform(1.5, 3.5))
-        response = session.get(self.base_url, headers=self.base_headers, params=self.base_params)
+        response = self.session.get(self.base_url, headers=self.base_headers, params=self.base_params)
         soup = BeautifulSoup(response.text, "lxml")
         print(soup)
-        session.close()
         return soup
 
     def data_as_dict(self):
@@ -178,18 +178,13 @@ class Jup(YardSearch):
         super().__init__(query_str)
         self.name = "Joliet U-Pull It"
         self.elem_id = "jap"
-        self.base_headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Referer": "https://www.jolietupullit.com/inventory/",
-        }
+        
     
     # Override parent method
     def fetch_inventory_html_soup(self,conditionals):
         make = conditionals['make'].upper()
         model  = conditionals['model'].upper()
+        self.update_headers({f"path": "/inventory/?make={make}&model={model}"})
         # Jup requires make & model params
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
         inventory_html_soup = super().fetch_inventory_html_soup()
