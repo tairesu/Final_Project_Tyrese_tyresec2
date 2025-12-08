@@ -119,7 +119,13 @@
     }).addTo(map);
     {% for yard in fetched_yard_data %}
         L.marker([{{yard.lat}}, {{yard.long}}], {icon:myIcon}).addTo(map)
-            .bindPopup("{{ yard.name }}")
+        
+            .bindTooltip("<b style='display:block'>{{ yard.name }}</b><p>{{ yard.num_results }} results</p>",{
+                permanent: true,
+                direction: 'top',
+                offset: [-3, -100], // Adjust position slightly upwards
+                className: 'custom-tooltip' // Add a custom CSS class
+            })
             .openPopup();
     {% endfor%}
 </script>
