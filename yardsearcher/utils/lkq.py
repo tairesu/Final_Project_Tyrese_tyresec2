@@ -37,6 +37,7 @@ class LKQSearch(YardSearch):
         self.lat = 41.6325570
         self.long = -87.6731408
         self.elem_id = "lkq"
+        super().appendLocation()
 
     def fetch_inventory(self, store_id=1582, conditionals={}):
         page_number = 1
