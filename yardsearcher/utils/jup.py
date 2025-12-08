@@ -23,6 +23,8 @@ class YardSearch:
         }
         self.results = []
         self.base_url = ''
+        self.long = 0
+        self.lat = 0
         self.base_params = {}
         self.inventory_headers = ()
         self.name = ''
@@ -170,6 +172,8 @@ class YardSearch:
             "time_elapsed": self.time_elapsed,
             "result_headers": self.inventory_headers,
             "results": self.results,
+            "lat": self.lat,
+            "long": self.long,
         }
 
 
@@ -178,6 +182,8 @@ class Jup(YardSearch):
         super().__init__(query_str)
         self.name = "Joliet U-Pull It"
         self.elem_id = "jap"
+        self.lat = 41.52
+        self.long = -88.15
         
     
     # Override parent method
