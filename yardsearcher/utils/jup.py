@@ -152,7 +152,7 @@ class YardSearch:
 
     def fetch_inventory_html_soup(self, conditionals={}):
         """ 
-        Requests junkyard's page and returns prettified version of it's HTML (BeautifulSoup)
+        Returns prettified version of junkyard site HTML (BeautifulSoup)
         """
         session = requests.Session()
         response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
@@ -176,7 +176,7 @@ class Jup(YardSearch):
         super().__init__(query_str)
         self.name = "Joliet U-Pull It"
         self.elem_id = "jap"
-        self.headers = {
+        self.base_headers = {
             "authority": "www.jolietupullit.com",
             "method": "GET",
             "scheme": "https",
