@@ -83,7 +83,6 @@ class YardSearch:
         """
         Strips a given query str of minimum and maximum years
 
-        *example*
         parse_car_year_range('2004-2008 Honda Civic') => ('2004','2008')
         """
         query = query if len(query.strip()) > 0 else self.searched_query
@@ -97,7 +96,7 @@ class YardSearch:
         return (formatted_min_year,formatted_max_year)
 
 
-    def extract_conditionals(self, query="") -> tuple:
+    def extract_conditionals(self, query="") -> dict:
         conditionals = {}
         query = query if len(query.strip()) > 0 else self.searched_query
         semantics = query.strip().split(' ')
@@ -194,17 +193,24 @@ class Jup(YardSearch):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
         }
-
+        
+    # Override parent method
     def fetch_inventory_html_soup(self,conditionals):
+        # Grab the make from conditionals dict
         make = conditionals['make'].upper()
+        # Grab the model from conditionals dict
         model  = conditionals['model'].upper()
+        # Use both to construct Jup's inventory url
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
+        # Grab soup (prettified HTML) of Jup's inventory url
         inventory_html_soup = super().fetch_inventory_html_soup()
-        inventory_table_rows= self.extract_inventory_table_rows(inventory_html_soup, conditionals)
+        # Extract all table rows from inventory soup
+        inventory_table_rows = self.extract_inventory_table_rows(inventory_html_soup, conditionals)
+        # extract vehicle data matching table rows conditionals  
         self.filter_inventory_table_rows(inventory_table_rows, conditionals)
 
     def extract_inventory_table_rows(self, inventory_soup, conditionals):
-        # Jup holds ther inventory in a table w/ id 'cars-table'
+        # Grab Jups inventory table (table#cars-table)
         inventory_table = inventory_soup.find(id="cars-table")
         # If the table doesn't exists
         if not inventory_table or not inventory_table.find(['td']):
@@ -212,21 +218,29 @@ class Jup(YardSearch):
             print(f"[!] Could not find results for {conditionals['original_query']}")
             return ''
 
+        # If inventory_headers (column names) arent set
         if self.inventory_headers == ():
+            # Find all table headers w/i the inventory table 
             th_elems = inventory_table.find_all('th')
+            # Extract the text from every table header element into a tuple
             inventory_headers = tuple([th.get_text(strip=True).lower() for th in th_elems])
+            # Now set the inventory_headers to this tuple
             self.set_inventory_headers(inventory_headers)
 
+        # Grab the table row elements of the inventory table (ignore the first row)
         inventory_table_rows = inventory_table.find_all('tr')[1:]
         return inventory_table_rows
 
     def filter_inventory_table_rows(self, inventory_table_rows, conditionals):
+        # Loop through each table row 
         for i, inventory_table_row in enumerate(inventory_table_rows):
-            # List every <td> within this inventory_table_row
+            # Find every cell w/in this inventory_table_row
             td_elems = inventory_table_row.find_all('td')
-            # Extract a tuple containing the text of those <td> elements (not the <td></td> tags)
+            # Extract the text of each cell into a tuple
             inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
+            # If the vehicle tuple satisfies the conditionals 
             if(super().satisfies_conditionals(inventory_vehicle, conditionals)):
+                # Append vehicle tuple to results list 
                 self.add_result(inventory_vehicle)
 
 
