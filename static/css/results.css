@@ -4,4 +4,7 @@
 }
 .map {
     height:60%!important;
+    & #mapInput {
+        z-index: 1030;
+    }
 }
