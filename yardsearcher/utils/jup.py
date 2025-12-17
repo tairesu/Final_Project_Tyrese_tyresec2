@@ -1,174 +1,4 @@
-from bs4 import BeautifulSoup
-import requests
-import io
-import pandas as pd
-import re
-import time
-import cProfile
-from concurrent.futures import ThreadPoolExecutor
-
-
-
-class YardSearch:
-    """
-    The base class used in every junkyard search
-    
-    """
-    def __init__(self, query_str):
-        self.searched_query = self.replace_em_dashes(query_str)
-        self.queries = self.searched_query.strip().split(',')
-        self.base_headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        }
-        self.results = []
-        self.base_url = ''
-        self.base_params = {}
-        self.inventory_headers = ()
-        self.name = ''
-        self.elem_id = ''
-        self.time_elapsed = 0
-
-    def set_inventory_headers(self, inventory_headers):
-        self.inventory_headers = inventory_headers
-
-    def set_url(self, new_url=""):
-        self.base_url = new_url
-
-    def add_result(self, inventory_vehicle):
-        self.results.append(inventory_vehicle)
-
-    def update_headers(self, new_headers={}):
-        self.base_headers.update(new_headers)
-
-    def update_params(self, new_params={}):
-        self.base_params.update(new_params)
-        print("Base params After Update:", self.base_params)
-
-    def set_time_elapsed(self, time_elapsed):
-        self.time_elapsed = time_elapsed
-
-    def replace_em_dashes(self, query="") -> str:
-        """
-        Replaces em-dashes and hyphens (in query) with a default '-'
-        """
-        query = query if len(query.strip()) > 0 else self.searched_query
-        return query.replace('–', '-').replace('—', '-')
-
-    def is_year_present(self, query="") -> bool:
-        query = query if len(query.strip()) > 0 else self.searched_query
-        # Does the query contains patterns '2004 ' or '08 ' 
-        return True if re.findall(r"^\d{2}\s|^\d{4}\s", query) else False
-
-    def is_year_range_present(self, query="") -> bool:
-        query = query if len(query.strip()) > 0 else self.searched_query
-        # Does the query contains patterns '2004-2012 ' or '02-11'
-        return True if re.findall(r"^(\d{2}-\d{2}\s)|^(\d{4}-\d{4}\s)", query) else False
-
-    def parse_car_year(self, query="") -> str:
-        """
-        Strips a given query str of it's year
-        parse_car_year('2004 Honda Civic') => '2004'
-        """
-        query = query if len(query.strip()) > 0 else self.searched_query
-        assert self.is_year_present(query)
-
-        # Find the characters of query matching patterns '02' or '2004'
-        car_year = re.findall(r"^\d{2}\s|^\d{4}\s", query)[0].strip()
-
-        # Place the current year's prefix if car year had 2 characters (e.g: '01'->'2001')  
-        formatted_car_year = car_year if len(car_year) == 4 else f"20{car_year}"
-        return formatted_car_year
-
-    def parse_car_year_range(self, query="") -> tuple:
-        """
-        Strips a given query str of minimum and maximum years
-
-        *example*
-        parse_car_year_range('2004-2008 Honda Civic') => ('2004','2008')
-        """
-        query = query if len(query.strip()) > 0 else self.searched_query
-        assert self.is_year_range_present(query)
-        range_str = re.findall(r"^\d{2}-\d{2}|^\d{4}-\d{4}", query.strip())[0]
-        min_year = range_str.split('-')[0]
-        max_year = range_str.split('-')[1]
-        formatted_min_year = "20" + min_year if len(min_year) == 2 else min_year 
-        formatted_max_year = "20" + max_year if len(max_year) == 2 else max_year 
-
-        return (formatted_min_year,formatted_max_year)
-
-
-    def extract_conditionals(self, query="") -> tuple:
-        conditionals = {}
-        query = query if len(query.strip()) > 0 else self.searched_query
-        semantics = query.strip().split(' ')
-
-        if self.is_year_present(query):
-            conditionals['year'] = self.parse_car_year(query)
-            semantics.pop(0)
-        elif not self.is_year_present(query) and self.is_year_range_present(query):
-            conditionals['minYear'], conditionals['maxYear'] = self.parse_car_year_range(query)
-            semantics.pop(0)
-        
-        conditionals['original_query'] = query
-        conditionals['make'] = semantics[0]
-        semantics.pop(0)
-        conditionals['model'] = ' '.join(semantics)
-        return conditionals
-
-    def satisfies_conditionals(self, inventory_vehicle_tuple, conditionals):
-        """
-        Given extracted vehicle tuple, return True if the vehicle tuple passes year based conditonals
-        """
-        # Let's find the year of the given tuple
-        try:
-            # Grabbing the index of 'year' from this junkyard's inventory headers (int)
-            vehicle_year_index = self.inventory_headers.index('year')
-            # Locate the vehicle's year from the given tuple using that index (str)
-            vehicle_year = inventory_vehicle_tuple[vehicle_year_index]
-            
-        except ValueError as e:
-            return False
-
-        vehicle_matches_year = ('year' in conditionals.keys() and vehicle_year == conditionals['year'])
-        vehicle_in_year_range = ('minYear' in conditionals.keys() and int(vehicle_year) in range(int(conditionals['minYear']), int(conditionals['maxYear']) + 1))
-        ignore_year_and_range = ('minYear' not in conditionals.keys()) and ('year' not in conditionals.keys())
-
-        #print(f'extracted_year: {vehicle_year} \n conditionals: {conditionals} \n match_year:{vehicle_matches_year} \n vehicle_in_range:{vehicle_in_year_range} \n ignore_year_and_range: {ignore_year_and_range}')
-        if(vehicle_matches_year or vehicle_in_year_range or ignore_year_and_range):
-            return True
-        else: 
-            return False
-
-    def handle_queries(self, queries=[]):
-        queries = queries if len(queries) > 0 else self.queries
-        t0 = time.time()
-        for query_iteration, query in enumerate(queries):
-            conditionals = self.extract_conditionals(query)
-            #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
-            self.fetch_inventory_html_soup(conditionals=conditionals)
-        t1 = time.time()
-        self.set_time_elapsed(t1-t0)
-
-
-    def fetch_inventory_html_soup(self, conditionals={}):
-        """ 
-        Returns prettified version of junkyard site HTML (BeautifulSoup)
-        """
-        session = requests.Session()
-        response = requests.get(self.base_url, headers=self.base_headers, params=self.base_params)
-        soup = BeautifulSoup(response.text, "lxml")
-        session.close()
-        return soup
-
-    def data_as_dict(self):
-        return {
-            "name": self.name, 
-            "elem_id" : self.elem_id,
-            "num_results": len(self.results),
-            "time_elapsed": self.time_elapsed,
-            "result_headers": self.inventory_headers,
-            "results": self.results,
-        }
+from yardsearcher.utils.base import YardSearch
 
 
 class Jup(YardSearch):
@@ -176,57 +6,53 @@ class Jup(YardSearch):
         super().__init__(query_str)
         self.name = "Joliet U-Pull It"
         self.elem_id = "jap"
-        self.base_headers = {
-            "authority": "www.jolietupullit.com",
-            "method": "GET",
-            "scheme": "https",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "en-US,en;q=0.9","priority": "u=0, i",
-            "referer": "https://www.jolietupullit.com/inventory/",
-            "sec-ch-ua": '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"macOS"',
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
-        }
-
-    def fetch_inventory_html_soup(self,conditionals):
+        self.lat = 41.5225
+        self.long = -88.0561
+        super().appendLocation()
+    
+    # Override parent method
+    def fetch_inventory(self,conditionals):
         make = conditionals['make'].upper()
         model  = conditionals['model'].upper()
+        self.update_headers({f"path": "/inventory/?make={make}&model={model}"})
+        # Jup requires make & model params
         super().set_url(f"https://www.jolietupullit.com/inventory/?make={make}&model={model}")
-        inventory_html_soup = super().fetch_inventory_html_soup()
-        inventory_table_rows= self.extract_inventory_table_rows(inventory_html_soup, conditionals)
+        inventory_html_soup = super().fetch_inventory()
+        inventory_table_rows = self.extract_inventory_table_rows(inventory_html_soup)
+        # extract vehicle data matching table rows conditionals  
         self.filter_inventory_table_rows(inventory_table_rows, conditionals)
 
-    def extract_inventory_table_rows(self, inventory_soup, conditionals):
-        # Jup holds ther inventory in a table w/ id 'cars-table'
+    def extract_inventory_table_rows(self, inventory_soup):
+        # Grab Jups inventory table (table#cars-table)
         inventory_table = inventory_soup.find(id="cars-table")
         # If the table doesn't exists
         if not inventory_table or not inventory_table.find(['td']):
             # Let it be known
-            print(f"[!] Could not find results for {conditionals['original_query']}")
+            print(f"[!] Could not find results for {self.searched_query}")
             return ''
 
+        # If inventory_headers (column names) arent set
         if self.inventory_headers == ():
+            # Find all table headers w/i the inventory table 
             th_elems = inventory_table.find_all('th')
+            # Extract the text from every table header element into a tuple
             inventory_headers = tuple([th.get_text(strip=True).lower() for th in th_elems])
+            # Now set the inventory_headers to this tuple
             self.set_inventory_headers(inventory_headers)
 
+        # Grab the table row elements of the inventory table (ignore the first row)
         inventory_table_rows = inventory_table.find_all('tr')[1:]
         return inventory_table_rows
 
     def filter_inventory_table_rows(self, inventory_table_rows, conditionals):
+        # Loop through each table row 
         for i, inventory_table_row in enumerate(inventory_table_rows):
-            # List every <td> within this inventory_table_row
+            # Find every cell w/in this inventory_table_row
             td_elems = inventory_table_row.find_all('td')
-            # Extract a tuple containing the text of those <td> elements (not the <td></td> tags)
+            # Extract the text of each cell into a tuple
             inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
-            if(super().satisfies_conditionals(inventory_vehicle, conditionals)):
+            # If the vehicle tuple satisfies the conditionals 
+            if super().satisfies_conditionals(inventory_vehicle, conditionals):
                 self.add_result(inventory_vehicle)
 
 
