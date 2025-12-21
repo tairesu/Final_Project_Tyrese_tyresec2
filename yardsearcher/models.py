@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from geopy.geocoders import Nominatim
 
 
 # Create your models here.
@@ -11,13 +12,19 @@ class Junkyard(models.Model):
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=2, blank=False)
     zip_code = models.IntegerField(max_length=5, blank=False)
+    website = models.URLField(blank=True, max_length=255)
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("_detail", kwargs={"pk": self.pk})
+        return reverse('_detail', kwargs={'pk': self.pk})
+
+    def get_latlong(self)-> tuple:
+        geolocator = Nominatim(user_agent='scraphounds')
+        location = geolocator.geocode(f'{self.address} {self.city},{self.state} {self.zip_code}')
+        return (location.latitude, location.longitude) if location.latitude else ()
 
 
 class Vehicle(models.Model):
@@ -34,12 +41,13 @@ class Vehicle(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.year} {self.make} {self.model}"
+        return f'{self.year} {self.make} {self.model}'
+
 
 class UserAllowedYard(models.Model):
-    user = models.ForeignKey(User, related_name="allowed_yards", on_delete=models.CASCADE)
-    junkyard = models.ForeignKey(Junkyard, related_name="allowed_yards", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='allowed_yards', on_delete=models.CASCADE)
+    junkyard = models.ForeignKey(Junkyard, related_name='allowed_yards', on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.user} allowed {self.junkyard}"
+        return f'{self.user} allowed {self.junkyard}'
     
