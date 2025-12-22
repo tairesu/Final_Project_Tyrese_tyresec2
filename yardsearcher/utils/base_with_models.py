@@ -35,6 +35,7 @@ class YardSearch:
         self.session.headers.update(self.base_headers)
 
     def appendLocation(self):
+        print(f"{self}")
         YardSearch.lats.append(self.lat)
         YardSearch.longs.append(self.long)
         
@@ -61,13 +62,16 @@ class YardSearch:
         """
         Replaces em-dashes and hyphens (in query) with a default '-'
         """
+        query = query if len(query.strip()) > 0 else self.searched_query
         return query.replace('–', '-').replace('—', '-')
 
     def is_year_present(self, query="") -> bool:
+        query = query if len(query.strip()) > 0 else self.searched_query
         # Does the query contains patterns '2004 ' or '08 ' 
         return True if re.findall(r"^\d{2}\s|^\d{4}\s", query) else False
 
     def is_year_range_present(self, query="") -> bool:
+        query = query if len(query.strip()) > 0 else self.searched_query
         # Does the query contains patterns '2004-2012 ' or '02-11'
         return True if re.findall(r"^(\d{2}-\d{2}\s)|^(\d{4}-\d{4}\s)", query) else False
 
@@ -76,6 +80,7 @@ class YardSearch:
         Strips a given query str of it's year
         parse_car_year('2004 Honda Civic') => '2004'
         """
+        query = query if len(query.strip()) > 0 else self.searched_query
         assert self.is_year_present(query)
 
         # Find the characters of query matching patterns '02' or '2004'
@@ -91,6 +96,7 @@ class YardSearch:
 
         parse_car_year_range('2004-2008 Honda Civic') => ('2004','2008')
         """
+        query = query if len(query.strip()) > 0 else self.searched_query
         assert self.is_year_range_present(query)
         range_str = re.findall(r"^\d{2}-\d{2}|^\d{4}-\d{4}", query.strip())[0]
         min_year = range_str.split('-')[0]
@@ -103,6 +109,7 @@ class YardSearch:
 
     def extract_conditionals(self, query="") -> dict:
         conditionals = {}
+        query = query if len(query.strip()) > 0 else self.searched_query
         semantics = query.strip().split(' ')
 
         if self.is_year_present(query):
