@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vehicle',
             name='available_date',
-            field=models.DateField(default='8/25/2025'),
+            field=models.DateField(default='2025-10-10'),
             preserve_default=False,
         ),
     ]

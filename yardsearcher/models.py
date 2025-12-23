@@ -41,6 +41,9 @@ class Vehicle(models.Model):
     available_date = models.DateField()
     created_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['junkyard', 'junkyard_indentifier'], name='unique_vehicle')]
+        
     def __str__(self):
         return f'{self.year} {self.make} {self.model}'
 
