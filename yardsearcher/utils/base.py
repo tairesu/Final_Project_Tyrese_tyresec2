@@ -173,3 +173,12 @@ class YardSearch:
             "lat": self.lat,
             "long": self.long,
         }
+
+    def results_as_list(self):
+        results_list = []
+        for result in self.results:
+            results_dict = {}
+            for header_index,header in enumerate(self.inventory_headers):
+                results_dict[header] = result[header_index]
+            results_list.append(results_dict)
+        return results_list
