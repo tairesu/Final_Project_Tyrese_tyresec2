@@ -26,10 +26,17 @@ class Command(BaseCommand):
 			self.stdout.write(f"Processing {yard_class.name}")
 			self.current_yard = yard
 			self.process_inventory(yard_class.results_as_list(), ALLOWED_YARDS[yard]['id'])
+  			self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {yard} inventory!"))
 
 	def process_inventory(self, results_list, yard_id):
+		""" 
+			Format results from results_list to populate the database 
+		"""
 		assert len(results_list) > 0
 		models_list = []
+		# Will capture identifiers from scraped results 
+		scraped_identifiers = []
+
 		for car_dict in results_list:
 			year = car_dict['year']
 			make = car_dict['make']
@@ -40,9 +47,13 @@ class Command(BaseCommand):
 			junkyard_indentifier = car_dict['stock#'] if 'stock#' in car_dict.keys() or 'stock #' in car_dict.keys() else ""
 			vin = car_dict['vin'] if 'vin' in car_dict.keys() else ""
 			available_date = self.extract_date(car_dict)
+			scraped_identifiers.append(junkyard_indentifier)
 			models_list.append(Vehicle(junkyard_id=yard_id, year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_indentifier=junkyard_indentifier, vin=vin))
 
 		Vehicle.objects.bulk_create(models_list, update_conflicts=True, unique_fields=['junkyard_indentifier','junkyard'], update_fields=['year','make','model'])
+		different_identifiers = Vehicle.objects.exclude(junkyard_indentifier__in=scraped_identifiers)
+		print(f"{scraped_identifiers}")
+		print(f"{different_identifiers}")
 
 	def extract_date(self, car_dict):
 		date = ''
@@ -52,7 +63,3 @@ class Command(BaseCommand):
 		elif 'available' in car_dict.keys():
 			date = car_dict['available'] 
 		return datetime.strptime(date, yard_date_format)
-
-				
-       # self.stdout.write(self.style.SUCCESS("Successfully refreshed data!"))
-
