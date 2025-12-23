@@ -38,6 +38,7 @@ class Vehicle(models.Model):
     row = models.IntegerField(blank=False)
     space = models.IntegerField(blank=True)
     vin = models.CharField(max_length=17, blank=True)
+    available_date = models.DateField()
     created_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
