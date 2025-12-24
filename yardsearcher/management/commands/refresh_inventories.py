@@ -19,6 +19,12 @@ ALLOWED_YARDS2 = [
 		'id': 1,
 		'date_format': '%m.%d.%y',
 	},
+	{
+		'name': 'LKQ Blue Island',
+		'class': LKQSearch,
+		'id': 2,
+		'date_format': '%m/%d/%Y',
+	},
 ]
 
 class Command(BaseCommand):
