@@ -11,7 +11,7 @@ class Junkyard(models.Model):
     address = models.CharField(max_length=100, blank=False)
     city = models.CharField(max_length=50, blank=False)
     state = models.CharField(max_length=2, blank=False)
-    zip_code = models.IntegerField(max_length=5, blank=False)
+    zip_code = models.IntegerField(blank=False)
     website = models.URLField(blank=True, max_length=255)
     created_at = models.DateTimeField(auto_now=True)
 
@@ -30,7 +30,7 @@ class Junkyard(models.Model):
 class Vehicle(models.Model):
     vehicle_id = models.AutoField(primary_key=True)
     junkyard = models.ForeignKey(Junkyard, related_name='vehicles', on_delete=models.CASCADE)
-    junkyard_indentifier = models.CharField(max_length=30, blank=False)
+    junkyard_identifier = models.CharField(max_length=30, blank=False)
     year = models.IntegerField(blank=False)
     make = models.CharField(max_length=40, blank=False)
     model = models.CharField(max_length=40, blank=False)
@@ -42,7 +42,7 @@ class Vehicle(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        constraints = [models.UniqueConstraint(fields=['junkyard', 'junkyard_indentifier'], name='unique_vehicle')]
+        constraints = [models.UniqueConstraint(fields=['junkyard', 'junkyard_identifier'], name='unique_vehicle')]
         
     def __str__(self):
         return f'{self.year} {self.make} {self.model}'
