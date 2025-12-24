@@ -27,10 +27,54 @@ I'm taking on the task `2)Altering the base scraper class`. My plan of attack is
 
 Let's test some things
 
-1. Make `management/commands/refresh_inventories.py`
-2. Import models & scrapers
-3. Run each scraper w/ empty query
+1. ~~Make `management/commands/refresh_inventories.py`~~
+2. ~~Import models & scrapers~~
+3. ~~Run each scraper w/ empty query~~
 4. Clear models if results
-5. Loop through results and insert into Vehicles 
+5. ~~Loop through results and insert into Vehicles~~
+
+## Tue Dec 23
+
+Steps 1 & 2 are complete. Step 4 would have been clearing the models but I will be "upserting" the data.
+If a vehicle exists in the db with the same identifier & junkyard_id combo, don't create a new record. 
+
+To do so, I had to set constraints on the models.
+
+After that, I saw an opportunity to detect changes in the vehicles from the junkyards. Junkyards scrap vehicles and remove them from their public databases (`results` in `management/commands/refresh_inventories`) 
+
+
+Here's my attempt: 
+
+```
+Vehicle.objects.exclude(~Q(junkyard_id=junkyard_id) & Q(junkyard_identifier__in=scraped_identifiers))
+```
+
+This attempt did not work because I did not consider its truth table.
+
+To determine which vehicles are removed I'll use the two premises: 
+- P = Vehicle belongs to junkyard that's being scraped
+- Q = Vehicle exists in scraped results
+
+My Original Query
+
+P | Q | ~P| (~P & Q) | ~(~P & Q)
+T | T | F | F | T
+T | F | F | F | T
+F | T | T | T | F
+F | F | T | F | T
+
+There were alot more truth outcomes than expected. I expect P= T and Q = F to be the only case where a delete is necesary
+
+P | Q | ? | P & ~Q
+T | T | do not delete | F
+T | F | delete | T
+F | T | do not delete | F
+F | F | do not delete | F
+
+There you have it folks, a new query: 
+
+```
+different_identifiers = Vehicle.objects.filter(Q(junkyard_id=junkyard_id) & ~Q(junkyard_identifier__in=scraped_identifiers) )
+```
 
 
