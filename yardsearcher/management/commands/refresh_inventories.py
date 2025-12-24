@@ -80,9 +80,11 @@ class Command(BaseCommand):
 
 	def extract_row(self, result):
 		row = 0
-		if 'vechicle_row' in result.keys():
-			row = result['vechicle_row']
-		return row
+		if 'row' in result.keys():
+			row = result['row']
+		elif 'vehicle row' in result.keys():
+			row = result['vehicle row']
+		return int(row)
 
 	def extract_junkyard_identifier(self, result):
 		junkyard_identifier = ""
