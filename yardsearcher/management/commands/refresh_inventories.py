@@ -3,6 +3,7 @@ from yardsearcher.models import Junkyard, Vehicle
 from yardsearcher.utils.jup import Jup
 from yardsearcher.utils.lkq import LKQSearch
 from datetime import datetime
+from django.db.models import Q
 
 ALLOWED_YARDS = {
 
@@ -57,7 +58,7 @@ class Command(BaseCommand):
 			scraped_identifiers.append(vehicle_instance.junkyard_identifier)
 			models_list.append(vehicle_instance)
 		self.upsert_models_list(models_list)
-		self.handle_removed_results(scraped_identifiers)
+		self.handle_removed_results(scraped_identifiers, junkyard_meta['id'])
 
 	def format_result(self, result, junkyard_meta):
 		"""
@@ -122,8 +123,12 @@ class Command(BaseCommand):
 		Vehicle.objects.bulk_create(models_list, update_conflicts=True, unique_fields=['junkyard_identifier','junkyard'], update_fields=['year','make','model'])
 		self.stdout.write(self.style.SUCCESS(f"\t- Upserted {len(models_list)} Vehicles"))
 
-	def handle_removed_results(self, scraped_identifiers):
-		different_identifiers = Vehicle.objects.exclude(junkyard_identifier__in=scraped_identifiers)
+	def handle_removed_results(self, scraped_identifiers, junkyard_id):
+		"""
+			Removes vehicles from <Vehicle> model that have the same junkyard_id and are NOT in freshly scraped results 
+		"""
+		different_identifiers = Vehicle.objects.filter(Q(junkyard_id=junkyard_id) & ~Q(junkyard_identifier__in=scraped_identifiers) )
+		print(f"\t Different identifiers: {different_identifiers}")
 		different_identifiers.delete()
 		if len(different_identifiers) > 0:
 			self.stdout.write(f"\t- Deleting {len(different_identifiers)} vehicles: \n {different_identifiers}")
