@@ -25,6 +25,10 @@ ALLOWED_YARDS2 = [
 		'class': LKQSearch,
 		'id': 2,
 		'date_format': '%m/%d/%Y',
+		'params': {
+
+			'store_id':1582
+		},
 	},
 ]
 
@@ -39,7 +43,7 @@ class Command(BaseCommand):
 		"""
 		for junkyard in ALLOWED_YARDS2:
 			self.stdout.write(f"Refreshing {junkyard['name']}")
-			scraper = junkyard['class']("")
+			scraper = junkyard['class']("") if 'params' not in junkyard.keys() else junkyard['class']("", params)
 			scraper.handle_queries()
 			self.cache_scraper_results(scraper.results_as_list(), junkyard)
 			self.stdout.write(self.style.SUCCESS(f"\nSuccessfully refreshed {junkyard['name']}'s inventory!\n"))
