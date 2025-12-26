@@ -3,6 +3,29 @@ from django.http.response import HttpResponse, JsonResponse
 from yardsearcher.utils.jup import *
 from yardsearcher.utils.lkq import *
 from django.views.generic import View
+from yardsearcher.utils.queries import *
+from django.db.models import Q
+from django.db.models.functions import Lower
+from yardsearcher.models import (
+	Vehicle,
+	Junkyard
+)
+
+def get_query_results(queries):
+	results = []
+	for query in queries:
+		params = {
+			'model__icontains': query['model'],
+			'make__icontains': query['make'],
+		}
+		# If a range of years are present
+		if 'minYear' and 'maxYear' in query:
+			params['year__gte'] = query['minYear']
+			params['year__lte'] = query['maxYear']
+		else: 
+			params['year'] = query['year']
+
+	return Vehicle.objects.filter(**params)
 
 def results_view(request):
 	"""
@@ -10,26 +33,11 @@ def results_view(request):
 	"""
 	context = {}
 	if request.method == "GET":
-		query = request.GET.get('q') or " "
-		fetched_yard_data = []
+		#query = request.GET.get('q')
+		query = "2005-2009 honda civic"
+		queries = get_query_conditionals(query)
+		results = get_query_results(queries)
+		print(results)
 
-		# Grab data from various inventories based on query 
-		jup_search = Jup(query)
-		jup_search.handle_queries()
-		fetched_yard_data.append(jup_search.data_as_dict())
-		lkq_blue_search = LKQSearch(query)
-		lkq_blue_search.handle_queries()
-		fetched_yard_data.append(lkq_blue_search.data_as_dict())
-
-		print(f"view longs: {YardSearch.longs}")
-		print(f"view lats: {YardSearch.lats}")
-		n = len(YardSearch.longs)
-		avg_lat = sum(YardSearch.lats) / n
-		avg_long = sum(YardSearch.longs) / n
-		context['fetched_yard_data'] = fetched_yard_data
-		context['query'] = query
-		context['avg_lat'] = avg_lat
-		context['avg_long'] = avg_long
-
-	return render(request, 'yardsearcher/results.html', context)
+	#return render(request, 'yardsearcher/results.html', context)
 
