@@ -13,7 +13,13 @@ class Junkyard(models.Model):
     state = models.CharField(max_length=2, blank=False)
     zip_code = models.IntegerField(blank=False)
     website = models.URLField(blank=True, max_length=255)
+    lat = models.FloatField(default=0.00, editable=False)
+    long = models.FloatField(default=0.00, editable=False)
     created_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.lat, self.long = self.get_latlong()
+        super().save(**kwargs)
 
     def __str__(self):
         return self.name
@@ -22,9 +28,12 @@ class Junkyard(models.Model):
         return reverse('_detail', kwargs={'pk': self.pk})
 
     def get_latlong(self)-> tuple:
-        geolocator = Nominatim(user_agent='scraphounds')
-        location = geolocator.geocode(f'{self.address} {self.city},{self.state} {self.zip_code}')
-        return (location.latitude, location.longitude) if location.latitude else ()
+        geolocator = Nominatim(user_agent='scraphounds-reesesites@gmail.com')
+        locator_str = f'{self.address} {self.city}, {self.state} {self.zip_code}'
+        location = geolocator.geocode(locator_str)
+        print('get_latlong location: ', location)
+        print('for string: ', locator_str)
+        return (location.latitude, location.longitude)
 
 
 class Vehicle(models.Model):
