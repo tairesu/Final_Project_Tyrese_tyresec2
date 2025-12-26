@@ -17,9 +17,18 @@ def get_avg(li):
 
 def get_query_results(queries):
 	"""
-	Construct Q objects and returns vehicles matching search on Q objects
+	Returns vehicles matching searched queries
 	"""
-	combined_query = Q()
+	constructed_query = construct_db_query(queries)
+	print(constructed_query)
+	return Vehicle.objects.filter(constructed_query) 
+
+
+def construct_db_query(queries):
+	""" 
+	Constructs a single Q object from list of query strings
+	"""
+	constructed_query = Q()
 	for query in queries:
 		condition = Q(make__icontains=query['make'], model__icontains=query['model'])
 		# If a range of years are present
@@ -27,12 +36,12 @@ def get_query_results(queries):
 			condition &= Q(year__gte=query['minYear'], year__lte=query['maxYear'] )
 		elif 'year' in query: 
 			condition &= Q(year=query['year'])
-		elif 'year' or 'minYear' or 'maxYear' not in query:
-			pass
-		combined_query |= condition
-	print(f" condition: {combined_query}")
-	return Vehicle.objects.filter(combined_query) 
-	
+		elif 'make' in query and not ('model' or 'year' or 'minYear' or 'maxYear' in query):
+			condition = Q(make__icontains=query['make']) | Q(model__icontains=query['make'])
+		constructed_query |= condition
+
+	return constructed_query
+
 def format_results(results, t0):
 	lats = []
 	longs = []
@@ -72,5 +81,6 @@ def results_view(request):
 			'avg_lat': avg_lat,
 			'avg_long': avg_long
 		}
+		print(context)
 		return render(request, 'yardsearcher/results.html', context)
 
