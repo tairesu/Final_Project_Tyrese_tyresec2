@@ -22,12 +22,13 @@ def get_query_results(queries):
 	return Vehicle.objects.filter(**params)
 
 if __name__ == '__main__':
-	#extract_conditionals(test_query)
+	extract_conditionals("honda")
 	#print(get_query_conditionals(test_query))
-test_query = '2005-2009 honda civic'
-queries = get_query_conditionals(test_query)
-results = get_query_results(queries)
-unique_yards = results.values('junkyard').annotate(num_results=Count('junkyard_id'))
+# test_query = '2005-2009 honda civic'
+# queries = get_query_conditionals(test_query)
+# results = get_query_results(queries)
+# unique_yards = results.values('junkyard').annotate(num_results=Count('junkyard_id'))
+
 """
 #WTF DO I WANT? RESULTS FROM EACH JUNKYARD LIKE SO  
 fetched_yard_data = [{
