@@ -6,82 +6,85 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     {% endblock %}
     {% block main_content %}
-    <div class="d-flex bg-primary flex-column p-0 vh-100 overflow-y-auto align-items-center col-12 col-md-10 col-lg-10 gap-4 ">
-        <!-- This'll be the map w/ searchbar, btns and controls for this page -->
-        <div id="map" class="map rounded-3 bg-secondary position-relative mt-md-4 d-flex p-4 col-12 col-md-10 col-lg-9 " id="resultsMap">
-            <!-- This is the input and btns div -->
-            <div class="d-flex flex-column gap-3 col" id="mapInput">
-                <form action="" method="get" class="p-0">
-                    <div class="input-group input-group-lg">
-                        <input type="text" name="q" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" value="{{query}}">
-                        <button type="submit" class="input-group-text" id="inputGroup-sizing-lg"><i class="bi bi-search"></i></button>
-                    </div>
-                </form>
-                <div class="d-flex flex-row gap-2">
-                    <button class="btn btn-sm bg-white py-1" data-bs-toggle="modal" data-bs-target="#popupModal" aria-controls="popupModal">Manage Junkyards</button>
+        <div class="d-flex bg-primary flex-column flex-md-row px-md-4 vw-100 vh-100 overflow-y-none col-12 ">
+            <!-- This'll be the map w/ searchbar, btns and controls for this page -->
+            <div id="map" class="map rounded-3 bg-secondary position-relative mt-md-4 d-flex p-2 p-md-4 col-12 col-md-5" id="resultsMap">
+                <!-- This is the input and btns div -->
+                <div class="d-flex flex-column gap-3 col" id="mapInput">
+                    <form action="" method="get" class="p-0">
+                        <div class="input-group input-group-lg">
+                            <input type="text" name="q" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" value="{{query}}">
+                            <button type="submit" class="input-group-text" id="inputGroup-sizing-lg"><i class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                    <!--
+                    Manage Junkyard btn not needed in MVP
+                    <div class="d-flex flex-row gap-2">
+                        <button class="btn btn-sm bg-white py-1" data-bs-toggle="modal" data-bs-target="#popupModal" aria-controls="popupModal">Manage Junkyards</button>
+                    </div> 
+                    -->
                 </div>
             </div>
-        </div>
-        <div class=" d-flex flex-column col-12 col-md-10 col-lg-9 gap-4 px-4 px-md-0">
-            {% for yard in fetched_yard_data %}
-            <div class="yardResult bg-white shadow-sm rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
-                <div class="accordion-item border-0">
-                    <!-- Header / Yard Meta -->
-                    <div class="yardMeta d-flex flex-row gap-2 align-items-center">
-                        <img src="" alt="" style="width:5rem; height:5rem" class="logo">
-                        <div class="d-flex flex-column gap-2">
-                            <h3 class="mb-0">{{yard.name|capfirst}}</h3>
-                            <p class="mb-0">{{yard.num_results}} result(s) in {{yard.time_elapsed}} seconds</p>
+            <div class="vh-100 overflow-y-auto  d-flex flex-column col-12 col-md-7 gap-4 py-4 px-4 px-md-0">
+                {% for yard in fetched_yard_data %}
+                <div class="yardResult bg-white shadow-sm rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
+                    <div class="accordion-item border-0">
+                        <!-- Header / Yard Meta -->
+                        <div class="yardMeta d-flex flex-row gap-2 align-items-center">
+                            <img src="" alt="" style="width:5rem; height:5rem" class="logo">
+                            <div class="d-flex flex-column gap-2">
+                                <h3 class="mb-0">{{yard.name|capfirst}}</h3>
+                                <p class="mb-0">{{yard.num_results}} result(s) in {{yard.time_elapsed}} seconds</p>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Collapse Button -->
-                    <div class="text-end">
-                        <button class="btn btn-link p-0 color-secondary" data-bs-toggle="collapse" data-bs-target="#{{yard.elem_id}}" aria-expanded="true" aria-controls="{{yard.elem_id}}">
-                            Collapse
-                        </button>
-                    </div>
-                    <!-- Collapsible Section -->
-                    <div id="{{yard.elem_id}}" class="accordion-collapse collapse show" data-bs-parent="#{{yard.elem_id}}-accordion">
-                        <div class="accordion-body p-0">
-                            <div class="table-responsive">
-                                <table class="table text-nowrap mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Year</th>
-                                            <th>Make</th>
-                                            <th>Model</th>
-                                            <th>Color</th>
-                                            <th>Row</th>
-                                            <th>Space</th>
-                                            <th>VIN</th>
-                                            <th>Available Date</th>
-                                            <th>ID</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for vehicle in yard.results %}
-                                        <tr>
-                                            <td>{{ vehicle.year }}</td>
-                                            <td>{{ vehicle.make|capfirst }}</td>
-                                            <td>{{ vehicle.model|capfirst }}</td>
-                                            <td>{{ vehicle.color|capfirst }}</td>
-                                            <td>{{ vehicle.row }}</td>
-                                            <td>{{ vehicle.space }}</td>
-                                            <td>{{ vehicle.vin }}</td>
-                                            <td>{{ vehicle.available_date|date:"Y-m-d" }}</td>
-                                            <td>{{ vehicle.junkyard_identifier }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                        <!-- Collapse Button -->
+                        <div class="text-end">
+                            <button class="btn btn-link p-0 color-secondary" data-bs-toggle="collapse" data-bs-target="#{{yard.elem_id}}" aria-expanded="true" aria-controls="{{yard.elem_id}}">
+                                Collapse
+                            </button>
+                        </div>
+                        <!-- Collapsible Section -->
+                        <div id="{{yard.elem_id}}" class="accordion-collapse collapse show" data-bs-parent="#{{yard.elem_id}}-accordion">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Make</th>
+                                                <th>Model</th>
+                                                <th>Color</th>
+                                                <th>Row</th>
+                                                <th>Space</th>
+                                                <th>VIN</th>
+                                                <th>Available Date</th>
+                                                <th>ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for vehicle in yard.results %}
+                                            <tr>
+                                                <td>{{ vehicle.year }}</td>
+                                                <td>{{ vehicle.make|capfirst }}</td>
+                                                <td>{{ vehicle.model|capfirst }}</td>
+                                                <td>{{ vehicle.color|capfirst }}</td>
+                                                <td>{{ vehicle.row }}</td>
+                                                <td>{{ vehicle.space }}</td>
+                                                <td>{{ vehicle.vin }}</td>
+                                                <td>{{ vehicle.available_date|date:"Y-m-d" }}</td>
+                                                <td>{{ vehicle.junkyard_identifier }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endfor%}
             </div>
-            {% endfor%}
         </div>
-    </div>
     {% endblock %}
     {% block popup-heading-text %} Manage Junkyards {% endblock %}
     {% block popup-button-text %} Save Changes {% endblock %}
