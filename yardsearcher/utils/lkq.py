@@ -13,7 +13,7 @@ class LKQSearch(YardSearch):
         params (dict):  URL parameters for requesting site data  
     """
     
-    def __init__(self, query):
+    def __init__(self, query, params={}):
         """
         Initializes search instance
         
@@ -26,7 +26,7 @@ class LKQSearch(YardSearch):
         self.base_headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Accept": "*/*",
-            "Referer": "https://www.pyp.com/inventory/blue-island-1582/",
+            "Referer": f"https://www.pyp.com/inventory/{params['referer_suffix']}/",
             "X-Requested-With": "XMLHttpRequest",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "en-US,en;q=0.9"
@@ -37,27 +37,28 @@ class LKQSearch(YardSearch):
         self.lat = 41.6325570
         self.long = -87.6731408
         self.elem_id = "lkq"
+        self.params = params
         super().appendLocation()
 
-    def fetch_inventory(self, store_id=1582, conditionals={}):
+    def fetch_inventory(self, conditionals={}):
         page_number = 1
         #While valid page exists 
-        while(self.is_page_valid(page_number, store_id, conditionals)):
+        while(self.is_page_valid(page_number, conditionals)):
             page_number += 1
         return self.results
 
 
-    def is_page_valid(self, page_number,store_id, conditionals={}) -> bool:
+    def is_page_valid(self, page_number, conditionals={}) -> bool:
         # Grabs all divs HTML 
-        vehicle_cards = self.fetch_inventory_html(page_number, store_id, conditionals)
+        vehicle_cards = self.fetch_inventory_html(page_number, conditionals)
         return len(vehicle_cards) > 0
 
 
-    def fetch_inventory_html(self, page_number,store_id, conditionals={}) -> list:
+    def fetch_inventory_html(self, page_number, conditionals={}) -> list:
         self.base_params = {
             "page": page_number,
             "filter": conditionals['original_query'],
-            "store": store_id
+            "store": str(self.params['store_id'])
         }
         soup = super().fetch_inventory(conditionals)
         vehicle_cards = soup.find_all(class_="pypvi_resultRow")

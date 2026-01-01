@@ -15,19 +15,13 @@ ALLOWED_YARDS = {
 }
 ALLOWED_YARDS2 = [
 	{
-		'name': 'Joliet U-Pull-It',
-		'class': Jup,
-		'id': 1,
-		'date_format': '%m.%d.%y',
-	},
-	{
 		'name': 'LKQ Blue Island',
 		'class': LKQSearch,
 		'id': 2,
 		'date_format': '%m/%d/%Y',
 		'params': {
-
-			'store_id':1582
+			'store_id':1582,
+			'referer_suffix': 'blue-island-1582'
 		},
 	},
 ]
@@ -43,7 +37,8 @@ class Command(BaseCommand):
 		"""
 		for junkyard in ALLOWED_YARDS2:
 			self.stdout.write(f"Refreshing {junkyard['name']}")
-			scraper = junkyard['class']("") if 'params' not in junkyard.keys() else junkyard['class']("", params)
+			print('special params:', junkyard['class']("", params=junkyard['params']))
+			scraper = junkyard['class']("") if 'params' not in junkyard.keys() else junkyard['class']("", params=junkyard['params'])
 			scraper.handle_queries()
 			self.cache_scraper_results(scraper.results_as_list(), junkyard)
 			self.stdout.write(self.style.SUCCESS(f"\nSuccessfully refreshed {junkyard['name']}'s inventory!\n"))

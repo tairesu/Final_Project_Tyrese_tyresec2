@@ -77,4 +77,47 @@ There you have it folks, a new query:
 different_identifiers = Vehicle.objects.filter(Q(junkyard_id=junkyard_id) & ~Q(junkyard_identifier__in=scraped_identifiers) )
 ```
 
+## Thur Dec 25
 
+I succesfully reduced the amount of requests to junkyard websites by creating a Django command (to be run by a scheduler) that caches inventory data into the internal database ( My God was it a challenge )
+
+Of course I saw it through! Now this application can find 1000s of vehicles in less than 0.1 seconds
+
+## Fri Dec 26 
+
+After watching YT Combinator videos w/ my Bro, he volunteered to do a test run of the website as a client / customer. Here are the notes I've gathered: 
+
+- UI unclear (not knowing what to type in main search)
+- "Fetch Junkyard Inventories Fast" as a hero header is ambigous  
+- donor car concept not clear
+- The 'company' name is too... niche. Try Junkyard Car Lookup
+
+**Avatar(s): Mechanical Newbie vs Mechanically Inclined**
+
+First Set of Feedback: 
+
+- 'Assumes map shows results of places matching search query (bc of markers)'
+- 'FALSE HOPE WHEN 0 RESULTS. All these fancy feats and sh*t w/ 0 results'
+- 'Generations would be cool or automatically giving similar cars automatically?'
+- 'Cool, "this 0.0129 secs" is useless to the client'
+
+
+
+!!!!!!!2012 toyota corolla test case didn't work !!!!!!!!!!
+
+- 'why show row and space?' 
+(*after searching 'honda civic'*)
+- Lots of civics i understand but ..... 
+
+	- 'Why spaces in 0' 
+	- 'AvailableDate?? 
+	- 2025-11-10 ?????????? '
+
+- 'Whats the address of the junkyards?' 
+
+- 'Cool if I could see the address or get direction in my maps'
+
+These notes were the reason I:
+- removed the useless sidebar & filter junkyards buttons(for MVP)
+- altered the hero text to set the tone. 
+- created a dynamic placeholder for main input box to show examples of valid queries 
