@@ -8,9 +8,14 @@ def get_query_conditionals(query)-> list:
     return [ extract_conditionals(vehicle_query) for vehicle_query in query.lower().split(",")]
 
 def extract_conditionals(query="") -> dict:
+    """
+    honda -> make:honda
+    honda civic -> make:honda,model:civic
+    02 honda -> year:2002, make:honda
+    
+    """
     query = query.strip()
-    conditionals = {}
-    conditionals['original_query'] = query
+    conditionals = {'original_query': query}
     semantics = query.split(" ") # Seperates via whitespaces
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
