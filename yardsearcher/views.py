@@ -87,3 +87,4 @@ def results_view(request):
 		print(context)
 		return render(request, 'yardsearcher/emergent-res-fusion.html', context)
 
+
