@@ -1,12 +1,4 @@
+
 td, th {
     text-wrap: nowrap;
-}
-.map {
-    height:60%!important;
-    & #mapInput {
-        z-index: 1030;
-    }
-}
-table {
-    transition: height 2s ease;
 }
