@@ -11,13 +11,14 @@
             <p class="text-sm lg:text-lg text-muted-foreground">Multi-yard inventory search</p>
         </div>
         <div class="w-full md:w-3/4 relative flex-1">
-            <form method="get">
+            <form action="{% url 'results_urlpattern'%}" method="get">
                 <input
                     type="text"
                     id="search-input"
                     name="q"
                     placeholder="Search by make, model, or year..."
                     class="w-full pl-4 pr-12 h-14 text-md md:text-lg bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none transition-colors text-foreground"
+                    required
                 />
                 <button
                     type="submit"
