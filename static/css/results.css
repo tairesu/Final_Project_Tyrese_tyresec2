@@ -7,3 +7,6 @@ td, th {
         z-index: 1030;
     }
 }
+table {
+    transition: height 2s ease;
+}
