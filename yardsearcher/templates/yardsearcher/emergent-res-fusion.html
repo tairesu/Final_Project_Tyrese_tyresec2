@@ -31,14 +31,14 @@
                             <p class="text-sm text-muted-foreground">Multi-yard inventory search</p>
                         </div>
                     </div>
-                    <div class="hidden md:visible flex items-center gap-4">
+                    <div class=" hidden md:flex items-center gap-4">
                         <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
-                            <span class="hidden md:visible mr-1">📍</span>
-                            <span id="yard-count">0</span> Yards
+                            <span class=" mr-1">📍</span>
+                            <span id="yard-count">{{ total_yards }}</span> Yards
                         </div>
                         <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
-                            <span class="hidden md:visible mr-1">🚗</span>
-                            <span id="vehicle-count">0</span> Vehicles
+                            <span class=" mr-1">🚗</span>
+                            <span id="vehicle-count">{{ total_vehicles }}</span> Vehicles
                         </div>
                     </div>
                 </div>
