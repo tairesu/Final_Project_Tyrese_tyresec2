@@ -250,121 +250,106 @@
 
                 <!-- Inventory Tables Section -->
                 <div id="inventory-container" class="space-y-6">
-                    <div id="inventory-1" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
-                        <!-- Header -->
-                        <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable(1)">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-14 h-14 rounded-lg bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-3xl">
-                                        🔧
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg lg:2xl font-bold text-foreground mb-1">
-                                            Mike's Auto Salvage
-                                        </h3>
-                                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                                            <span class="hidden md:visible">📍</span>
-                                            1234 Industrial Blvd, Detroit, MI
+                    {% for yard in fetched_yard_data %}
+                        <div id="inventory-{{ forloop.counter }}" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
+                            <!-- Header -->
+                            <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable(1)">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-14 h-14 rounded-lg bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-3xl">
+                                            🔧
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg lg:2xl font-bold text-foreground mb-1">
+                                                {{ yard.name|capfirst }}
+                                            </h3>
+                                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <span class="hidden md:visible">📍</span>
+                                                {{ yard.meta.address|capfirst }}, {{ yard.meta.city|capfirst }}, {{ yard.meta.state }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="hidden md:visible px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-base font-medium">
-                                        <span class="hidden mr-2">🚗</span>
-                                        5 Vehicles
+                                    <div class="flex items-center gap-3">
+                                        <div class="hidden md:visible px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-base font-medium">
+                                            <span class="hidden mr-2">🚗</span>
+                                            {% if yard.num_results == 1 %}
+                                                1 Vechicle
+                                            {% else %}
+                                                {{ yard.num_results }} Vechicles
+                                            {% endif %}
+                                        </div>
+                                        <svg id="chevron-1" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
                                     </div>
-                                    <svg id="chevron-1" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Table -->
+                            <div id="table-1" class="fade-in">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-muted/50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <span class="hidden md:visible text-primary mr-2">📅</span>Year
+                                                </th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <span class="hidden md:visible text-primary mr-2">🚗</span>Make
+                                                </th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">Model</th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">Row</th>
+                                                {% if yard.results.first.space %}
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground">Space</th>
+                                                {% endif %}
+                                                {% if yard.results.first.vin %}
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                        <span class="hidden md:visible text-primary mr-2">#</span>VIN
+                                                    </th>
+                                                {% endif %}
+                                                {% if yard.results.first.color %}
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                        Color
+                                                    </th>
+                                                {% endif %}
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">Entry Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for vehicle in yard.results %}
+                                                <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                    <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.year }}</td>
+                                                    <td class="px-6 py-3 font-medium">
+                                                        <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                            {{ vehicle.make|capfirst }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|capfirst }}</td>
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.row }}</td>
+                                                    {% if vehicle.space %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.space }}</td>
+                                                    {% endif %}
+                                                    {% if vehicle.vin %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.vin }}</td>
+                                                    {% endif %}
+                                                    {% if vehicle.color %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.color }}</td>
+                                                    {% endif %}
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.available_date }}</td>
+                                                    
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="bg-muted/30 px-6 py-4 border-t border-border">
+                                    <p class="text-sm text-muted-foreground">
+                                        Showing <span class="font-semibold text-foreground">{{ yard.num_results }}</span> vehicles from {{ yard.name|capfirst }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Table -->
-                        <div id="table-1" class="fade-in">
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-muted/50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                <span class="hidden md:visible text-primary mr-2">📅</span>Year
-                                            </th>
-                                            <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                <span class="hidden md:visible text-primary mr-2">🚗</span>Make
-                                            </th>
-                                            <th class="px-6 py-3 text-left font-bold text-foreground">Model</th>
-                                            <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                <span class="hidden md:visible text-primary mr-2">#</span>VIN
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        
-                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                <td class="px-6 py-3 font-semibold text-foreground">2015</td>
-                                                <td class="px-6 py-3 font-medium">
-                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
-                                                        Ford
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-3 text-foreground">F-150</td>
-                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">1FTFW1ET5FKE12345</td>
-                                            </tr>
-                                        
-                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                <td class="px-6 py-3 font-semibold text-foreground">2018</td>
-                                                <td class="px-6 py-3 font-medium">
-                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
-                                                        Chevrolet
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-3 text-foreground">Silverado</td>
-                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">3GCUKREC5JG123456</td>
-                                            </tr>
-                                        
-                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                <td class="px-6 py-3 font-semibold text-foreground">2016</td>
-                                                <td class="px-6 py-3 font-medium">
-                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
-                                                        Toyota
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-3 text-foreground">Camry</td>
-                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">4T1BF1FK5GU123457</td>
-                                            </tr>
-                                        
-                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                <td class="px-6 py-3 font-semibold text-foreground">2019</td>
-                                                <td class="px-6 py-3 font-medium">
-                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
-                                                        Honda
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-3 text-foreground">Civic</td>
-                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">2HGFC2F59KH123458</td>
-                                            </tr>
-                                        
-                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                <td class="px-6 py-3 font-semibold text-foreground">2017</td>
-                                                <td class="px-6 py-3 font-medium">
-                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
-                                                        Dodge
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-3 text-foreground">Ram 1500</td>
-                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">1C6RR7FT0HS123459</td>
-                                            </tr>
-                                        
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="bg-muted/30 px-6 py-4 border-t border-border">
-                                <p class="text-sm text-muted-foreground">
-                                    Showing <span class="font-semibold text-foreground">5</span> vehicles from Mike's Auto Salvage
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
