@@ -56,7 +56,8 @@ def format_results(results, t0):
 			'elem_id': junkyard.name.replace(" ",""),
 			'lat': junkyard.lat,
 			'long': junkyard.long,
-			'time_elapsed': time.time() - t0
+			'time_elapsed': time.time() - t0,
+			'meta': junkyard
 				
 		}
 		formatted_result['num_results'] = len(formatted_result['results'])
