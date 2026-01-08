@@ -82,5 +82,5 @@ def results_view(request):
 			'avg_long': avg_long
 		}
 		print(context)
-		return render(request, 'yardsearcher/results.html', context)
+		return render(request, 'yardsearcher/emergent-res-fusion.html', context)
 
