@@ -1,0 +1,411 @@
+    {% extends 'yardsearcher/base.html' %}
+    {% load static %}
+    {% block extra_links %}
+    <link rel="stylesheet" href="{% static 'css/results.css' %}?v={{tz}}" />
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}?v={{tz}}" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(218, 15%, 12%)',
+                        foreground: 'hsl(0, 0%, 95%)',
+                        primary: 'hsl(22, 75%, 50%)',
+                        'primary-foreground': 'hsl(0, 0%, 100%)',
+                        secondary: 'hsl(0, 0%, 22%)',
+                        'secondary-foreground': 'hsl(0, 0%, 95%)',
+                        accent: 'hsl(35, 80%, 55%)',
+                        muted: 'hsl(218, 12%, 18%)',
+                        'muted-foreground': 'hsl(0, 0%, 65%)',
+                        border: 'hsl(0, 0%, 28%)',
+                        card: 'hsl(218, 15%, 16%)',
+                    }
+                }
+            }
+        }
+    </script>
+    {% endblock %}
+    {% block main_content %}
+        {% comment %} 
+            <div class="d-flex bg-primary flex-column flex-md-row px-md-4 vw-100 vh-100 overflow-y-none col-12 ">
+            <!-- This'll be the map w/ searchbar, btns and controls for this page -->
+            <div id="map" class="map rounded-3 bg-secondary position-relative mt-md-4 d-flex p-2 p-md-4 col-12 col-md-5" id="resultsMap">
+                <!-- This is the input and btns div -->
+                <div class="d-flex flex-column gap-3 col" id="mapInput">
+                    <form action="" method="get" class="p-0">
+                        <div class="input-group input-group-lg">
+                            <input type="text" name="q" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" value="{{query}}">
+                            <button type="submit" class="input-group-text" id="inputGroup-sizing-lg"><i class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                    <!--
+                    Manage Junkyard btn not needed in MVP
+                    <div class="d-flex flex-row gap-2">
+                        <button class="btn btn-sm bg-white py-1" data-bs-toggle="modal" data-bs-target="#popupModal" aria-controls="popupModal">Manage Junkyards</button>
+                    </div> 
+                    -->
+                </div>
+            </div>
+            <div class="vh-100 overflow-y-auto  d-flex flex-column col-12 col-md-7 gap-4 py-4 px-4 px-md-0">
+                {% for yard in fetched_yard_data %}
+                <div class="yardResult bg-white shadow-sm rounded-3 p-4 accordion" id="{{yard.elem_id}}-accordion">
+                    <div class="accordion-item border-0">
+                        <!-- Header / Yard Meta -->
+                        <div class="yardMeta d-flex flex-row gap-2 align-items-center">
+                            <img src="" alt="" style="width:5rem; height:5rem" class="logo">
+                            <div class="d-flex flex-column gap-2">
+                                <h3 class="mb-0">{{yard.name|capfirst}}</h3>
+                                <p class="mb-0">{{yard.num_results}} result(s) in {{yard.time_elapsed}} seconds</p>
+                            </div>
+                        </div>
+                        <!-- Collapse Button -->
+                        <div class="text-end">
+                            <button class="btn btn-link p-0 color-secondary" data-bs-toggle="collapse" data-bs-target="#{{yard.elem_id}}" aria-expanded="true" aria-controls="{{yard.elem_id}}">
+                                Collapse
+                            </button>
+                        </div>
+                        <!-- Collapsible Section -->
+                        <div id="{{yard.elem_id}}" class="accordion-collapse collapse show" data-bs-parent="#{{yard.elem_id}}-accordion">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Make</th>
+                                                <th>Model</th>
+                                                <th>Color</th>
+                                                <th>Row</th>
+                                                <th>Space</th>
+                                                <th>VIN</th>
+                                                <th>Available Date</th>
+                                                <th>ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for vehicle in yard.results %}
+                                            <tr>
+                                                <td>{{ vehicle.year }}</td>
+                                                <td>{{ vehicle.make|capfirst }}</td>
+                                                <td>{{ vehicle.model|capfirst }}</td>
+                                                <td>{{ vehicle.color|capfirst }}</td>
+                                                <td>{{ vehicle.row }}</td>
+                                                <td>{{ vehicle.space }}</td>
+                                                <td>{{ vehicle.vin }}</td>
+                                                <td>{{ vehicle.available_date|date:"Y-m-d" }}</td>
+                                                <td>{{ vehicle.junkyard_identifier }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor%}
+            </div>
+            </div>
+        {% endcomment %}
+        <div id="root">
+        <!-- Header -->
+        <header class="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded bg-primary flex items-center justify-center text-lg lg:2xl shadow-lg">
+                            🔧
+                        </div>
+                        <div>
+                            <h1 class="text-lg lg:2xl font-bold text-foreground tracking-tight">
+                                Junkyard <span class="text-primary">Finder</span>
+                            </h1>
+                            <p class="text-sm text-muted-foreground">Multi-yard inventory search</p>
+                        </div>
+                    </div>
+                    <div class="hidden md:visible flex items-center gap-4">
+                        <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
+                            <span class="hidden md:visible mr-1">📍</span>
+                            <span id="yard-count">0</span> Yards
+                        </div>
+                        <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
+                            <span class="hidden md:visible mr-1">🚗</span>
+                            <span id="vehicle-count">0</span> Vehicles
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="bg-card/30 border-b border-border">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex gap-3 items-center">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Search by make, model, VIN, or year..."
+                            class="w-full pl-12 pr-12 h-14 text-lg bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
+                        />
+                        <button
+                            id="clear-search"
+                            class="hidden absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <button
+                        id="filters-toggle"
+                        class="hidden h-14 px-6 bg-muted border-2 border-border text-foreground rounded-lg hover:bg-muted/80 transition-colors font-semibold"
+                    >
+                        <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        Filters
+                    </button>
+                </div>
+
+                <!-- Filters Panel -->
+                <div id="filters-panel" class="hidden mt-4 fade-in">
+                    <div class="p-6 bg-card border-2 border-border rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-foreground">Advanced Filters</h3>
+                            <button
+                                id="clear-filters"
+                                class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Clear All
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="filter-year" class="block text-foreground font-semibold mb-2">Year</label>
+                                <input
+                                    type="text"
+                                    id="filter-year"
+                                    placeholder="e.g., 2020"
+                                    class="w-full px-4 py-2 bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label for="filter-make" class="block text-foreground font-semibold mb-2">Make</label>
+                                <input
+                                    type="text"
+                                    id="filter-make"
+                                    placeholder="e.g., Ford"
+                                    class="w-full px-4 py-2 bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label for="filter-model" class="block text-foreground font-semibold mb-2">Model</label>
+                                <input
+                                    type="text"
+                                    id="filter-model"
+                                    placeholder="e.g., F-150"
+                                    class="w-full px-4 py-2 bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
+                <!-- Map Section -->
+                <div class="w-full lg:sticky lg:top-32 self-start">
+                    <div class="p-4 bg-card border-2 border-border rounded-lg">
+                        <div class="mb-4">
+                            <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+                                <span class="text-primary">📍</span>
+                                Junkyard Locations
+                            </h2>
+                            <p class="text-sm text-muted-foreground mt-1">
+                                Click markers to view inventory
+                            </p>
+                        </div>
+                        <div id="map" class="h-[500px] lg:h-[600px] rounded-lg z-0 border-2 border-border "></div>
+                    </div>
+                </div>
+
+                <!-- Inventory Tables Section -->
+                <div id="inventory-container" class="space-y-6">
+                    <div id="inventory-1" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable(1)">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-lg bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-3xl">
+                                        🔧
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg lg:2xl font-bold text-foreground mb-1">
+                                            Mike's Auto Salvage
+                                        </h3>
+                                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <span class="hidden md:visible">📍</span>
+                                            1234 Industrial Blvd, Detroit, MI
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="hidden md:visible px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-base font-medium">
+                                        <span class="hidden mr-2">🚗</span>
+                                        5 Vehicles
+                                    </div>
+                                    <svg id="chevron-1" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div id="table-1" class="fade-in">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-muted/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <span class="hidden md:visible text-primary mr-2">📅</span>Year
+                                            </th>
+                                            <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <span class="hidden md:visible text-primary mr-2">🚗</span>Make
+                                            </th>
+                                            <th class="px-6 py-3 text-left font-bold text-foreground">Model</th>
+                                            <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <span class="hidden md:visible text-primary mr-2">#</span>VIN
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                <td class="px-6 py-3 font-semibold text-foreground">2015</td>
+                                                <td class="px-6 py-3 font-medium">
+                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                        Ford
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-3 text-foreground">F-150</td>
+                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">1FTFW1ET5FKE12345</td>
+                                            </tr>
+                                        
+                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                <td class="px-6 py-3 font-semibold text-foreground">2018</td>
+                                                <td class="px-6 py-3 font-medium">
+                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                        Chevrolet
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-3 text-foreground">Silverado</td>
+                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">3GCUKREC5JG123456</td>
+                                            </tr>
+                                        
+                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                <td class="px-6 py-3 font-semibold text-foreground">2016</td>
+                                                <td class="px-6 py-3 font-medium">
+                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                        Toyota
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-3 text-foreground">Camry</td>
+                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">4T1BF1FK5GU123457</td>
+                                            </tr>
+                                        
+                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                <td class="px-6 py-3 font-semibold text-foreground">2019</td>
+                                                <td class="px-6 py-3 font-medium">
+                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                        Honda
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-3 text-foreground">Civic</td>
+                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">2HGFC2F59KH123458</td>
+                                            </tr>
+                                        
+                                            <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
+                                                <td class="px-6 py-3 font-semibold text-foreground">2017</td>
+                                                <td class="px-6 py-3 font-medium">
+                                                    <span class="px-2 py-1 bg-muted border border-border rounded-md text-foreground group-hover:border-primary transition-colors">
+                                                        Dodge
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-3 text-foreground">Ram 1500</td>
+                                                <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">1C6RR7FT0HS123459</td>
+                                            </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="bg-muted/30 px-6 py-4 border-t border-border">
+                                <p class="text-sm text-muted-foreground">
+                                    Showing <span class="font-semibold text-foreground">5</span> vehicles from Mike's Auto Salvage
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-border bg-card/30 mt-16">
+            <div class="container mx-auto px-4 py-8 text-center">
+                <p class="text-muted-foreground" id="footer-stats">
+                    Searching 0 junkyards • 0 total vehicles in database
+                </p>
+            </div>
+        </footer>
+    </div>
+    {% endblock %} 
+    {% block extra_scripts %}
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            var avg_lat = {{ avg_lat }} + 0.2;
+            var avg_long = {{ avg_long }};
+            console.log(avg_lat, avg_long);
+            var map = L.map('map').setView(center = [avg_lat, avg_long], 9);
+            var myIcon = L.icon({
+                iconUrl: '/static/marker.png?v={{ tz }}',
+                iconSize: [30, 50],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -100],
+            });
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map); 
+            {% for yard in fetched_yard_data %}
+                L.marker([{{ yard.lat }}, {{ yard.long }}], { icon: myIcon }).addTo(map)
+
+                    .bindTooltip("<b style='display:block'>{{ yard.name }}</b><p>{{ yard.num_results }} results</p>", {
+                        permanent: true,
+                        direction: 'top',
+                        offset: [-3, -100], // Adjust position slightly upwards
+                        className: 'custom-tooltip' // Add a custom CSS class
+                    })
+                    .openPopup(); 
+            {% endfor %}
+        </script>
+    {% endblock %}
