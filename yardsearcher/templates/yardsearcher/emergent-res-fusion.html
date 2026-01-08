@@ -253,7 +253,7 @@
                     {% for yard in fetched_yard_data %}
                         <div id="inventory-{{ forloop.counter }}" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
                             <!-- Header -->
-                            <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable(1)">
+                            <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable({{ foorloop.counter }})">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <div class="w-14 h-14 rounded-lg bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-3xl">
@@ -278,7 +278,7 @@
                                                 {{ yard.num_results }} Vechicles
                                             {% endif %}
                                         </div>
-                                        <svg id="chevron-1" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
+                                        <svg id="chevron-{{forloop.counter}}" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </div>
@@ -286,7 +286,7 @@
                             </div>
 
                             <!-- Table -->
-                            <div id="table-1" class="fade-in">
+                            <div id="table-{{forloop.counter}}" class="fade-in">
                                 <div class="overflow-x-auto">
                                     <table class="w-full">
                                         <thead class="bg-muted/50">
@@ -368,6 +368,7 @@
         <!-- Leaflet JS -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
+
             var avg_lat = {{ avg_lat }} + 0.2;
             var avg_long = {{ avg_long }};
             console.log(avg_lat, avg_long);
@@ -392,5 +393,21 @@
                     })
                     .openPopup(); 
             {% endfor %}
+
         </script>
+        <script>
+            function toggleTable(junkyardId) {
+                const table = document.getElementById(`table-${junkyardId}`);
+                const chevron = document.getElementById(`chevron-${junkyardId}`);
+                
+                if (table.classList.contains('hidden')) {
+                    table.classList.remove('hidden');
+                    chevron.style.transform = 'rotate(0deg)';
+                } else {
+                    table.classList.add('hidden');
+                    chevron.style.transform = 'rotate(-180deg)';
+                }
+            }
+        </script>
+
     {% endblock %}
