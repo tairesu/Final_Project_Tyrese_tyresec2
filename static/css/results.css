@@ -1,22 +1,5 @@
-.bg-primary {
-    background-color: hsl(102deg 2% 95% / 83%)!important;
-}
-.bg-secondary {
-    background-color: hsla(240, 66%, 15%, 0.83)!important;
-}
-.bg-tertiary, th {
-    background-color: hsl(225.26deg 82.87% 84.59%) !important;
-}
-.color-secondary {
-    color: hsla(240, 66%, 15%, 0.83)!important;
-}
-
-tr:nth-child(2n) {
-    background-color: hsl(245.41deg 3% 96%) !important;
-}
-.yardResult {
-    /* Allows yard results to shrink when parent's diplay is grid */
-    /* min-width:0; */
+td, th {
+    text-wrap: nowrap;
 }
 .map {
     height:60%!important;
