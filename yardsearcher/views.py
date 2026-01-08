@@ -80,7 +80,9 @@ def results_view(request):
 			'fetched_yard_data': formatted_results,
 			'query': query,
 			'avg_lat': avg_lat,
-			'avg_long': avg_long
+			'avg_long': avg_long,
+			'total_yards': Junkyard.objects.all().count,
+			'total_vehicles': Vehicle.objects.all().count
 		}
 		print(context)
 		return render(request, 'yardsearcher/emergent-res-fusion.html', context)
