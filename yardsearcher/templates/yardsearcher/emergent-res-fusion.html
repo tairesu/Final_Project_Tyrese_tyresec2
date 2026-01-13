@@ -201,7 +201,7 @@
                                                 </th>
                                                 <th class="px-6 py-3 text-left font-bold text-foreground">Model</th>
                                                 <th class="px-6 py-3 text-left font-bold text-foreground">Row</th>
-                                                {% if yard.results.first.space %}
+                                                {% if yard.results.last.space %}
                                                     <th class="px-6 py-3 text-left font-bold text-foreground">Space</th>
                                                 {% endif %}
                                                 {% if yard.results.first.vin %}
@@ -227,9 +227,16 @@
                                                         </span>
                                                     </td>
                                                     <td class="px-6 py-3 text-foreground">{{ vehicle.model|capfirst }}</td>
-                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.row }}</td>
-                                                    {% if vehicle.space %}
+                                                    {% if vehicle.row > 0 %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
+                                                    {% else %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
+
+                                                    {% endif %}
+                                                    {% if yard.results.last.space and vehicle.space %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.space }}</td>
+                                                    {% elif yard.results.last.space and not vehicle.space %}
+                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
                                                     {% endif %}
                                                     {% if vehicle.vin %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.vin }}</td>
