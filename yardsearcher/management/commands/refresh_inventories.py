@@ -31,6 +31,16 @@ ALLOWED_YARDS2 = [
 			'referer_suffix': 'blue-island-1582'
 		},
 	},
+	{
+		'name': 'LKQ Chicago South',
+		'class': LKQSearch,
+		'id': 3,
+		'date_format': '%m/%d/%Y',
+		'params': {
+			'store_id':1585,
+			'referer_suffix': 'chicago-south-1585'
+		},
+	},
 
 ]
 
@@ -47,14 +57,16 @@ class Command(BaseCommand):
 			self.stdout.write(f"Refreshing {junkyard['name']}")
 			scraper = junkyard['class']("") if 'params' not in junkyard.keys() else junkyard['class']("", params=junkyard['params'])
 			scraper.handle_queries()
+			self.stdout.write(self.style.SUCCESS(f"\tResults are in"))
 			self.cache_scraper_results(scraper.results_as_list(), junkyard)
-			self.stdout.write(self.style.SUCCESS(f"\nSuccessfully refreshed {junkyard['name']}'s inventory!\n"))
+			self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {junkyard['name']}'s inventory!\n"))
 
 	def cache_scraper_results(self, results, junkyard_meta):
 		""" 
 			Upserts or deletes vehicles on Vehicle model 
 		"""
 		assert len(results) > 0
+		print(f"\tCaching {len(results)} results")
 		models_list = []
 		scraped_identifiers = [] # Ex: ['stk0192','stk1111']
 
@@ -73,7 +85,6 @@ class Command(BaseCommand):
 		year = result['year']
 		make = result['make']
 		model = result['model']
-
 		# some result keys require more handling because junkyard inventory column headers differ
 		# Ex: JUP uses 'vehicle_row' while LKQ's may say 'row'  
 		row = self.extract_row(result)
@@ -85,11 +96,15 @@ class Command(BaseCommand):
 		return Vehicle(junkyard_id=junkyard_meta['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
 
 	def extract_row(self, result):
+		"""
+		Returns the 'Row' value from a junkyard scraper's results attr
+		"""
 		row = 0
-		if 'row' in result.keys():
-			row = result['row']
-		elif 'vehicle row' in result.keys():
-			row = result['vehicle row']
+		# Junkyards may name the 'row' attrtibute differently
+		if 'row' in result.keys() and len(result['row']) > 0:
+			row = result['row']  # Pyp
+		elif 'vehicle row' in result.keys() and len(result['vehicle row']) > 0:
+			row = result['vehicle row'] # Jup
 		return int(row)
 
 	def extract_junkyard_identifier(self, result):
@@ -108,7 +123,7 @@ class Command(BaseCommand):
 
 	def extract_space(self, result):
 		space = 0
-		if 'space' in result.keys():
+		if 'space' in result.keys() and len(result['space']) > 0:
 			space = result['space']
 		return space
 
@@ -133,12 +148,11 @@ class Command(BaseCommand):
 
 	def handle_removed_results(self, scraped_identifiers, junkyard_id):
 		"""
-			Removes vehicles from <Vehicle> model that have the same junkyard_id and are NOT in freshly scraped results 
+			Removes vehicles from <Vehicle> model that have id of junkyard_id and are NOT in freshly scraped results 
 		"""
 		different_identifiers = Vehicle.objects.filter(Q(junkyard_id=junkyard_id) & ~Q(junkyard_identifier__in=scraped_identifiers) )
 		print(f"\t Different identifiers: {different_identifiers}")
-		different_identifiers.delete()
 		if len(different_identifiers) > 0:
 			self.stdout.write(f"\t- Deleting {len(different_identifiers)} vehicles: \n {different_identifiers}")
-		else:
-			pass
+			different_identifiers.delete()
+		
