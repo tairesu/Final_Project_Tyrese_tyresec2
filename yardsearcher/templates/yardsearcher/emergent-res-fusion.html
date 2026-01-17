@@ -180,7 +180,7 @@
                                                 {{ yard.num_results }} Vechicles
                                             {% endif %}
                                         </div>
-                                        <svg id="chevron-{{yard.meta.pk}}" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
+                                        <svg id="chevron-{{yard.meta.pk}}" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor"   viewBox="0 0 24 24" style="transform: rotate(-180deg);">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </div>
@@ -188,7 +188,7 @@
                             </div>
 
                             <!-- Table -->
-                            <div id="table-{{yard.meta.pk}}" class="fade-in">
+                            <div id="table-{{yard.meta.pk}}" class="hidden fade-in">
                                 <div class="overflow-x-auto">
                                     <table class="w-full">
                                         <thead class="bg-muted/50">
@@ -348,7 +348,9 @@
                 
                 // Scroll to inventory table
                 const element = document.getElementById(`inventory-${junkyardId}`);
+                const table = document.getElementById(`table-${junkyardId}`);
                 if (element) {
+                    table.classList.remove('hidden');
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
                 
@@ -389,10 +391,15 @@
         </script>
         script
         <script>
-            function toggleTable(junkyardId) {
+            function toggleTable(junkyardId, justshow = false) {
                 const table = document.getElementById(`table-${junkyardId}`);
                 const chevron = document.getElementById(`chevron-${junkyardId}`);
                 
+                if (justshow) {
+                    table.classList.remove('hidden');
+                    chevron.style.transform = 'rotate(0deg)';
+                    return ;
+                }
                 if (table.classList.contains('hidden')) {
                     table.classList.remove('hidden');
                     chevron.style.transform = 'rotate(0deg)';
