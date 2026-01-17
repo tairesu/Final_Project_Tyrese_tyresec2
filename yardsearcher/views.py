@@ -60,7 +60,8 @@ def format_results(results, t0):
 				
 		}
 		formatted_result['num_results'] = len(formatted_result['results'])
-		formatted_results.append(formatted_result)
+		if formatted_result['num_results']>0:
+			formatted_results.append(formatted_result)
 	return (formatted_results, get_avg(lats), get_avg(longs))
 
 def results_view(request):
