@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
 from yardsearcher.utils.jup import *
@@ -21,12 +22,12 @@ def get_query_results(queries):
 	"""
 	constructed_query = construct_db_query(queries)
 	print(constructed_query)
-	return Vehicle.objects.filter(constructed_query) 
+	return Vehicle.objects.filter(constructed_query)
 
 
 def construct_db_query(queries):
 	""" 
-	Constructs a single Q object from list of query strings
+	Constructs a single Q object from list of query dicts
 	"""
 	constructed_query = Q()
 	for query in queries:
@@ -53,7 +54,6 @@ def format_results(results, t0):
 		formatted_result = {
 			'name': junkyard.name,
 			'results': results.filter(junkyard_id=junkyard.pk),
-			'elem_id': junkyard.name.replace(" ",""),
 			'lat': junkyard.lat,
 			'long': junkyard.long,
 			'time_elapsed': time.time() - t0,
@@ -84,7 +84,6 @@ def results_view(request):
 			'total_yards': Junkyard.objects.all().count,
 			'total_vehicles': Vehicle.objects.all().count
 		}
-		print(context)
 		return render(request, 'yardsearcher/emergent-res-fusion.html', context)
 
 
