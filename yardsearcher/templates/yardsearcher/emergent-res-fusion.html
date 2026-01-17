@@ -153,9 +153,9 @@
                 <!-- Inventory Tables Section -->
                 <div id="inventory-container" class="space-y-6">
                     {% for yard in fetched_yard_data %}
-                        <div id="inventory-{{ forloop.counter }}" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
+                        <div id="inventory-{{ yard.meta.pk }}" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
                             <!-- Header -->
-                            <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable({{ forloop.counter }})">
+                            <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable({{ yard.meta.pk }})">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <div class="w-14 h-14 rounded-lg bg-primary/10 border-2 border-primary/30 flex items-center justify-center text-3xl">
@@ -180,7 +180,7 @@
                                                 {{ yard.num_results }} Vechicles
                                             {% endif %}
                                         </div>
-                                        <svg id="chevron-{{forloop.counter}}" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
+                                        <svg id="chevron-{{yard.meta.pk}}" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(0deg);">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </div>
@@ -188,7 +188,7 @@
                             </div>
 
                             <!-- Table -->
-                            <div id="table-{{forloop.counter}}" class="fade-in">
+                            <div id="table-{{yard.meta.pk}}" class="fade-in">
                                 <div class="overflow-x-auto">
                                     <table class="w-full">
                                         <thead class="bg-muted/50">
@@ -281,6 +281,7 @@
             var avg_lat = {{ avg_lat }} + 0.2;
             var avg_long = {{ avg_long }};
             var popupContent = null;
+            var junkyards = [];
             var map = null;
             var myIcon = L.icon({
                 iconUrl: '/static/marker.png?v={{ tz }}',
@@ -304,9 +305,10 @@
                         'city':'{{yard.meta.city}}',
                         'state':'{{yard.meta.state}}',
                         'num_results':'{{yard.num_results}}',
-                        'id':'{{yard.pk}}',
+                        'id':'{{yard.meta.pk}}',
 
                     };
+                    junkyards.push(junkyard);
                     var suffix = junkyard.num_results > 1 ?  " vehicles" : " vehicle";
                     var marker = L.marker([junkyard.lat, junkyard.long], { icon: createMarkerIcon() })
                         .addTo(map);
@@ -338,6 +340,20 @@
                         .openPopup(); 
                 {% endfor %}
             }
+
+            // Handle junkyard selection
+            function handleJunkyardClick(junkyardId) {
+                
+                selectedJunkyard = junkyards[junkyardId];
+                
+                // Scroll to inventory table
+                const element = document.getElementById(`inventory-${junkyardId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+            }
+
             function createMarkerIcon(isSelected = false) {
                 const size = isSelected ? 48 : 40;
                 const emoji = '🔧';

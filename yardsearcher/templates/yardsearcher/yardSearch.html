@@ -455,9 +455,7 @@
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-            
-            // Update table highlighting
-            renderInventoryTables();
+            marker.on('click', () => handleJunkyardClick(junkyard.id));
         }
 
         // Render inventory tables
