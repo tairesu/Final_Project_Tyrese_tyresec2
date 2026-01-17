@@ -21,7 +21,6 @@ def get_query_results(queries):
 	Returns vehicles matching searched queries
 	"""
 	constructed_query = construct_db_query(queries)
-	print(constructed_query)
 	return Vehicle.objects.filter(constructed_query)
 
 
