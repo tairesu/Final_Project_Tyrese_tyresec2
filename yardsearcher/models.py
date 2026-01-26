@@ -18,7 +18,7 @@ class Junkyard(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        self.lat, self.long = self.get_latlong()
+        #self.lat, self.long = self.get_latlong()
         super().save(**kwargs)
 
     def __str__(self):
@@ -28,11 +28,9 @@ class Junkyard(models.Model):
         return reverse('_detail', kwargs={'pk': self.pk})
 
     def get_latlong(self)-> tuple:
-        geolocator = Nominatim(user_agent='scraphounds-reesesites@gmail.com')
+        geolocator = Nominatim(user_agent='junkyardfinder-reesesites@gmail.com')
         locator_str = f'{self.address} {self.city}, {self.state} {self.zip_code}'
         location = geolocator.geocode(locator_str)
-        print('get_latlong location: ', location)
-        print('for string: ', locator_str)
         return (location.latitude, location.longitude)
 
 
