@@ -2,6 +2,7 @@
 from yardsearcher.utils.jup import Jup
 from yardsearcher.utils.lkq import LKQSearch
 
+# Information on Junkyards are manually registered here. 
 KNOWN_YARDS = [
 	{
 		'name': 'Joliet U-Pull It',
