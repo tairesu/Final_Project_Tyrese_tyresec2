@@ -2,6 +2,9 @@ from yardsearcher.utils.base import YardSearch
 
 
 class Jup(YardSearch):
+    """
+        Scraper class for Joliet U pull it 
+    """
     def __init__(self, query_str):
         super().__init__(query_str)
         self.name = "Joliet U-Pull It"
@@ -45,7 +48,6 @@ class Jup(YardSearch):
         return inventory_table_rows
 
     def filter_inventory_table_rows(self, inventory_table_rows, conditionals):
-        # Loop through each table row 
         for i, inventory_table_row in enumerate(inventory_table_rows):
             # Find every cell w/in this inventory_table_row
             td_elems = inventory_table_row.find_all('td')
