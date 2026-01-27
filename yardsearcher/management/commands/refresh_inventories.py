@@ -1,48 +1,11 @@
 from django.core.management.base import BaseCommand
 from yardsearcher.models import Junkyard, Vehicle
-from yardsearcher.utils.jup import Jup
-from yardsearcher.utils.lkq import LKQSearch
 from datetime import datetime
 from django.db.models import Q
+from yardsearcher.utils.known_yards import KNOWN_YARDS as KNOWN_YARDS
 
-ALLOWED_YARDS = {
-
-	'Joliet U-Pull-It': {
-		'class': Jup,
-		'id' : 1,
-		'date_format': '%m.%d.%y'
-	},
-}
-ALLOWED_YARDS2 = [
-	
-	{
-		'name': 'Joliet U-Pull-It',
-		'class': Jup,
-		'id': 1,
-		'date_format': '%m.%d.%y',
-	},
-	{
-		'name': 'LKQ Blue Island',
-		'class': LKQSearch,
-		'id': 2,
-		'date_format': '%m/%d/%Y',
-		'params': {
-			'store_id':1582,
-			'referer_suffix': 'blue-island-1582'
-		},
-	},
-	{
-		'name': 'LKQ Chicago South',
-		'class': LKQSearch,
-		'id': 3,
-		'date_format': '%m/%d/%Y',
-		'params': {
-			'store_id':1585,
-			'referer_suffix': 'chicago-south-1585'
-		},
-	},
-
-]
+def get_junkyard_id(yard) ->int:
+    return Junkyard.objects.get(address=yard['address']).pk or None
 
 class Command(BaseCommand):
 	help = "Refreshes Vehicle Table"
@@ -53,15 +16,16 @@ class Command(BaseCommand):
 			(Also deletes vehicles that are physically removed from the junkyard )
 
 		"""
-		for junkyard in ALLOWED_YARDS2:
-			self.stdout.write(f"Refreshing {junkyard['name']}")
-			scraper = junkyard['class']("") if 'params' not in junkyard.keys() else junkyard['class']("", params=junkyard['params'])
+		for yard in KNOWN_YARDS:
+			self.stdout.write(f"Refreshing {yard['name']} Inventory")
+			yard['id'] = get_junkyard_id(yard)
+			scraper = yard['class']("") if 'params' not in yard.keys() else yard['class']("", params=yard['params'])
 			scraper.handle_queries()
 			self.stdout.write(self.style.SUCCESS(f"\tResults are in"))
-			self.cache_scraper_results(scraper.results_as_list(), junkyard)
-			self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {junkyard['name']}'s inventory!\n"))
+			self.cache_scraper_results(scraper.results_as_list(), yard)
+			self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {yard['name']}'s inventory!\n"))
 
-	def cache_scraper_results(self, results, junkyard_meta):
+	def cache_scraper_results(self, results, yard):
 		""" 
 			Upserts or deletes vehicles on Vehicle model 
 		"""
@@ -72,15 +36,15 @@ class Command(BaseCommand):
 
 		# Format results to django model instances (<Vehicle>) 
 		for result in results:
-			vehicle_instance = self.format_result(result, junkyard_meta)
+			vehicle_instance = self.format_result(result, yard)
 			scraped_identifiers.append(vehicle_instance.junkyard_identifier)
 			models_list.append(vehicle_instance)
 		self.upsert_models_list(models_list)
-		self.handle_removed_results(scraped_identifiers, junkyard_meta['id'])
-
-	def format_result(self, result, junkyard_meta):
+		self.handle_removed_results(scraped_identifiers, yard['id'])
+	
+	def format_result(self, result, yard):
 		"""
-		Turns any scraped result into an instance of the <Vehicle> model
+		Turns any scraped result into a <Vehicle> instance
 		"""
 		year = result['year']
 		make = result['make']
@@ -91,9 +55,9 @@ class Command(BaseCommand):
 		junkyard_identifier = self.extract_junkyard_identifier(result)
 		color = self.extract_color(result)
 		space = self.extract_space(result)
-		available_date = self.extract_date(result, junkyard_meta['date_format'])
+		available_date = self.extract_date(result, yard['date_format'])
 		vin = self.extract_vin(result)
-		return Vehicle(junkyard_id=junkyard_meta['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
+		return Vehicle(junkyard_id=yard['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
 
 	def extract_row(self, result):
 		"""
