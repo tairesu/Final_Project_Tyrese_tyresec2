@@ -1,5 +1,6 @@
-from yardsearcher.utils.base import YardSearch
-    
+from base import YardSearch
+import cProfile
+
 class LKQSearch(YardSearch):
     """
     Represents a search on the LKQ junkyard data
@@ -134,7 +135,8 @@ if __name__ == '__main__':
         if query.strip().lower() in ['stop','halt','exit']:
             stop = True
 
-        yardSearch = LKQSearch(query)
+        yardSearch = LKQSearch(query,{'store_id':1582, 'referer_suffix': 'blue-island-1582'})
+        cProfile.run("yardSearch.handle_queries()")
         yardSearch.display_data()
 
 
