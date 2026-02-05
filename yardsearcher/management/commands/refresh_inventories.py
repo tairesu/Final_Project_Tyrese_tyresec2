@@ -3,6 +3,7 @@ from yardsearcher.models import Junkyard, Vehicle
 from datetime import datetime
 from django.db.models import Q
 from yardsearcher.utils.known_yards import KNOWN_YARDS as KNOWN_YARDS
+from yardsearcher.utils.extractors import *
 
 def get_junkyard_id(yard) ->int:
     return Junkyard.objects.get(address=yard['address']).pk or None
@@ -51,59 +52,13 @@ class Command(BaseCommand):
 		model = result['model']
 		# some result keys require more handling because junkyard inventory column headers differ
 		# Ex: JUP uses 'vehicle_row' while LKQ's may say 'row'  
-		row = self.extract_row(result)
-		junkyard_identifier = self.extract_junkyard_identifier(result)
-		color = self.extract_color(result)
-		space = self.extract_space(result)
-		available_date = self.extract_date(result, yard['date_format'])
-		vin = self.extract_vin(result)
+		row = extract_row(result)
+		junkyard_identifier = extract_junkyard_identifier(result)
+		color = extract_color(result)
+		space = extract_space(result)
+		available_date = extract_date(result, yard['date_format'])
+		vin = extract_vin(result)
 		return Vehicle(junkyard_id=yard['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
-
-	def extract_row(self, result):
-		"""
-		Returns the 'Row' value from a junkyard scraper's results attr
-		"""
-		row = 0
-		# Junkyards may name the 'row' attrtibute differently
-		if 'row' in result.keys() and len(result['row']) > 0:
-			row = result['row']  # Pyp
-		elif 'vehicle row' in result.keys() and len(result['vehicle row']) > 0:
-			row = result['vehicle row'] # Jup
-		return int(row)
-
-	def extract_junkyard_identifier(self, result):
-		junkyard_identifier = ""
-		if 'stock#' in result.keys():
-			junkyard_identifier = result['stock#']
-		elif 'stock #' in result.keys():
-			junkyard_identifier = result['stock #']
-		return junkyard_identifier
-
-	def extract_color(self, result):
-		color = ""
-		if 'color' in result.keys():
-			color = result['color']
-		return color
-
-	def extract_space(self, result):
-		space = 0
-		if 'space' in result.keys() and len(result['space']) > 0:
-			space = result['space']
-		return space
-
-	def extract_date(self, result, date_format):
-		date = ''
-		if 'date set in yard' in result.keys():
-			date = result['date set in yard']
-		elif 'available' in result.keys():
-			date = result['available'] 
-		return datetime.strptime(date, date_format)
-
-	def extract_vin(self, result):
-		vin = ""
-		if 'vin' in result.keys():
-			vin = result['vin']
-		return vin
 
 	def upsert_models_list(self, models_list):
 		# Upsert list of <Vehicle> instances
