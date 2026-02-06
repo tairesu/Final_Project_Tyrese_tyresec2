@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from yardsearcher.models import Junkyard, Vehicle
-from datetime import datetime
+
 from django.db.models import Q
 from yardsearcher.utils.known_yards import KNOWN_YARDS as KNOWN_YARDS
 from yardsearcher.utils.extractors import *
@@ -47,18 +47,21 @@ class Command(BaseCommand):
 		"""
 		Turns any scraped result into a <Vehicle> instance
 		"""
-		year = result['year']
-		make = result['make']
-		model = result['model']
-		# some result keys require more handling because junkyard inventory column headers differ
-		# Ex: JUP uses 'vehicle_row' while LKQ's may say 'row'  
-		row = extract_row(result)
-		junkyard_identifier = extract_junkyard_identifier(result)
-		color = extract_color(result)
-		space = extract_space(result)
-		available_date = extract_date(result, yard['date_format'])
-		vin = extract_vin(result)
-		return Vehicle(junkyard_id=yard['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
+		try:
+			year = result['year']
+			make = result['make']
+			model = result['model']
+			# some result keys require more handling because junkyard inventory column headers differ
+			# Ex: JUP uses 'vehicle_row' while LKQ's may say 'row'  
+			row = extract_row(result)
+			junkyard_identifier = extract_junkyard_identifier(result)
+			color = extract_color(result)
+			space = extract_space(result)
+			available_date = extract_date(result, yard['date_format'])
+			vin = extract_vin(result)
+			return Vehicle(junkyard_id=yard['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
+		except ValueError as e:
+			print(f"{e} appeared at this result: {result}")
 
 	def upsert_models_list(self, models_list):
 		# Upsert list of <Vehicle> instances
