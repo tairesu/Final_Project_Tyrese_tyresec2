@@ -1,4 +1,4 @@
-from base import YardSearch
+from .base import YardSearch
 import cProfile
 
 class LKQSearch(YardSearch):
