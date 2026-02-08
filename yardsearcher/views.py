@@ -20,7 +20,9 @@ def get_query_results(queries):
 	"""
 	Returns vehicles matching searched queries
 	"""
+	
 	constructed_query = construct_db_query(queries)
+	print(f"generated query: {constructed_query}")
 	return Vehicle.objects.filter(constructed_query)
 
 
@@ -30,14 +32,17 @@ def construct_db_query(queries):
 	"""
 	constructed_query = Q()
 	for query in queries:
-		condition = Q(make__icontains=query['make'], model__icontains=query['model'])
+		print(f"constructing Q value of {query}")
+		condition = Q()
 		# If a range of years are present
-		if 'minYear' and 'maxYear' in query:
+		if 'minYear' in query and 'maxYear' in query:
 			condition &= Q(year__gte=query['minYear'], year__lte=query['maxYear'] )
-		elif 'year' in query: 
+		if 'year' in query: 
 			condition &= Q(year=query['year'])
-		elif 'make' in query and not ('model' or 'year' or 'minYear' or 'maxYear' in query):
-			condition = Q(make__icontains=query['make']) | Q(model__icontains=query['make'])
+		if 'make' in query:
+			condition &= Q(make__icontains=query['make']) | Q(model__icontains=query['make'])
+		if 'model' in query:
+			condition &= Q(model__icontains=query['model']) | Q(make__icontains=query['model'])
 		constructed_query |= condition
 
 	return constructed_query
