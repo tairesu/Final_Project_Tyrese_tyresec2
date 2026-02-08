@@ -1,6 +1,17 @@
 import re
 import time
+import datetime
 
+def get_year_prefix(car_year):
+    if len(car_year) == 4:
+        return ""
+    
+    current_year = str(datetime.date.today().year)
+    current_prefix = current_year[0:2]
+    current_suffix = current_year[2:]
+    prior_prefix = str(int(current_prefix) - 1)[0:2]
+    print(f"curr prefix: {current_prefix} prior_prefix: {prior_prefix}")
+    return current_prefix if int(car_year) <= int(current_suffix) else prior_prefix 
 def get_query_conditionals(query)-> list:
     """
         Extracts conditionals from queries
@@ -49,9 +60,9 @@ def parse_car_year(query="") -> str:
     # Find the characters of query matching patterns '02' or '2004'
     car_year = re.findall(r"^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$", query)[0].strip()
 
+    year_prefix = get_year_prefix(car_year)
     # Place the current year's prefix if car year had 2 characters (e.g: '01'->'2001')  
-    formatted_car_year = car_year if len(car_year) == 4 else f"20{car_year}"
-    return formatted_car_year 
+    return year_prefix + car_year 
 
 def parse_car_year_range(query="") -> tuple:
     """
