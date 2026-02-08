@@ -2,94 +2,113 @@ from django.test import TestCase
 from yardsearcher.utils.queries import *
 
 
-# Create your tests here.
 class checkQueries(TestCase):
     def setUp(self):
         pass
-    
-    def runtest(self, test_queries, function)-> None:
-        for (test_query, expected) in test_queries:
+
+    def runtest(self, test_queries, function) -> None:
+        for test in test_queries:
+            test_query = test["query"]
+            expected = test["expected"]
             msg = f"\nTest failed @ {test_query}. Expected {expected}\n"
-            if type(expected) == AssertionError:
+            # Use the proper assets based on *expected *
+            if isinstance(expected, AssertionError):
                 with self.assertRaises(AssertionError):
                     function(test_query)
+            elif isinstance(expected, tuple):
+                self.assertTupleEqual(function(test_query), expected, msg=msg)
             else:
                 self.assertEqual(function(test_query), expected, msg=msg)
-            
+
     def test_is_year_present(self):
         function = is_year_present
         test_queries = [
-            ("2005-2010 Honda", False),
-            ("05 honda civic", True),
-            ("civic", False),
-            ("05 civic", True),
-            ("2005 civic", True),
-            ("civic 2005", True),
-            ("honda civic 05", True),
-            ("honda 05 civic", True),
-            ("honda 2005-2010 civic", False),
-            ("mazda 3", False),
-            ("mazda mazda3", False),
-            ("ford f-150", False),
-            ("mazda cx-7 2005", True),
-            ("2010 xc70", True),
-            ("infiniti g35", False),
-            ("g35 infiniti", False),
-            ("bmw 328xi", False),
+            {"query": "2005-2010 Honda", "expected": False},
+            {"query": "05 honda civic", "expected": True},
+            {"query": "civic", "expected": False},
+            {"query": "05 civic", "expected": True},
+            {"query": "2005 civic", "expected": True},
+            {"query": "civic 2005", "expected": True},
+            {"query": "honda civic 05", "expected": True},
+            {"query": "honda 05 civic", "expected": True},
+            {"query": "honda 2005-2010 civic", "expected": False},
+            {"query": "mazda 3", "expected": False},
+            {"query": "mazda mazda3", "expected": False},
+            {"query": "ford f-150", "expected": False},
+            {"query": "mazda cx-7 2005", "expected": True},
+            {"query": "2010 xc70", "expected": True},
+            {"query": "infiniti g35", "expected": False},
+            {"query": "g35 infiniti", "expected": False},
+            {"query": "bmw 328xi", "expected": False},
         ]
-        self.runtest(test_queries,function)
-        
-            
+        self.runtest(test_queries, function)
+
     def test_is_year_range_present(self):
         function = is_year_range_present
         test_queries = [
-            ("2005-2010 Honda", True),
-            ("05 honda civic", False),
-            ("civic", False),
-            ("05 civic", False),
-            ("2005 civic", False),
-            ("civic 2005", False),
-            ("honda civic 05-08", True),
-            ("honda 05 civic", False),
-            ("honda 2005-2010 civic", True),
-            ("mazda 3", False),
-            ("mazda mazda3", False),
-            ("ford f-150", False),
-            ("mazda cx-7 2005", False),
-            ("2010 xc70", False),
-            ("infiniti g35 2000-2006", True),
-            ("g35 infiniti", False),
-            ("bmw 328xi", False),
+            {"query": "2005-2010 Honda", "expected": True},
+            {"query": "05 honda civic", "expected": False},
+            {"query": "civic", "expected": False},
+            {"query": "05 civic", "expected": False},
+            {"query": "2005 civic", "expected": False},
+            {"query": "civic 2005", "expected": False},
+            {"query": "honda civic 05-08", "expected": True},
+            {"query": "honda 05 civic", "expected": False},
+            {"query": "honda 2005-2010 civic", "expected": True},
+            {"query": "mazda 3", "expected": False},
+            {"query": "mazda mazda3", "expected": False},
+            {"query": "ford f-150", "expected": False},
+            {"query": "mazda cx-7 2005", "expected": False},
+            {"query": "2010 xc70", "expected": False},
+            {"query": "infiniti g35 2000-2006", "expected": True},
+            {"query": "g35 infiniti", "expected": False},
+            {"query": "bmw 328xi", "expected": False},
         ]
-        self.runtest(test_queries,function)
-    
+        self.runtest(test_queries, function)
+
     def test_parse_year(self):
         function = parse_car_year
-        self.runtest(
-            [
-                ("2005-2010 Honda",AssertionError()),
-                ("05 honda civic", "2005"),
-                ("98 honda civic", "1998"),
-                ("00 honda civic", "2000"),
-                ("82 honda civic", "1982"),
-                ("99 honda civic", "1999"),
-                ("25 honda civic", "2025"),
-                ("26 honda civic", "2026"),
-                ("27 honda civic", "1927"),
-                ("62 honda civic", "1962"),
-                ("civic",AssertionError()),
-                ("05 civic", "2005"),
-                ("2005 civic", "2005"),
-                ("civic 2005", "2005"),
-                ("honda civic 05-08",AssertionError()),
-                ("honda 05 civic", "2005"),
-                ("honda 2005-2010 civic",AssertionError()),
-                ("mazda 3",AssertionError()),
-                ("mazda mazda3",AssertionError()),
-                ("ford f-150",AssertionError()),
-                ("mazda cx-7 2005", "2005"),
-                ("2010 xc70", "2010"),
-                ("infiniti g35 2000-2006",AssertionError()),
-                ("g35 infiniti",AssertionError()),
-                ("bmw 328xi",AssertionError()),
-            ], function)
+        test_queries = [
+            {"query": "2005-2010 Honda", "expected": AssertionError()},
+            {"query": "05 honda civic", "expected": "2005"},
+            {"query": "98 honda civic", "expected": "1998"},
+            {"query": "00 honda civic", "expected": "2000"},
+            {"query": "82 honda civic", "expected": "1982"},
+            {"query": "99 honda civic", "expected": "1999"},
+            {"query": "25 honda civic", "expected": "2025"},
+            {"query": "26 honda civic", "expected": "2026"},
+            {"query": "27 honda civic", "expected": "1927"},
+            {"query": "62 honda civic", "expected": "1962"},
+            {"query": "civic", "expected": AssertionError()},
+            {"query": "05 civic", "expected": "2005"},
+            {"query": "2005 civic", "expected": "2005"},
+            {"query": "civic 2005", "expected": "2005"},
+            {"query": "honda civic 05-08", "expected": AssertionError()},
+            {"query": "honda 05 civic", "expected": "2005"},
+            {"query": "honda 2005-2010 civic", "expected": AssertionError()},
+            {"query": "mazda 3", "expected": AssertionError()},
+            {"query": "mazda mazda3", "expected": AssertionError()},
+            {"query": "ford f-150", "expected": AssertionError()},
+            {"query": "mazda cx-7 2005", "expected": "2005"},
+            {"query": "2010 xc70", "expected": "2010"},
+            {"query": "infiniti g35 2000-2006", "expected": AssertionError()},
+            {"query": "g35 infiniti", "expected": AssertionError()},
+            {"query": "bmw 328xi", "expected": AssertionError()},
+        ]
+        self.runtest(test_queries, function)
+
+    def test_parse_year_range(self):
+        function = parse_car_year_range
+        test_queries = [
+            {"query": "2005-2010 Honda", "expected": ("2005", "2010")},
+            {"query": "honda civic 05-08", "expected": ("2005", "2008")},
+            {"query": "honda 2005-2010 civic", "expected": ("2005", "2010")},
+            {"query": "infiniti g35 2000-2006", "expected": ("2000", "2006")},
+            {"query": "05 honda civic", "expected": AssertionError()},
+            {"query": "civic", "expected": AssertionError()},
+            {"query": "2005 civic", "expected": AssertionError()},
+            {"query": "mazda 3", "expected": AssertionError()},
+            {"query": "ford f-150", "expected": AssertionError()},
+            {"query": "2010 xc70", "expected": AssertionError()},
+        ]
+        self.runtest(test_queries, function)
