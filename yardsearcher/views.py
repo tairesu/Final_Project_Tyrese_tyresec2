@@ -31,18 +31,18 @@ def construct_db_query(queries):
 	Constructs a single Q object from list of query dicts
 	"""
 	constructed_query = Q()
-	for query in queries:
-		print(f"constructing Q value of {query}")
+	for vehicle_dict in queries:
+		print(f"constructing Q value of {vehicle_dict}")
 		condition = Q()
 		# If a range of years are present
-		if 'minYear' in query and 'maxYear' in query:
-			condition &= Q(year__gte=query['minYear'], year__lte=query['maxYear'] )
-		if 'year' in query: 
-			condition &= Q(year=query['year'])
-		if 'make' in query:
-			condition &= Q(make__icontains=query['make']) | Q(model__icontains=query['make'])
-		if 'model' in query:
-			condition &= Q(model__icontains=query['model']) | Q(make__icontains=query['model'])
+		if 'minYear' in vehicle_dict and 'maxYear' in vehicle_dict:
+			condition &= Q(year__gte=vehicle_dict['minYear'], year__lte=vehicle_dict['maxYear'] )
+		if 'year' in vehicle_dict: 
+			condition &= Q(year=vehicle_dict['year'])
+		if 'make' in vehicle_dict:
+			condition &= Q(make__icontains=vehicle_dict['make']) | Q(model__icontains=vehicle_dict['make'])
+		if 'model' in vehicle_dict:
+			condition &= Q(model__icontains=vehicle_dict['model']) | Q(make__icontains=vehicle_dict['model'])
 		constructed_query |= condition
 
 	return constructed_query
