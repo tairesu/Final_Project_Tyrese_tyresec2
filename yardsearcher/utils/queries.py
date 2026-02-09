@@ -10,8 +10,8 @@ def get_year_prefix(car_year):
     current_prefix = current_year[0:2]
     current_suffix = current_year[2:]
     prior_prefix = str(int(current_prefix) - 1)[0:2]
-    print(f"curr prefix: {current_prefix} prior_prefix: {prior_prefix}")
     return current_prefix if int(car_year) <= int(current_suffix) else prior_prefix 
+
 def get_query_conditionals(query)-> list:
     """
         Extracts conditionals from queries
@@ -28,12 +28,16 @@ def extract_conditionals(query="") -> dict:
     query = query.strip()
     conditionals = {'original_query': query}
     semantics = query.split(" ") # Seperates via whitespaces
+    
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
-        semantics.pop(semantics.index(conditionals['year']))
+        year = re.findall("^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$", query)[0].strip()
+        semantics.pop(semantics.index(year))
     elif not is_year_present(query) and is_year_range_present(query):
         conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
-        semantics.pop(semantics.index('-'.join([conditionals['minYear'], conditionals['maxYear']])))
+        year_range = re.findall("\d+\-\d+", query)[0]
+       
+        semantics.pop(semantics.index(year_range))
     
     # Updates the conditionals dict
     conditionals['make'] = semantics[0]
@@ -43,7 +47,6 @@ def extract_conditionals(query="") -> dict:
 
 def is_year_present(query="") -> bool:
     # Does the query contains patterns '2004 ' or '08 ' 
-    print(query.split())
     return True if re.findall(r"(^\d{2}\s)|(^\d{4}\s)|(\s\d{2}\s)|(\s\d{4}\s)|(\s\d{4}$)|(\s\d{2}$)", query) else False
 
 def is_year_range_present(query="") -> bool:

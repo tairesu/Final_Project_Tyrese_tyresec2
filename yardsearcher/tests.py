@@ -17,6 +17,8 @@ class checkQueries(TestCase):
                     function(test_query)
             elif isinstance(expected, tuple):
                 self.assertTupleEqual(function(test_query), expected, msg=msg)
+            elif isinstance(expected, dict):
+                self.assertDictContainsSubset(dictionary=function(test_query), subset=expected, msg=msg)
             else:
                 self.assertEqual(function(test_query), expected, msg=msg)
 
@@ -110,5 +112,20 @@ class checkQueries(TestCase):
             {"query": "mazda 3", "expected": AssertionError()},
             {"query": "ford f-150", "expected": AssertionError()},
             {"query": "2010 xc70", "expected": AssertionError()},
+        ]
+        self.runtest(test_queries, function)
+
+    def test_extract_conditionals(self):
+        function = extract_conditionals
+        test_queries = [
+            {"query": "2005-2010 Honda", "expected": {"minYear": "2005", "maxYear": "2010"}},
+            {"query": "honda civic 05-08", "expected": {"minYear": "2005", "maxYear": "2008"}},
+            {"query": "honda 2005-2010 civic", "expected": {"minYear": "2005", "maxYear": "2010"}},
+            {"query": "infiniti g35 2000-2006", "expected": {"minYear": "2000", "maxYear": "2006"}},
+            {"query": "05 honda civic", "expected": {"year": "2005"}},
+            {"query": "2005 civic", "expected": {"year": "2005"}},
+            {"query": "mazda 3", "expected": {}},
+            {"query": "ford f-150", "expected": {}},
+            {"query": "2010 xc70", "expected": {"year": "2010"}},
         ]
         self.runtest(test_queries, function)
