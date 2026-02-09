@@ -118,14 +118,15 @@ class checkQueries(TestCase):
     def test_extract_conditionals(self):
         function = extract_conditionals
         test_queries = [
-            {"query": "2005-2010 Honda", "expected": {"minYear": "2005", "maxYear": "2010"}},
-            {"query": "honda civic 05-08", "expected": {"minYear": "2005", "maxYear": "2008"}},
-            {"query": "honda 2005-2010 civic", "expected": {"minYear": "2005", "maxYear": "2010"}},
-            {"query": "infiniti g35 2000-2006", "expected": {"minYear": "2000", "maxYear": "2006"}},
-            {"query": "05 honda civic", "expected": {"year": "2005"}},
-            {"query": "2005 civic", "expected": {"year": "2005"}},
-            {"query": "mazda 3", "expected": {}},
-            {"query": "ford f-150", "expected": {}},
-            {"query": "2010 xc70", "expected": {"year": "2010"}},
+            {"query": "2005-2010 Honda", "expected": {"minYear": "2005", "maxYear": "2010", "make": "honda"}},
+            {"query": "honda civic 05-08", "expected": {"minYear": "2005", "maxYear": "2008", "make": "honda", "model": "civic"}},
+            {"query": "honda 2005-2010 civic", "expected": {"minYear": "2005", "maxYear": "2010", "make": "honda", "model": "civic"}},
+            {"query": "infiniti g35 2000-2006", "expected": {"minYear": "2000", "maxYear": "2006", "make": "infiniti", "model": "g35"}},
+            {"query": "05 honda civic", "expected": {"year": "2005", "make": "honda", "model": "civic"}},
+            {"query": "2005 civic", "expected": {"make": "civic", "year": "2005"}},
+            {"query": "mazda 3", "expected": {"make": "mazda", "model": "3"}},
+            {"query": "ford f-150", "expected": {"make": "ford", "model": "f-150"}},
+            {"query": "2010 xc70", "expected": {"year": "2010", "make": "xc70"}},
+            {"query": "chevrolet 90-06 tahoe", "expected": {"minYear": "1990", "maxYear": "2006", "make": "chevrolet", "model": "tahoe"}},
         ]
         self.runtest(test_queries, function)
