@@ -1,4 +1,4 @@
-from jup import *
+"""from jup import *
 
 if __name__ == '__main__':
   RAW_SOUP = '''
@@ -76,4 +76,4 @@ if __name__ == '__main__':
 # Testing an actual search with year range present:
 x= Jup('2000-2008 ford mustang')
 x.handle_queries()
-print('\n data dict :', x.data_as_dict())
+print('\n data dict :', x.data_as_dict())"""
