@@ -54,7 +54,7 @@ def is_year_present(query="") -> bool:
 
 def is_year_range_present(query="") -> bool:
     # Does the query contains patterns '2004-2012 ' or '02-11'
-    return True if re.findall(r"^[0-9]{4}-[0-9]{4}\s|\s[0-9]{4}-[0-9]{4}|^[0-9]{2}-[0-9]{2}\s|\s[0-9]{2}-[0-9]{2}", query) else False
+    return True if re.findall(r"\d+\-\d+", query) else False
 
 def parse_car_year(query="") -> str:
     """
@@ -77,7 +77,7 @@ def parse_car_year_range(query="") -> tuple:
     parse_car_year_range('2004-2008 Honda Civic') => ('2004','2008')
     """
     assert is_year_range_present(query)
-    range_str = re.findall(r"^[0-9]{4}-[0-9]{4}\s|\s[0-9]{4}-[0-9]{4}|^[0-9]{2}-[0-9]{2}\s|\s[0-9]{2}-[0-9]{2}", query.strip())[0]
+    range_str = re.findall(r"\d+\-\d+", query.strip())[0]
     min_year = range_str.split('-')[0].strip()
     max_year = range_str.split('-')[1].strip()
     min_year_prefix = get_year_prefix(min_year)
