@@ -27,7 +27,7 @@ def extract_conditionals(query="") -> dict:
     """
     query = query.strip()
     conditionals = {'original_query': query}
-    semantics = query.split(" ") # Seperates via whitespaces
+    semantics = query.lower().split(" ") # Seperates via whitespaces
     
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
@@ -36,13 +36,16 @@ def extract_conditionals(query="") -> dict:
     elif not is_year_present(query) and is_year_range_present(query):
         conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
         year_range = re.findall("\d+\-\d+", query)[0]
-       
         semantics.pop(semantics.index(year_range))
     
-    # Updates the conditionals dict
-    conditionals['make'] = semantics[0]
-    semantics.pop(semantics.index(conditionals['make']))
-    conditionals['model'] = ' '.join(semantics)
+    # now that there are no more years or year ranges
+    if len(semantics) > 1:
+        conditionals['make'] = semantics[0]
+        semantics.pop(0)
+        conditionals['model'] = ' '.join(semantics) # the remaining strings
+    elif len(semantics) == 1:
+        conditionals['make'] = semantics[0]
+        
     return conditionals
 
 def is_year_present(query="") -> bool:
