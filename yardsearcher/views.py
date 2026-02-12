@@ -89,6 +89,6 @@ def results_view(request):
 			'total_yards': Junkyard.objects.all().count,
 			'total_vehicles': Vehicle.objects.all().count
 		}
-		return render(request, 'yardsearcher/emergent-res-fusion.html', context)
+		return render(request, 'yardsearcher/results.html', context)
 
 
