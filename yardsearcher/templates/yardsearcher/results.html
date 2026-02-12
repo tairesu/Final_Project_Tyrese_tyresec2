@@ -199,27 +199,35 @@
                                         <thead class="bg-muted/50">
                                             <tr>
                                                 <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                    <span class="hidden md:visible text-primary mr-2">📅</span>Year
+                                                    <span>Year</span>
                                                 </th>
                                                 <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                    <span class="hidden md:visible text-primary mr-2">🚗</span>Make
+                                                    <span>Make</span>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">Model</th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">Row</th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <span>Model</span>
+                                                </th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <span>Row</span>
+                                                </th>
                                                 {% if yard.results.last.space %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground">Space</th>
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                        <span>Space</span>
+                                                    </th>
                                                 {% endif %}
                                                 {% if yard.results.first.vin %}
                                                     <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                        <span class="hidden md:visible text-primary mr-2">#</span>VIN
+                                                        <span>VIN</span>
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.first.color %}
                                                     <th class="px-6 py-3 text-left font-bold text-foreground">
-                                                        Color
+                                                        <span>Color</span>
                                                     </th>
                                                 {% endif %}
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">Entry Date</th>
+                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                   <span>Entry Date</span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
