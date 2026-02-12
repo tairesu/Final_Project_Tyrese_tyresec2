@@ -137,16 +137,21 @@
                 <!-- Map Section -->
                 <div class="w-full lg:sticky lg:top-32 self-start">
                     <div class="p-4 bg-card border-2 border-border rounded-lg">
-                        <div class="mb-4">
-                            <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
-                                <span class="text-primary">📍</span>
-                                Junkyard Locations
-                            </h2>
-                            <p class="text-sm text-muted-foreground mt-1">
-                                Click markers to view inventory
-                            </p>
-                        </div>
-                        <div id="map" class="h-[500px] lg:h-[600px] rounded-lg z-0 border-2 border-border "></div>
+                        {% if fetched_yard_data|length > 0 %}
+                            <div class="mb-4">
+                                <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+                                    <span class="text-primary">📍</span>
+                                    Junkyard Locations
+                                </h2>
+                                <p class="text-sm text-muted-foreground mt-1">
+                                    Click markers to view inventory
+                                </p>
+                            </div>
+                            <div id="map" class="h-[500px] lg:h-[600px] rounded-lg z-0 border-2 border-border "></div>
+                        {% else %}
+                            <img src="{% static '/noresult.png'%}"/>
+                            <div id="map" class="hidden "></div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -253,7 +258,7 @@
                                 </div>
                                 <div class="bg-muted/30 px-6 py-4 border-t border-border">
                                     <p class="text-sm text-muted-foreground">
-                                        Found <span class="font-semibold text-foreground">{{ yard.num_results }}</span> vehicles from {{ yard.name|capfirst }} (in {{yard.time_elapsed}} seconds)
+                                        Found <span class="font-semibold text-foreground">{{ yard.num_results }}</span> vehicles from {{ yard.name|capfirst }}
                                     </p>
                                 </div>
                             </div>
