@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-from geopy.geocoders import Nominatim
-
-
+import datetime
 # Create your models here.
 class Junkyard(models.Model):
     junkyard_id = models.AutoField(primary_key=True)
@@ -26,14 +24,8 @@ class Junkyard(models.Model):
 
     def get_absolute_url(self):
         return reverse('_detail', kwargs={'pk': self.pk})
-
-    def get_latlong(self)-> tuple:
-        geolocator = Nominatim(user_agent='junkyardfinder-reesesites@gmail.com')
-        locator_str = f'{self.address} {self.city}, {self.state} {self.zip_code}'
-        location = geolocator.geocode(locator_str)
-        return (location.latitude, location.longitude)
-
-
+    
+    
 class Vehicle(models.Model):
     vehicle_id = models.AutoField(primary_key=True)
     junkyard = models.ForeignKey(Junkyard, related_name='vehicles', on_delete=models.CASCADE)
@@ -51,6 +43,21 @@ class Vehicle(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=['junkyard', 'junkyard_identifier'], name='unique_vehicle')]
         
+    def get_duration(self)-> str:
+        output = ""
+        today = datetime.date.today()
+        time_delta = self.available_date - today
+        num_days = abs(time_delta.days)
+        num_months = num_days // 30
+        if num_days == 0:
+            return "Today"
+        
+        if num_months > 0:     
+            output = f"{num_months} months" if num_months > 1 else f"{num_months} month" 
+        else:
+            output = f"{num_days} days" if num_days > 1 else f"{num_days} day"
+        return output + " ago"
+    
     def __str__(self):
         return f'{self.year} {self.make} {self.model}'
 
