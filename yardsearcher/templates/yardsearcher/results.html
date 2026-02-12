@@ -222,11 +222,11 @@
                                                 <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
                                                     <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.year }}</td>
                                                     <td class="px-6 py-3 font-medium">
-                                                        <span class="px-2 py-1 rounded-md text-foreground transition-colors">
-                                                            {{ vehicle.make|capfirst }}
+                                                        <span class="py-1 rounded-md text-foreground transition-colors">
+                                                            {{ vehicle.make|upper }}
                                                         </span>
                                                     </td>
-                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|capfirst }}</td>
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|upper }}</td>
                                                     {% if vehicle.row > 0 %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
                                                     {% else %}
