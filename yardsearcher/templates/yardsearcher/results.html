@@ -57,7 +57,7 @@
                                 name="q"
                                 placeholder="Search by make, model, or year..."
                                 value="{{query}}"
-                                class="w-full pl-4 pr-12 h-14 text-md bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none transition-colors text-foreground"
+                                class="w-full pl-4 pr-12 h-14 text-base bg-background border-2 border-border rounded-lg focus:border-primary focus:outline-none transition-colors text-foreground"
                                 required
                             />
                             <button
@@ -167,7 +167,7 @@
                                             🔧
                                         </div>
                                         <div>
-                                            <h3 class="text-lg lg:2xl font-bold text-foreground mb-1">
+                                            <h3 class="text-base lg:2xl font-bold text-foreground mb-1">
                                                 {{ yard.name|capfirst }}
                                             </h3>
                                             <div class="flex items-center gap-2 text-sm text-muted-foreground">
@@ -322,13 +322,13 @@
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="text-lg lg:2xl"></span>
                             </div>
-                            <h3 class="font-bold text-lg mb-2">${junkyard.name}</h3>
+                            <h3 class="font-bold text-base mb-2">${junkyard.name}</h3>
                             <h6 class="text-sm text-muted-foreground">${junkyard.address}</h6>
                             <h6 class="text-sm text-muted-foreground mb-2">${junkyard.city}, ${junkyard.state}</h6>
                             <div class="flex items-center justify-between pt-2">
                                 <button 
                                     onclick="handleJunkyardClick(${junkyard.id})"
-                                    class="text-sm flex-1 px-3 py-1 border-2 border-orange text-primary rounded hover:bg-secondary/90 transition-colors"
+                                    class="text-sm flex-1 px-3 py-1 border-2 border-orange text-primary rounded hover:bg-primary/90 hover:text-white transition-colors"
                                 >
                                     See ${junkyard.num_results + suffix} 
                                 </button>
