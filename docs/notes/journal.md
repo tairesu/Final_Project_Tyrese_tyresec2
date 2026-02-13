@@ -1,9 +1,20 @@
-## 
+# Dev Journal
+
+
 
 I want to alter the scraping process to reduce the number of requests.  
 Instead of sending several requests to junkyards everytime the search button is clicked,  I'll cache the inventory data of each junkyard into a new model from one request.  
 
-Next Steps:
+## Unreleased:
+
+### Added
+*	New API Endpoints for querying inventory data
+
+### Changed
+
+### Depracated 
+
+### Fixed
 
 1) ~~Building a `Vehicles` Model to store vehicle data from every junkyard~~ . 
 2) Altering base scraper class to insert results into that model 
