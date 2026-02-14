@@ -1,8 +1,11 @@
 
 from yardsearcher.utils.jup import Jup
 from yardsearcher.utils.lkq import LKQSearch
+from yardsearcher.utils.pnp import Pnp
+
 
 # Information on Junkyards are manually registered here. 
+
 KNOWN_YARDS = [
 	{
 		'name': 'Joliet U-Pull It',
@@ -44,5 +47,24 @@ KNOWN_YARDS = [
 			'store_id':1585,
 			'referer_suffix': 'chicago-south-1585'
 		},
+	},
+	{
+		'name': 'Pick n Pull - Summit',
+		'class': Pnp,
+		'date_format': '%Y-%m-%dT%H:%M:%S%z',
+		'city': 'Summit',
+		'lat': 41.7797,
+		'long': -87.8143,
+		'state': 'IL',
+		'zip_code': 60501,
+		'address': '7800 West 61st Place',
+		'params': {
+            "distance":"10",
+            "language":"english",
+            "zip":"60501",
+            "makeId":"",
+            "modelId":"",
+            "year":"",
+        },
 	},
 ]
