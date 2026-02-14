@@ -1,4 +1,57 @@
 # Dev Journal
+## 2/14/26
+
+### Objective
+*   Enable sorting inventory data by columns (Year, make, date, etc). 
+
+### Building the Internal API to sort inentory tables
+
+I do not want a refresh to occur because it may disrupt the user's experience. For this reason, JS will be used to dynamically *sort* a table( of choice ) by a column (of set{'year','make','model','entryDate','row'}) 
+
+I'll use JS to fetch data from an internal API and repopulate the DOM instead of undergoing extensive JS work to search the DOM, capture the values, sort the values, and so on.
+
+The former would require:
+
+1. creating a JSONResponse view of results (w/ support for q, yardId, sortBy, orderBy params )
+2. introducing JS function that gets triggered by clicking any `<th>` element. It will:
+    - make a call to the internal API (**will need q, yardId, sortBy, order params**)
+    - (if status ok & results exists) 
+        - remove children of clicked **table.tbody**
+        - map results list to table row elements 
+        - append those table row nodes to clicked table.tbody
+        - toggle icon
+
+
+#### Keep in mind
+
+*   Not all `<th>` elements will be sortable. 
+*   `<Vehicle>` instances may have blank or default values for certain fields
+
+#### Expected JSON (Think MVP)
+
+```
+{
+    "query": "00-07 civic",
+    "sortBy": "entryDate",
+    "order": "desc",
+    "yardId": 17,
+    num_vehicles: 32,
+    "vehicles": [
+        {
+            "year": "2007",
+            "make": "Honda",
+            "model": "Civic",
+            "vin": "",
+            "photo": "",
+            "space": "",
+            "entryDate": "3 months ago",
+            "row":75,
+        }, ...{},
+    ],
+}
+```
+#### 
+
 
 ## 2/13/26
 
@@ -12,7 +65,7 @@ Typically, a scraper subclass's `inventory_headers` tuple is set after extractin
 I can manually set the `Pnp().inventory_headers` to these keys from the api:
 *   barCodeNumber (unique identifier)
 *   vin
-*   year
+*  year
 *   make
 *   model
 *   largeImage (in case Scraphounds support vehicle images in the future)
