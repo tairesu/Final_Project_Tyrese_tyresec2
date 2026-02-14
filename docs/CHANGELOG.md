@@ -24,11 +24,12 @@
 *   Added Pick-n-pull summit to `known_yards`
 
 ### Fixed 
-*	
+*	Searching for vehicle by year ('2017','07') shows vehicles
 
 ### Changed
 * 	Updated `yardsearcher.utils.extractors' functions to accomodate Pnp - Summit's api json keys 
 *   Updated `refresh_inventories` command to raise ValueError on unsuccessful formatting
+*   Set regex expressions as variables for readability purposes
 
 
 ### Deprecated
