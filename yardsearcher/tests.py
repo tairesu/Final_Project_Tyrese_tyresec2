@@ -30,6 +30,7 @@ class checkQueries(TestCase):
             {"query": "civic", "expected": False},
             {"query": "05 civic", "expected": True},
             {"query": "2005 civic", "expected": True},
+            {"query": "2017", "expected": True},
             {"query": "civic 2005", "expected": True},
             {"query": "honda civic 05", "expected": True},
             {"query": "honda 05 civic", "expected": True},
