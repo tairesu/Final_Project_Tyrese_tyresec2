@@ -62,6 +62,7 @@ class Command(BaseCommand):
 			return Vehicle(junkyard_id=yard['id'], year=year, make=make, model=model, available_date=available_date, row=row, space=space, color=color, junkyard_identifier=junkyard_identifier, vin=vin)
 		except ValueError as e:
 			print(f"{e} appeared at this result: {result}")
+			raise ValueError
 
 	def upsert_models_list(self, models_list):
 		# Upsert list of <Vehicle> instances
