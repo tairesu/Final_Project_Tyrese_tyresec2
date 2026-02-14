@@ -9,7 +9,7 @@ def extract_row(result):
 	try:
 		# Junkyards may name the 'row' attrtibute differently
 		if 'row' in result.keys() and len(result['row']) > 0:
-			row = int(result['row'])  # Pyp
+			row = int(result['row'])  # Pyp, Pnp
 		elif 'vehicle row' in result.keys() and len(result['vehicle row']) > 0:
 			row = int(result['vehicle row']) # Jup
 	except ValueError:
@@ -24,6 +24,8 @@ def extract_junkyard_identifier(result):
 		junkyard_identifier = result['stock#']
 	elif 'stock #' in result.keys():
 		junkyard_identifier = result['stock #']
+	elif 'barCodeNumber' in result.keys():
+		junkyard_identifier = result['barCodeNumber'] # Pnp
 	return junkyard_identifier
 
 def extract_color(result):
@@ -44,6 +46,8 @@ def extract_date(result, date_format):
 		date = result['date set in yard']
 	elif 'available' in result.keys():
 		date = result['available'] 
+	elif 'dateAdded' in result.keys():
+		date = result['dateAdded']
 	return datetime.strptime(date, date_format)
 
 def extract_vin(result):
