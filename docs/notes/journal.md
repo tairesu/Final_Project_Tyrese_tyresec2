@@ -1,26 +1,35 @@
 # Dev Journal
 
 ## 2/13/26
-- Api returns json of Summit's inventory
+
 
 Day 2 of adding Pick n Pull Summit to Scraphounds. Thankful for their api
 
-v1.0.2 is configured to scrape data from a url when the refresh_inventories command is run. It is not used to having JSON handed to it.
+v1.0.2 is configured to scrape data from a url when the refresh_inventories command is run. The command is not used to having JSON handed to it so easily.
 
-Typically, a scraper subclass's `inventory_headers` tuple is set after extracting the text from the appropriate \<th> tags.  With Pnp's API, there's no need. 
+Typically, a scraper subclass's `inventory_headers` tuple is set after extracting the text from the appropriate \<th> tags...  With Pnp's API, there's no need to scrape anything! 
 
-I still have to determine how to parse the api's output for setting `inventory_headers`. I'll insert these keys from the api into the tuple:
+I can manually set the `Pnp().inventory_headers` to these keys from the api:
 *   barCodeNumber (unique identifier)
 *   vin
 *   year
 *   make
 *   model
-*   largeImage (in case Scraphounds support images if vehicles in the future)
+*   largeImage (in case Scraphounds support vehicle images in the future)
 *   dateAdded
  
  Now I can easily clean the vehicle dictionaries (that come back from this API) by extracting **ONLY** the key value pairs with keys that exist in `inventory_headers`
 
- Unlike other junkyard specific scraper classes, this scraper class doesn't need to use `Yardsearch.results_as_list()`  the same. When the vehicle dictionaries are cleaned, they are immediately appended to the `results` attribute. 
+ Unlike other junkyard specific scraper classes, this scraper class doesn't need to use `Yardsearch.results_as_list()` the same. When the vehicle dictionaries are cleaned, they are immediately appended to the `results` attribute. 
+
+ In `yardsearcher.utils.known_yards` I'll manually fill in details like class to use, lat, long, and request params to register Pick n Pull Summit to Scraphounds. 
+
+ I suspect this class's `handle_queries` method to fail when called in `yardsearcher.management.commands.refresh_inventories` because there are no *queries* to pass as a parameter. (Older versions used to pass queries to return matching vehicles from websites ). To prevent this, I will override the parent `handle_queries` method to: 
+ 1. Fetch all inventory results 
+ 2. Format each result (removing irrelevant keys from API dictionary)
+ 3. Append to `results` attribute
+
+ The final step is testing the `refesh_inventory` command & adjusting `yardsearcher.utils.extractors` to account for the different key names that Pick n Pull use ( Pnp uses "dateAdded" for dates; LKQ uses "date available" for dates)
 
 ## 2/12/26
 
@@ -87,8 +96,6 @@ I'll be adding Pick n Pull Summit to Scraphounds. ~~I originally intented to scr
 *   Table data has no identifying attributes (id, name, etc)
 *   Not all vehicles have thumbnails
 *   I don't need the td element with the `td.visible-xs` class.
-
-
 
 ## ??? 
 
