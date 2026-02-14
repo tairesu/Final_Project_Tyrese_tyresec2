@@ -91,4 +91,5 @@ def results_view(request):
 		}
 		return render(request, 'yardsearcher/results.html', context)
 
-
+def api_test_json_response(request):
+    return JsonResponse({"ok":True}, safe=True)
