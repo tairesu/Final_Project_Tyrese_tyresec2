@@ -3,15 +3,33 @@
 ## [Unreleased]
 
 ### Added 
-*	Added API endpoints to fetch inventory data
-*	Support for sorting inventory data
-*	(New junkyard) Pick n Pull in Summit Illinois 
+*	Added API endpoints to show inventory data
+*	Support for sorting inventory data 
+*   Support for visualizing inventory data (Vegalite) 
+*   Support for fetching and displaying images of junkyard vehicles
+
+### Fixed 
+*	Popup button no longer protrudes parent container
+
+### Changed
+* 	
+
+### Deprecated
+*	No longer using queries to filter website data in scrapers
+
+## [v.1.0.3] - 02/13/2026 
+
+### Added 
+*	Configured scraper for Pick-n-pull Summit to handle their vehicle API data 
+*   Added Pick-n-pull summit to `known_yards`
 
 ### Fixed 
 *	
 
 ### Changed
-* 	
+* 	Updated `yardsearcher.utils.extractors' functions to accomodate Pnp - Summit's api json keys 
+*   Updated `refresh_inventories` command to raise ValueError on unsuccessful formatting
+
 
 ### Deprecated
 *	
@@ -60,6 +78,4 @@
 ### Security 
 *	
 ## [v.1.0.0] -
-## [v.1.0.0] -
-## [v.0.0.2] -
-## [v.0.0.1] - 
+
