@@ -102,21 +102,33 @@ def api_sort_table(request):
 	(w/ support for q, yardId, sortBy, orderBy params )
 	"""
 	if request.method == "GET":
+		valid_fields = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date']
+		valid_orders = ("","-")
+  
 		try:
+			# Capturing URL parameters
 			query = request.GET.get('q')
 			order = request.GET.get('order')
 			yardId = request.GET.get('yardId')
 			sortBy = request.GET.get('sortBy')
-			assert query and yardId and sortBy and order in ("","-")
    
+			# Validate them
+			assert query and yardId and sortBy in valid_fields and order in valid_orders
+			
+			# Construct the database query fom them
 			query_conditionals = get_query_conditionals(query)
 			db_query = construct_db_query(query_conditionals)
 			db_query &= Q(junkyard_id=yardId)
+   
+			# Query and sort the data 
 			unordered_vehicle_qs = Vehicle.objects.filter(db_query) 
 			sorted_vehicle_qs = unordered_vehicle_qs.order_by(f'{order}{sortBy}')
-			sorted_vehicles = [model_to_dict(vehicle) for vehicle in sorted_vehicle_qs]
+			
+			# Queries in Django return querysets (list of model instances)
+			# Help JSON serialize those model instances
+			sorted_vehicles = [model_to_dict(vehicle, fields=valid_fields) for vehicle in sorted_vehicle_qs]
 			return (JsonResponse(
-				{
+				{	"ok": True,
 					"query": query,
 					"order": order,
 					"yardId": yardId,
@@ -127,5 +139,5 @@ def api_sort_table(request):
                 )
           	)
 		except AssertionError as e:
-			return JsonResponse({"ok": False, "msg":"Sort Table API needs q, order (asc|desc), sortBy, and yardId URL parameters "}, safe=False)
+			return JsonResponse({"ok": False, "msg":"Sort Table API needs valid q, order, sortBy, and yardId URL parameters "}, safe=False)
 		
