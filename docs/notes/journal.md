@@ -1,10 +1,56 @@
 # Dev Journal
+
+## 2/15/26
+
+### Today's Objective
+-   Enable sorting inventory data by columns (Year, make, date, etc). 
+    - Get JS function that's triggered by `<th>` elements prepare parameters 
+
+
+#### Setting up the JS call to internal API for sorting inventory tables
+place `sortby`, `order` params in \<th> elements attrs 
+1. set \<th> element's `onclick` to sortInventory function
+2. Develop sortInventory to prep parameters (from \<th>, & url), call API, and rebuild *the appropiate table* 
+
+##### Gathering Params
+
+*   `order`: held in data-order of \<th>
+*   `sortBy`: held in data-name of \<th> elements
+*   `yardId`: held in parent `<table>` of elements
+*   `q`: held in the q paramenter of the URL (because the input box is subject to change)
+
+
+##### Curent Internal API State
+```
+{
+  "ok": true,
+  "query": "00",
+  "order": "",
+  "yardId": "17",
+  "sortBy": "model",
+  "vehicles": [
+    {
+      "year": 2000,
+      "make": "mercedes-benz",
+      "model": "c-class",
+      "color": "",
+      "row": 25,
+      "space": 0,
+      "vin": "",
+      "available_date": "2025-12-13"
+    }, {}, {}...
+ ]
+}
+```
+##### Snippet of \<tr> element
+
+
 ## 2/14/26
 
 ### Objective
 *   Enable sorting inventory data by columns (Year, make, date, etc). 
-
-### Building the Internal API to sort inentory tables
+*   
+#### Building the Internal API to sort inventory tables 
 
 I do not want a refresh to occur because it may disrupt the user's experience. For this reason, JS will be used to dynamically *sort* a table( of choice ) by a column (of set{'year','make','model','entryDate','row'}) 
 
@@ -22,12 +68,12 @@ The former would require:
         - toggle icon
 
 
-#### Keep in mind
+##### Keep in mind
 
 *   Not all `<th>` elements will be sortable. 
 *   `<Vehicle>` instances may have blank or default values for certain fields
 
-#### Creating the JSONResponse View
+##### Creating the JSONResponse View
 
 The 4 parameters must be present for the SortTable API to work (for now). I use assert statements behind a try block and handle assertione errors if the parameters are invalid. 
 With the parameters, I construct a query for the database like the one in `results_view`, The difference here is that I add onto that query to filter cars by `junkyard_id`. 
@@ -36,7 +82,7 @@ I filter the db with this newly prepped query, then sort the returned data using
 
 With the newly sorted queryset, the last thing to do is format this. Here I turn the Vehicle instances into a dict for JSON to serialize (Can't serialize querysets). 
 
-##### Expected JSON Output (Bare minimum for sort table feature)
+###### Expected JSON Output (Bare minimum for sort table feature)
 ```
 {
     "query": "00-07 civic",
@@ -58,7 +104,6 @@ With the newly sorted queryset, the last thing to do is format this. Here I turn
     ],
 }
 ```
-#### 
 
 
 ## 2/13/26
