@@ -27,13 +27,21 @@ The former would require:
 *   Not all `<th>` elements will be sortable. 
 *   `<Vehicle>` instances may have blank or default values for certain fields
 
-#### Expected JSON (Think MVP)
+#### Creating the JSONResponse View
 
+The 4 parameters must be present for the SortTable API to work (for now). I use assert statements behind a try block and handle assertione errors if the parameters are invalid. 
+With the parameters, I construct a query for the database like the one in `results_view`, The difference here is that I add onto that query to filter cars by `junkyard_id`. 
+
+I filter the db with this newly prepped query, then sort the returned data using Django's built-in `order_by` method.  The last two parameters (order & sortBy ) will be combined into a sting and passed into order_by. 
+
+With the newly sorted queryset, the last thing to do is format this. Here I turn the Vehicle instances into a dict for JSON to serialize (Can't serialize querysets). 
+
+##### Expected JSON Output (Bare minimum for sort table feature)
 ```
 {
     "query": "00-07 civic",
     "sortBy": "entryDate",
-    "order": "desc",
+    "order": "",
     "yardId": 17,
     num_vehicles: 32,
     "vehicles": [
