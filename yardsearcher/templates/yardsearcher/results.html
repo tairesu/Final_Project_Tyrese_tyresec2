@@ -198,34 +198,34 @@
                                     <table class="w-full">
                                         <thead class="bg-muted/50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="year" >
                                                     <span>Year</span>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="make" >
                                                     <span>Make</span>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="model" >
                                                     <span>Model</span>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="row" >
                                                     <span>Row</span>
                                                 </th>
                                                 {% if yard.results.last.space %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="space" >
                                                         <span>Space</span>
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.first.vin %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="vin" >
                                                         <span>VIN</span>
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.first.color %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="color" >
                                                         <span>Color</span>
                                                     </th>
                                                 {% endif %}
-                                                <th class="px-6 py-3 text-left font-bold text-foreground">
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="available_date" >
                                                    <span>Entry Date</span>
                                                 </th>
                                             </tr>
@@ -422,5 +422,9 @@
             }
 
         </script>
-
+        <script>
+            function sortInventory(e){
+                console.log(e)
+            }
+        </script>
     {% endblock %}
