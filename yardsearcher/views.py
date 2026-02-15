@@ -7,6 +7,8 @@ from django.views.generic import View
 from yardsearcher.utils.queries import *
 from django.db.models import Q, Count
 from django.db.models.functions import Lower
+
+from django.forms.models import model_to_dict
 from yardsearcher.models import (
 	Vehicle,
 	Junkyard
@@ -93,3 +95,37 @@ def results_view(request):
 
 def api_test_json_response(request):
     return JsonResponse({"ok":True}, safe=True)
+
+def api_sort_table(request):
+	"""
+	Supplies results page with sorted table as json
+	(w/ support for q, yardId, sortBy, orderBy params )
+	"""
+	if request.method == "GET":
+		try:
+			query = request.GET.get('q')
+			order = request.GET.get('order')
+			yardId = request.GET.get('yardId')
+			sortBy = request.GET.get('sortBy')
+			assert query and yardId and sortBy and order in ("","-")
+   
+			query_conditionals = get_query_conditionals(query)
+			db_query = construct_db_query(query_conditionals)
+			db_query &= Q(junkyard_id=yardId)
+			unordered_vehicle_qs = Vehicle.objects.filter(db_query) 
+			sorted_vehicle_qs = unordered_vehicle_qs.order_by(f'{order}{sortBy}')
+			sorted_vehicles = [model_to_dict(vehicle) for vehicle in sorted_vehicle_qs]
+			return (JsonResponse(
+				{
+					"query": query,
+					"order": order,
+					"yardId": yardId,
+					"sortBy": sortBy,
+					"vehicles": sorted_vehicles,
+				},
+                	safe=False
+                )
+          	)
+		except AssertionError as e:
+			return JsonResponse({"ok": False, "msg":"Sort Table API needs q, order (asc|desc), sortBy, and yardId URL parameters "}, safe=False)
+		
