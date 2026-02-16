@@ -16,8 +16,9 @@ place `sortby`, `order` params in \<th> elements attrs
 
 *   `order`: held in data-order of \<th>
 *   `sortBy`: held in data-name of \<th> elements
-*   `yardId`: held in parent `<table>` of elements
+*   `yardId`: held in parent `<tr>` of \<th> element because it's closer in the DOM tree (than \<table>) and its static 
 *   `q`: held in the q paramenter of the URL (because the input box is subject to change)
+
 
 
 ##### Curent Internal API State

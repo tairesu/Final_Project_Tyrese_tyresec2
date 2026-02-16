@@ -196,8 +196,8 @@
                             <div id="table-{{yard.meta.pk}}" class="hidden fade-in">
                                 <div class="overflow-x-auto">
                                     <table class="w-full">
-                                        <thead class="bg-muted/50">
-                                            <tr>
+                                        <thead class="bg-muted/50" >
+                                            <tr data-yardId="{{yard.meta.pk}}">
                                                 <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="year" >
                                                     <span>Year</span>
                                                 </th>
@@ -423,8 +423,21 @@
 
         </script>
         <script>
-            function sortInventory(e){
-                console.log(e)
+            const querySearchURL = window.location.search;
+            const urlParams = new URLSearchParams(querySearchURL);
+            const q = urlParams.get('q');
+            const url = "{% url 'api_sort_table_urlpattern' %}";
+
+            function get_api_url(th){
+                let sortby = th.dataset['sortby'];
+                let order = th.dataset['order'];
+                let yardId = th.parentNode.dataset['yardid'];
+                //console.log(`Params for api:\n yardId: ${yardId} \n sortby: "${sortby}" \n order: "${order}" \n q: "${q}"`);
+                return encodeURI(`${url}q=${q}&sortby=${sortby}&order=${order}&yardId=${yardId}`)
+            }
+            
+            function sortInventory(th){
+                api_url = get_api_url(th);
             }
         </script>
     {% endblock %}
