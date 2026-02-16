@@ -31,7 +31,19 @@ Because junkyards collect different info on their vehicles, there are a differen
 
 To help JS determine what keys to use in the API result (& create table rows from), I collect the non-empty keys to use from any given table's \<th> elements by accessing the `data-sortby` attibutes. I call these keys `inventory_keys` or and `valid_fields`
 
-They're passed into the create table row function where they are used to grab only the non-empty values from the API and determine what set of CSS classes to use. With the \<tr> element prepped and ready to go, they are appended to the appropriate table body element.
+They're passed into the create table row function where they are used to grab only the non-empty values from the API and determine what CSS classes to use for the \<td> elements. With a \<tr> element is prepped and ready to go, it is appended to the appropriate table body element
+
+#### Enabling toggle order
+
+Clicking the \<th> elements will sort the table by that element's `data-sortBy` attribute **once**. This is because that element's `data-order` attribute has not changed. 
+
+`data-order` starts at ascending order and *should* switch when the table has been sorted. For that reason, I'll create a `toggleOrder` function that takes in the `<th>` element as a parameter. 
+
+If `th[data-order]` is "" (ascending) then set to "-" (descending),  else set to "". 
+
+This function will be executed at the end of `sortInventory`
+
+
 
 
 
