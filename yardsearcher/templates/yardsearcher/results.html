@@ -198,11 +198,11 @@
                                     <table class="w-full">
                                         <thead class="bg-muted/50" >
                                             <tr data-yardId="{{yard.meta.pk}}">
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="year" >
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="year" >
                                                     <span>Year</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3"
+                                                        class="w-4 h-5 inline ml-3"
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -215,11 +215,11 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="make" >
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="make" >
                                                     <span>Make</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -232,11 +232,11 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="model" >
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="model" >
                                                     <span>Model</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -249,11 +249,11 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="row" >
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="row" >
                                                     <span>Row</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -267,11 +267,11 @@
                                                     </svg>
                                                 </th>
                                                 {% if yard.results.last.space %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="space" >
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="space" >
                                                         <span>Space</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -286,11 +286,11 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.first.vin %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="vin" >
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="vin" >
                                                         <span>VIN</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -305,11 +305,11 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.first.color %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="color" >
+                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="color" >
                                                         <span>Color</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -323,11 +323,11 @@
                                                     </svg>
                                                     </th>
                                                 {% endif %}
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-order="" data-sortBy="available_date" >
+                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="available_date" >
                                                    <span>Entry Date</span>
                                                    <svg
                                                         viewBox="0 0 640 640"
-                                                        class="w-5 h-5 inline ml-3 "
+                                                        class="w-4 h-5 inline ml-3 "
                                                         version="1.1"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                     >
@@ -567,10 +567,18 @@
 
             function toggleOrder(th) {
                 order_state = th.dataset['order'];
-                th.dataset['order'] = (order_state == "-") ? "":"-";
-                th.lastElementChild;
+                yardId = th.parentNode.dataset['yardid'];
 
+                // Dim the one other th  that's in use if it exists
+                last_active_th = document.querySelector(`tr[data-yardid="${yardId}"] th[data-isusing="true"]`);
+                if (last_active_th != null)
+                    last_active_th.dataset['isusing'] = "false";
+
+                // Change states of the passed th element
+                th.dataset['isusing'] = "true";
+                th.dataset['order'] = (order_state == "-") ? "":"-";
             }
+
             function get_inventory_keys(yardId) {
                 let inventory_keys = [];
                 document.querySelectorAll(`#table-${yardId} th`).forEach(th => {
