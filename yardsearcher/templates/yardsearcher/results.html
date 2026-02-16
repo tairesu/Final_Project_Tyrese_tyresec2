@@ -446,10 +446,16 @@
                         throw new Error(`API Usage Error: ${api_result.msg}`);
                     }
                     rebuildTableBody(api_result);
+                    toggleOrder(th);
                     
                 } catch (error) {
                     console.error(error.message);
                 }
+            }
+
+            function toggleOrder(th) {
+                order_state = th.dataset['order'];
+                th.dataset['order'] = (order_state == "-") ? "":"-";
             }
             function get_inventory_keys(yardId) {
                 let inventory_keys = [];
