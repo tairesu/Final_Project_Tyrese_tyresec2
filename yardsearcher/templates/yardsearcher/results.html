@@ -234,12 +234,10 @@
                                             {% for vehicle in yard.results %}
                                                 <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
                                                     <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.year }}</td>
-                                                    <td class="px-6 py-3 font-medium">
-                                                        <span class="py-1 rounded-md text-foreground transition-colors">
-                                                            {{ vehicle.make|upper }}
-                                                        </span>
+                                                    <td class="px-6 py-3 font-semibold text-foreground">
+                                                        {{ vehicle.make|upper }}
                                                     </td>
-                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|upper }}</td>
+                                                    <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.model|upper }}</td>
                                                     {% if vehicle.row > 0 %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
                                                     {% else %}
@@ -453,25 +451,56 @@
                     console.error(error.message);
                 }
             }
-            function createTableRow(vehicle) {
-            
-                return ''
+            function get_inventory_keys(yardId) {
+                let inventory_keys = [];
+                document.querySelectorAll(`#table-${yardId} th`).forEach(th => {
+                     inventory_keys.push(th.dataset['sortby']);
+                });
+                return inventory_keys
+            }
+
+            function createTableRow(vehicle, valid_fields) {
+                tr = document.createElement('tr');
+                tr.className = 'border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group';
+                foreground_fields = ['year','make','model'];
+                let td_class = '';
+                valid_fields.map(field => { 
+                    let td_html = vehicle[field];
+                    if (foreground_fields.includes(field)) {
+                        // Use this class
+                        td_class = 'px-6 py-3 font-semibold text-foreground uppercase';
+                    } else {
+                        td_class = 'px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
+                    }
+                    tr.innerHTML += `<td class="${td_class}">${td_html}</td>`;
+                });
+                return tr
+            }
+
+            function populateTableBody(tableBody, vehicles, valid_fields) {
+                vehicles.map(vehicle => { 
+                    tableRow = createTableRow(vehicle, valid_fields);
+                    tableBody.appendChild(tableRow);
+                });
             }
             function rebuildTableBody(api_result) {
                 try {
                     const yardId = api_result['yardId'];
                     const tbody = document.querySelector(`#tbody-${yardId}`);
                     const vehicles = api_result['vehicles'];
-                    // Turn vehicles into a table row
-                    vehicles.map(vehicle => {
-                        console.log("vehicles.map vehicle: ", vehicle);
-                    });
+                    // Collect field names from ths to determine what fields to extract from api
+                    const inventory_keys = get_inventory_keys(yardId); 
                     
+                    while(tbody.firstChild)
+                        tbody.removeChild(tbody.firstChild)
+                    // Turn vehicles into a table row
+                    populateTableBody(tableBody=tbody, vehicles, valid_fields=inventory_keys);
+
                 } catch (error) {
                     console.error(` Whoops! rebuildTableBody failed: ${error.message}`);
                 }
                 
-                
             }
+            
         </script>
     {% endblock %}
