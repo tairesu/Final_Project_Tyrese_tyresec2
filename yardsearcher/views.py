@@ -14,6 +14,10 @@ from yardsearcher.models import (
 	Junkyard
 )
 
+# For API Use
+VALID_FIELDS = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date']
+VALID_ORDERS = ("","-")
+
 def get_avg(li):
 	dividend = len(li) if len(li) > 0 else 1
 	return sum(li) / dividend
@@ -93,6 +97,21 @@ def results_view(request):
 		}
 		return render(request, 'yardsearcher/results.html', context)
 
+def instance_to_dict(instance)->dict:
+    """
+    Returns a dict of data from the instance (including the output of this instance's `get_duration()` magic method)
+    """
+    return {
+		"year": instance.year,
+		"make": instance.make,
+		"model": instance.model,
+		"vin": instance.vin,
+		"color": instance.color,
+		"space": instance.space,
+		"row": instance.row,
+		"available_date": instance.get_duration(),
+	}
+    
 def api_test_json_response(request):
     return JsonResponse({"ok":True}, safe=True)
 
@@ -102,8 +121,6 @@ def api_sort_table(request):
 	(w/ support for q, yardId, sortBy, orderBy params )
 	"""
 	if request.method == "GET":
-		valid_fields = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date']
-		valid_orders = ("","-")
   
 		try:
 			# Capturing URL parameters
@@ -113,7 +130,7 @@ def api_sort_table(request):
 			sortBy = request.GET.get('sortBy')
    
 			# Validate them
-			assert query and yardId and sortBy in valid_fields and order in valid_orders
+			assert query and yardId and sortBy in VALID_FIELDS and order in VALID_ORDERS
 			
 			# Construct the database query fom them
 			query_conditionals = get_query_conditionals(query)
@@ -126,7 +143,7 @@ def api_sort_table(request):
 			
 			# Queries in Django return querysets (list of model instances)
 			# Help JSON serialize those model instances
-			sorted_vehicles = [model_to_dict(vehicle, fields=valid_fields) for vehicle in sorted_vehicle_qs]
+			sorted_vehicles = [instance_to_dict(vehicle) for vehicle in sorted_vehicle_qs]
 			return (JsonResponse(
 				{	"ok": True,
 					"query": query,

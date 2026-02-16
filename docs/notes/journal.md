@@ -1,5 +1,45 @@
 # Dev Journal
 
+## 2/16/26
+
+### Objective
+-   Enable sorting inventory data by columns (Year, make, date, etc). 
+    - Updating sorting carets to appear muted when not in use 
+    - ~~Change API to provide dates from the `Vehicle.get_duration()` magic method~~
+
+#### Update sort carets to appear muted when not in use 
+
+#### Change sort table API to provide readable dates for the available_date key 
+
+In v1.0.2, Every `Vehicle` instance got a magic method called `get_duration()` that returns its `available_date` as a readable format (i.e., "4 days ago"). It is used in the Django `results.html` template 
+
+Unfortunately the API (in its current state) does not use that method when creating its JSON because I used Django's built-in `model_to_dict()` to quickly make vehicle instances serializable. Instead of letting this built-in function take care of it, I'll manually spcecify what data to use from the vehicle instances in a function called instance_to_dict
+
+##### Building `instance_to_dict()`
+
+Question: Does a Django model instance have access to Python's `dict.keys()` method, or something similar? 
+Surveys Says: ........................... No, they aren't dictionaries.  
+
+Given a model instance, I'll return a JSON serializable dictionary containing data from the instance (including the output of this instance's `get_duration()` magic method)
+
+###### Snippet of Sort table API (v1.1.0)
+
+```
+ "vehicles": [
+        {
+            "year": 2002,
+            "make": "TOYOTA",
+            "model": "CAMRY",
+            "vin": "4T1BF30K32U516113",
+            "color": "Silver",
+            "space": 15,
+            "row": 22,
+            "available_date": "3 months ago"
+        },...
+ ]
+```
+
+
 ## 2/15/26
 
 ### Today's Objective
@@ -7,7 +47,7 @@
     - ~~Get JS function that's triggered by `<th>` elements to prepare parameters~~
     - ~~Use parameters to make request to internal API (sort table)~~
     - ~~Rebuild specific table's body based on API results~~
-    - 
+    - ~~Use svgs as visual state trackers for any clicked \<th> element's `data-order` attribute~~
 
 
 
@@ -18,7 +58,7 @@
 3. call API
 4.rebuild *the appropiate table*
 
-##### Curent Internal API State
+##### Curent Internal API State (v1.0.3 ->  v1.1.0)
 ```
 {
   "ok": true,
