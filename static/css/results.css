@@ -3,7 +3,7 @@ td, th {
     text-wrap: nowrap;
 }
 
-th[data-order="-"]{
+th[data-order="-"] {
     path.sort-caret:first-child {
         fill: #434548;
     }
@@ -12,10 +12,15 @@ th[data-order="-"]{
     }
 } 
 th[data-order=""]{
-    path.sort-caret:first-child {
+    & path.sort-caret:first-child {
         fill: hsl(22 75% 50% / var(--tw-bg-opacity, 1));
     }
     path.sort-caret:last-child {
         fill: #434548;
     }
-} 
+}
+th[data-isusing="false"]{
+    & path.sort-caret{
+        fill: #434548 !important;
+    }
+}

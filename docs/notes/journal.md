@@ -9,6 +9,15 @@
 
 #### Update sort carets to appear muted when not in use 
 
+I dislike how each sort icon appeared in use. I'll have them greyed out before they are clicked and when a different icon is clicked. To track the state, I'll add the `data-isusing` attribute on the \<th> elements holding these icons. 
+
+`data-isusing` will be set true when a client clicks a \<th> element, and false when the page loads or a different icon is clicked. This change will take place in the JS function `toggleOrder()`
+
+This will enable control over the colors of every sort icon that is in/not in use. Now I can turn unused sort icons grey using the CSS selector: `th[data-isusing="false"] > svg > path.sort-caret`
+
+In JS, I can now find the </th> element that is in use and "turn it off "
+
+
 #### Change sort table API to provide readable dates for the available_date key 
 
 In v1.0.2, Every `Vehicle` instance got a magic method called `get_duration()` that returns its `available_date` as a readable format (i.e., "4 days ago"). It is used in the Django `results.html` template 
