@@ -432,12 +432,30 @@
                 let sortby = th.dataset['sortby'];
                 let order = th.dataset['order'];
                 let yardId = th.parentNode.dataset['yardid'];
-                //console.log(`Params for api:\n yardId: ${yardId} \n sortby: "${sortby}" \n order: "${order}" \n q: "${q}"`);
-                return encodeURI(`${url}q=${q}&sortby=${sortby}&order=${order}&yardId=${yardId}`)
+                console.log(`Params for api:\n yardId: ${yardId} \n sortby: "${sortby}" \n order: "${order}" \n q: "${q}"`);
+                return encodeURI(`${url}?q=${q}&sortBy=${sortby}&order=${order}&yardId=${yardId}`)
             }
-            
-            function sortInventory(th){
-                api_url = get_api_url(th);
+            async function sortInventory(th) {
+                try {
+                    const api_url = get_api_url(th);
+                    const response = await fetch(api_url);
+                    if (!response.ok){
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (!result.ok){
+                        throw new Error(`API Usage Error: ${result.msg}`);
+                    }
+                    rebuildTable(result)
+                    
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+            function rebuildTable(api_json) {
+                console.log(api_json)
             }
         </script>
     {% endblock %}
