@@ -2,3 +2,20 @@
 td, th {
     text-wrap: nowrap;
 }
+
+th[data-order="-"]{
+    path.sort-caret:first-child {
+        fill: #434548;
+    }
+    path.sort-caret:last-child {
+        fill: hsl(22 75% 50% / var(--tw-bg-opacity, 1));
+    }
+} 
+th[data-order=""]{
+    path.sort-caret:first-child {
+        fill: hsl(22 75% 50% / var(--tw-bg-opacity, 1));
+    }
+    path.sort-caret:last-child {
+        fill: #434548;
+    }
+} 
