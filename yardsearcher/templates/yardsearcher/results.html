@@ -230,7 +230,7 @@
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="tbody-{{yard.meta.pk}}">
                                             {% for vehicle in yard.results %}
                                                 <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
                                                     <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.year }}</td>
@@ -443,19 +443,35 @@
                         throw new Error(`Response status: ${response.status}`);
                     }
 
-                    const result = await response.json();
-                    if (!result.ok){
-                        throw new Error(`API Usage Error: ${result.msg}`);
+                    const api_result = await response.json();
+                    if (!api_result.ok){
+                        throw new Error(`API Usage Error: ${api_result.msg}`);
                     }
-                    rebuildTable(result)
+                    rebuildTableBody(api_result);
                     
                 } catch (error) {
                     console.error(error.message);
                 }
             }
-
-            function rebuildTable(api_json) {
-                console.log(api_json)
+            function createTableRow(vehicle) {
+            
+                return ''
+            }
+            function rebuildTableBody(api_result) {
+                try {
+                    const yardId = api_result['yardId'];
+                    const tbody = document.querySelector(`#tbody-${yardId}`);
+                    const vehicles = api_result['vehicles'];
+                    // Turn vehicles into a table row
+                    vehicles.map(vehicle => {
+                        console.log("vehicles.map vehicle: ", vehicle);
+                    });
+                    
+                } catch (error) {
+                    console.error(` Whoops! rebuildTableBody failed: ${error.message}`);
+                }
+                
+                
             }
         </script>
     {% endblock %}
