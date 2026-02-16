@@ -4,13 +4,19 @@
 
 ### Today's Objective
 -   Enable sorting inventory data by columns (Year, make, date, etc). 
-    - Get JS function that's triggered by `<th>` elements prepare parameters 
+    - ~~Get JS function that's triggered by `<th>` elements to prepare parameters~~
+    - ~~Use parameters to make request to internal API (sort table)~~
+    - ~~Rebuild specific table's body based on API results~~
+    - 
+
 
 
 #### Setting up the JS call to internal API for sorting inventory tables
-place `sortby`, `order` params in \<th> elements attrs 
+1.place `sortby`, `order` params in \<th> elements attrs 
 1. set \<th> element's `onclick` to sortInventory function
-2. Develop sortInventory to prep parameters (from \<th>, & url), call API, and rebuild *the appropiate table* 
+2. Develop sortInventory to prep parameters (from \<th>, & url), 
+3. call API
+4.rebuild *the appropiate table*
 
 ##### Gathering Params
 
@@ -19,7 +25,26 @@ place `sortby`, `order` params in \<th> elements attrs
 *   `yardId`: held in parent `<tr>` of \<th> element because it's closer in the DOM tree (than \<table>) and its static 
 *   `q`: held in the q paramenter of the URL (because the input box is subject to change)
 
+#### Rebuilding the *appropriate* table from API
 
+Because junkyards collect different info on their vehicles, there are a different number of columns for each table. However, every vehicle dictionary provided by the API has the same number of keys and **some keys have empty values**.
+
+To help JS determine what keys to use in the API result (& create table rows from), I collect the non-empty keys to use from any given table's \<th> elements by accessing the `data-sortby` attibutes. I call these keys `inventory_keys` or and `valid_fields`
+
+They're passed into the create table row function where they are used to grab only the non-empty values from the API and determine what set of CSS classes to use. With the \<tr> element prepped and ready to go, they are appended to the appropriate table body element.
+
+
+
+
+
+
+
+
+
+
+
+
+W
 
 ##### Curent Internal API State
 ```
