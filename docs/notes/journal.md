@@ -18,46 +18,6 @@
 3. call API
 4.rebuild *the appropiate table*
 
-##### Gathering Params
-
-*   `order`: held in data-order of \<th>
-*   `sortBy`: held in data-name of \<th> elements
-*   `yardId`: held in parent `<tr>` of \<th> element because it's closer in the DOM tree (than \<table>) and its static 
-*   `q`: held in the q paramenter of the URL (because the input box is subject to change)
-
-#### Rebuilding the *appropriate* table from API
-
-Because junkyards collect different info on their vehicles, there are a different number of columns for each table. However, every vehicle dictionary provided by the API has the same number of keys and **some keys have empty values**.
-
-To help JS determine what keys to use in the API result (& create table rows from), I collect the non-empty keys to use from any given table's \<th> elements by accessing the `data-sortby` attibutes. I call these keys `inventory_keys` or and `valid_fields`
-
-They're passed into the create table row function where they are used to grab only the non-empty values from the API and determine what CSS classes to use for the \<td> elements. With a \<tr> element is prepped and ready to go, it is appended to the appropriate table body element
-
-#### Enabling toggle order
-
-Clicking the \<th> elements will sort the table by that element's `data-sortBy` attribute **once**. This is because that element's `data-order` attribute has not changed. 
-
-`data-order` starts at ascending order and *should* switch when the table has been sorted. For that reason, I'll create a `toggleOrder` function that takes in the `<th>` element as a parameter. 
-
-If `th[data-order]` is "" (ascending) then set to "-" (descending),  else set to "". 
-
-This function will be executed at the end of `sortInventory`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-W
-
 ##### Curent Internal API State
 ```
 {
@@ -80,8 +40,56 @@ W
  ]
 }
 ```
-##### Snippet of \<tr> element
+##### Gathering Params
 
+*   `order`: held in data-order of \<th>
+*   `sortBy`: held in data-name of \<th> elements
+*   `yardId`: held in parent `<tr>` of \<th> element because it's closer in the DOM tree (than \<table>) and its static 
+*   `q`: held in the q paramenter of the URL (because the input box is subject to change)
+
+#### Rebuilding the *appropriate* table from API
+
+Because junkyards collect different info on their vehicles, there are a different number of columns for each table. However, every vehicle dictionary provided by the API has the same number of keys and **some keys have empty values**.
+
+To help JS determine what keys to use in the API result (& create table rows from), I collect the non-empty keys to use from any given table's \<th> elements by accessing the `data-sortby` attibutes. I call these keys `inventory_keys` or and `valid_fields`
+
+They're passed into the create table row function where they are used to grab only the non-empty values from the API and determine what CSS classes to use for the \<td> elements. When a \<tr> element is prepped  with the \<td> elements and ready to go, it is appended to the appropriate table body element
+
+#### Enabling toggle order 
+
+Clicking the \<th> elements will sort the table by that element's `data-sortBy` attribute **once**. This is because that element's `data-order` attribute has not changed. 
+
+`data-order` starts at ascending order and *should* switch when the table has been sorted. For that reason, I'll create a `toggleOrder` function that takes in the `<th>` element as a parameter. 
+
+If `th[data-order]` is "" (ascending) then set to "-" (descending),  else set to "". This function will be executed at the end of `sortInventory`
+
+[I Found a cool sort icon](https://fontawesome.com/icons/sort). I'll have the top caret light up when the order is originally ascending or the bottom when the order is originally descending.
+
+##### Snippet of sort Icon SVG element
+
+```
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Pro v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.--><path d="M130.4 268.2C135.4 280.2 147 288 160 288L480 288C492.9 288 504.6 280.2 509.6 268.2C514.6 256.2 511.8 242.5 502.7 233.3L342.7 73.3C330.2 60.8 309.9 60.8 297.4 73.3L137.4 233.3C128.2 242.5 125.5 256.2 130.5 268.2zM130.4 371.7C125.4 383.7 128.2 397.4 137.3 406.6L297.3 566.6C309.8 579.1 330.1 579.1 342.6 566.6L502.6 406.6C511.8 397.4 514.5 383.7 509.5 371.7C504.5 359.7 492.9 352 480 352L160 352C147.1 352 135.4 359.8 130.4 371.8z"/></svg>
+```
+
+Man I was hoping for two different <paths>. I'll break them apart the top and bottom carets apart in inkscape then copy/paste the SVGs in the \<th> element. Since the SVGs will be inside of the \<th> elements, I can access the right ones by simply grabbing the last child of a clicked \<th> element. 
+
+##### Snippet of sort Icon SVG element (post Inkscape)
+```
+<svg
+   viewBox="0 0 640 640"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg">
+
+  <!--!Font Awesome Pro v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.-->
+  <path
+     d="m 130.4,371.7 c -5,12 -2.2,25.7 6.9,34.9 l 160,160 c 12.5,12.5 32.8,12.5 45.3,0 l 160,-160 c 9.2,-9.2 11.9,-22.9 6.9,-34.9 -5,-12 -16.6,-19.7 -29.5,-19.7 H 160 c -12.9,0 -24.6,7.8 -29.6,19.8 z"
+      class="sort-caret"/>
+  <path
+     d="m 130.4,268.2 c 5,12 16.6,19.8 29.6,19.8 h 320 c 12.9,0 24.6,-7.8 29.6,-19.8 5,-12 2.2,-25.7 -6.9,-34.9 l -160,-160 c -12.5,-12.5 -32.8,-12.5 -45.3,0 l -160,160 c -9.2,9.2 -11.9,22.9 -6.9,34.9 z"
+     class="sort-caret" />
+</svg>
+```
+**That's better**. Now I can access either caret in CSS using something like `th[data-order=""] > svg > path.sort-caret:first-child`
 
 ## 2/14/26
 
