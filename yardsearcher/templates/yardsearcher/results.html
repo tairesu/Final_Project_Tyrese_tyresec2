@@ -3,9 +3,7 @@
     {% block extra_links %}
     <link rel="stylesheet" href="{% static 'css/results.css' %}?v={{tz}}" />
     <link rel="stylesheet" href="{% static 'css/leaflet.css' %}?v={{tz}}" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -398,7 +396,7 @@
     {% endblock %} 
     {% block extra_scripts %}
         <!-- Leaflet JS -->
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> 
+        <script  src="{% static 'js/leaflet.js' %}"></script> 
         <script>
 
             var avg_lat = {{ avg_lat }} + 0.2;
@@ -445,7 +443,7 @@
                             <h6 class="text-sm text-muted-foreground mb-2">${junkyard.city}, ${junkyard.state}</h6>
                             <div class="flex items-center justify-between pt-2">
                                 <button 
-                                    onclick="handleJunkyardClick(${junkyard.id})"
+                                    onclick="showInventory(${junkyard.id})"
                                     class="text-sm flex-1 px-3 py-1 border-2 border-orange text-primary rounded hover:bg-primary/90 hover:text-white transition-colors"
                                 >
                                     See ${junkyard.num_results + suffix} 
@@ -464,16 +462,15 @@
                 {% endfor %}
             }
 
-            // Handle junkyard selection
-            function handleJunkyardClick(junkyardId) {
-                
+            // Scroll to junkyard inventory and open table
+            function showInventory(junkyardId) {
                 selectedJunkyard = junkyards[junkyardId];
                 
                 // Scroll to inventory table
                 const element = document.getElementById(`inventory-${junkyardId}`);
                 const table = document.getElementById(`table-${junkyardId}`);
                 if (element) {
-                    table.classList.remove('hidden');
+                    toggleTable(junkyardId, justshow=true);
                     element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
                 
@@ -517,12 +514,7 @@
                 const table = document.getElementById(`table-${junkyardId}`);
                 const chevron = document.getElementById(`chevron-${junkyardId}`);
                 
-                if (justshow) {
-                    table.classList.remove('hidden');
-                    chevron.style.transform = 'rotate(0deg)';
-                    return ;
-                }
-                if (table.classList.contains('hidden')) {
+                if ( justshow || table.classList.contains('hidden')) {
                     table.classList.remove('hidden');
                     chevron.classList.add('chevron-opened')
                     chevron.style.transform = 'rotate(0deg)';
@@ -600,7 +592,7 @@
                         // Use this class
                         td_class = 'px-6 py-3 text-foreground uppercase';
                     } else {
-                        td_class = 'px-6 py-3 text-sm text-muted-foreground group-hover:text-foreground transition-colors';
+                        td_class = 'px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
                     }
                     tr.innerHTML += `<td class="${td_class}">${td_html}</td>`;
                 });

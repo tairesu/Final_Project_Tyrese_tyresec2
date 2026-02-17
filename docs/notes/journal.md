@@ -1,5 +1,29 @@
 # Dev Journal
 
+## 2/17/26
+
+### Objectives
+*   ~~Update map marker buttons to also trigger collapse icons~~
+*   ~~Fix map marker button exceeding parent wrapper~~
+
+#### Updating map marker buttons to trigger collapse icons 
+
+Clicking 'See X Vehicles' on the map would expand the correct inventory but not change the collapse icon. 
+
+Clicking the collapse icon spins it around and turns the background orange. That visual animation should **also** be triggered when clicking 'See X Vehicles'   
+
+The `See X Vehicle` button calls the function `handleJunkyardClick()` (now `showInventory()`) It would:
+*   Unhide an inventory  
+*   Scroll browser to the inventory
+
+The line of code that unhides the inventory code is duplicated in the `toggleTable()` function. So I'll simply reuse that function in `showInventory()` because it already: 
+*   Unhides an inventory
+*   Triggers the collapse icon animation 
+
+#### Fix map marker button exceeding parent wrapper
+
+The Network tab in inspector tools showed me that leaflets css was included twice. I got rid o the external stylesheet and the problem was fixed. I also downloaded [lealets JS](https://unpkg.com/leaflet@1.9.4/dist/leaflet.js) to reduce number of requests
+
 ## 2/16/26
 
 ### Objective

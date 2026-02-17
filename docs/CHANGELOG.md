@@ -22,6 +22,7 @@
 *	Support for sorting inventory data by table columns
 
 ### Fixed 
+*   Fixed map marker buttons exceeding parent wrapper
 
 ### Changed
 * 	Collapse icons change colors and rotate
