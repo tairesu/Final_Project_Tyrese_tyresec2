@@ -3,8 +3,6 @@
 ## [Unreleased]
 
 ### Added 
-*	Added API endpoints to show inventory data
-*	Support for sorting inventory data 
 *   Support for visualizing inventory data (Vegalite) 
 *   Support for fetching and displaying images of junkyard vehicles
 
@@ -16,6 +14,19 @@
 
 ### Deprecated
 *	No longer using queries to filter website data in scrapers
+
+## [v1.1.0] - 02/16/2026
+
+### Added 
+*	Added API endpoint to help sort inventory data dynamically
+*	Support for sorting inventory data by table columns
+
+### Fixed 
+
+### Changed
+* 	Collapse icons change colors and rotate
+
+### Deprecated
 
 ## [v.1.0.3] - 02/13/2026 
 
