@@ -3,11 +3,21 @@ td, th {
     text-wrap: nowrap;
 }
 
-th[data-order="-"] {
-    path.sort-caret:first-child {
-        fill: #434548;
+tr[data-yardid] {
+    & th[data-order] {
+        cursor: pointer;
+        transition:border-color 0.3s ease-in-out ;
+        & >svg >path.sort-caret {
+            transition: fill 0.3s;
+        }
     }
-    path.sort-caret:last-child {
+    
+}
+th[data-order="-"] {
+    & path.sort-caret:first-child {
+        fill: #65696f;
+    }
+    & path.sort-caret:last-child {
         fill: hsl(22 75% 50% / var(--tw-bg-opacity, 1));
     }
 } 
@@ -15,12 +25,12 @@ th[data-order=""]{
     & path.sort-caret:first-child {
         fill: hsl(22 75% 50% / var(--tw-bg-opacity, 1));
     }
-    path.sort-caret:last-child {
-        fill: #434548;
+    & path.sort-caret:last-child {
+        fill: #65696f;
     }
 }
 th[data-isusing="false"]{
     & path.sort-caret{
-        fill: #434548 !important;
+        fill: #65696f !important;
     }
 }
