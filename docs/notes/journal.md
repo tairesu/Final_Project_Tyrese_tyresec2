@@ -17,6 +17,10 @@ This will enable control over the colors of every sort icon that is in/not in us
 
 In JS, I can now find the </th> element that is in use and "turn it off "
 
+#### Changed Collapse caret icon 
+
+I've decided to switch caret icons for the collapse menus and change its 'feel' a bit. When a user clicks the collapse icon, it turns orange and rotates
+
 
 #### Change sort table API to provide readable dates for the available_date key 
 
