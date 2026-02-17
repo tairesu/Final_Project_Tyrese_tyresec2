@@ -345,11 +345,11 @@
                                         <tbody id="tbody-{{yard.meta.pk}}">
                                             {% for vehicle in yard.results %}
                                                 <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                    <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.year }}</td>
-                                                    <td class="px-6 py-3 font-semibold text-foreground">
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.year }}</td>
+                                                    <td class="px-6 py-3 text-foreground">
                                                         {{ vehicle.make|upper }}
                                                     </td>
-                                                    <td class="px-6 py-3 font-semibold text-foreground">{{ vehicle.model|upper }}</td>
+                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|upper }}</td>
                                                     {% if vehicle.row > 0 %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
                                                     {% else %}
@@ -596,9 +596,9 @@
                     let td_html = vehicle[field];
                     if (foreground_fields.includes(field)) {
                         // Use this class
-                        td_class = 'px-6 py-3 font-semibold text-foreground uppercase';
+                        td_class = 'px-6 py-3 text-foreground uppercase';
                     } else {
-                        td_class = 'px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
+                        td_class = 'px-6 py-3 text-sm text-muted-foreground group-hover:text-foreground transition-colors';
                     }
                     tr.innerHTML += `<td class="${td_class}">${td_html}</td>`;
                 });
