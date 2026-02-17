@@ -3,8 +3,8 @@
 ## 2/16/26
 
 ### Objective
--   Enable sorting inventory data by columns (Year, make, date, etc). 
-    - Updating sorting carets to appear muted when not in use 
+-   ~~Enable sorting inventory data by columns (Year, make, date, etc).~~ 
+    - ~~Updating sorting carets to appear muted when not in use~~
     - ~~Change API to provide dates from the `Vehicle.get_duration()` magic method~~
 
 #### Update sort carets to appear muted when not in use 
