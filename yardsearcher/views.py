@@ -65,8 +65,9 @@ def format_results(results, t0):
 			'results': results.filter(junkyard_id=junkyard.pk),
 			'time_elapsed': time.time() - t0,
 			'meta': model_to_dict(junkyard),
-			
 		}
+		formatted_result['meta']['lat'] = junkyard.lat
+		formatted_result['meta']['long'] = junkyard.long
 		formatted_result['num_results'] = len(formatted_result['results'])
 		if formatted_result['num_results']>0:
 			formatted_results.append(formatted_result)
