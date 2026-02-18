@@ -62,13 +62,10 @@ def format_results(results, t0):
 		lats.append(junkyard.lat)
 		longs.append(junkyard.long)
 		formatted_result = {
-			'name': junkyard.name,
 			'results': results.filter(junkyard_id=junkyard.pk),
-			'lat': junkyard.lat,
-			'long': junkyard.long,
 			'time_elapsed': time.time() - t0,
-			'meta': junkyard
-				
+			'meta': model_to_dict(junkyard),
+			
 		}
 		formatted_result['num_results'] = len(formatted_result['results'])
 		if formatted_result['num_results']>0:
@@ -80,7 +77,6 @@ def serialize_results(formatted_results):
 	#serialize_results['results'] = [instance_to_dict(junkyard) for junkyard in formatted_results]
 	for yard_result in formatted_results:
 		qs = yard_result['results']
-		yard_result.pop('meta')
 		yard_result['results'] = [ instance_to_dict(vehicle) for vehicle in qs]
 		serializable_results.append(yard_result)
   
@@ -100,12 +96,14 @@ def results_view(request):
 		formatted_results, avg_lat, avg_long = format_results(results, t0)
 		context = {
 			'fetched_yard_data': formatted_results,
-			'yard_data_json':serialize_results(formatted_results),
 			'query': query,
-			'avg_lat': avg_lat,
-			'avg_long': avg_long,
 			'total_yards': Junkyard.objects.all().count,
-			'total_vehicles': Vehicle.objects.all().count
+			'total_vehicles': Vehicle.objects.all().count,
+			'yard_data_json':{
+       			"avg_lat": avg_lat,
+				"avg_long": avg_long,
+          		"yard_data": serialize_results(formatted_results),
+			}
 		}
 		return render(request, 'yardsearcher/results.html', context)
 
