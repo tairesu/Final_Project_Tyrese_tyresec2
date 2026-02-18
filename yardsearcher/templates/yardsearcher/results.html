@@ -156,6 +156,7 @@
                 <!-- Inventory Tables Section -->
                 <div id="inventory-container" class="space-y-6">
                     {% for yard in fetched_yard_data %}
+                    
                         <div id="inventory-{{ yard.meta.junkyard_id }}" class="overflow-hidden border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border hover:border-primary/50">
                             <!-- Header -->
                             <div class="bg-gradient-to-r from-card to-muted p-4 cursor-pointer select-none" onclick="toggleTable({{ yard.meta.junkyard_id }})">
@@ -283,7 +284,7 @@
                                                     </svg>
                                                     </th>
                                                 {% endif %}
-                                                {% if yard.results.first.vin %}
+                                                {% if yard.results.0.vin %}
                                                     <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="vin" >
                                                         <span>VIN</span>
                                                         <svg
@@ -302,7 +303,7 @@
                                                     </svg>
                                                     </th>
                                                 {% endif %}
-                                                {% if yard.results.first.color %}
+                                                {% if yard.results.0.color %}
                                                     <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="color" >
                                                         <span>Color</span>
                                                         <svg
@@ -365,7 +366,7 @@
                                                     {% if vehicle.color %}
                                                         <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.color }}</td>
                                                     {% endif %}
-                                                    <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.get_duration }}</td>
+                                                    <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.available_date }}</td>
                                                     
                                                 </tr>
                                             {% endfor %}
