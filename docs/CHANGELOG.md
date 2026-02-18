@@ -7,7 +7,7 @@
 *   Support for fetching and displaying images of junkyard vehicles
 
 ### Fixed 
-*	Popup button no longer protrudes parent container
+
 
 ### Changed
 * 	
@@ -15,14 +15,29 @@
 ### Deprecated
 *	No longer using queries to filter website data in scrapers
 
+## [v1.1.1] - 02/18/2026
+
+### Added 
+*   
+### Fixed 
+*	Popup button no longer protrudes parent container
+
+### Changed
+* 	Removed inventory images placeholders
+* 	Refactored map building JS 
+*   Improved map UI: animates to & enlargers selected marker
+*   Changed colors of map controls 
+
+### Deprecated
+
 ## [v1.1.0] - 02/16/2026
 
 ### Added 
 *	Added API endpoint to help sort inventory data dynamically
-*	Support for sorting inventory data by table columns
+*	New feature: sorting inventory data by table columns
 
 ### Fixed 
-*   Fixed map marker buttons exceeding parent wrapper
+
 
 ### Changed
 * 	Collapse icons change colors and rotate
