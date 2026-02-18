@@ -3,6 +3,8 @@ const RESULTS_DATA = JSON.parse(document.querySelector('#yard_data').textContent
 const AVG_LAT = RESULTS_DATA['avg_lat'];
 const AVG_LONG = RESULTS_DATA['avg_long'];
 var map = null;
+var markers = [];
+var selectedJunkyard = null;
 
 function initMap(){
     map = L.map('map').setView(center = [AVG_LAT, AVG_LONG], 9);
@@ -11,22 +13,37 @@ function initMap(){
         }).addTo(map); 
     createMarkers();
 }
-
+function removeMarkers(){
+    markers.map(marker => {marker.remove()});
+    markers = [];
+}
 function createMarkers(){
     // Create markers for each junkyard
     RESULTS_DATA['yard_data'].map(yard => {
-        var marker = L.marker([yard.meta.lat, yard.meta.long], { icon: createMarkerIcon() }).addTo(map);
-        marker.addEventListener('click', (marker)=>{console.log(yard.meta)});
-        var popupContent = createPopupContent(yard);
+        const isSelected = selectedJunkyard && selectedJunkyard.meta.junkyard_id == yard.meta.junkyard_id;
+        const popupContent = createPopupContent(yard);
+        var marker = L.marker([yard.meta.lat, yard.meta.long], { icon: createMarkerIcon(isSelected) }).addTo(map);
+        marker.addEventListener('click', (marker)=>handleMarkerClick(yard));
         marker.bindPopup(popupContent, {
             permanent: true,
             direction: 'top',
             offset: [-3, 10], // Adjust position slightly upwards
             className: 'custom-tooltip' // Add a custom CSS class
             });
+        marker['junkyard_id'] = yard.meta.junkyard_id;
+        markers.push(marker);
     });
 }
-
+function handleMarkerClick(yard) {
+    selectedJunkyard = yard;
+    removeMarkers();
+    createMarkers();
+    markers.map(marker=> {
+        if (marker.junkyard_id == yard.meta.junkyard_id)
+            marker.openPopup();
+            map.flyTo([yard.meta.lat + 0.05, yard.meta.long ], 10);
+    });
+}
 function createPopupContent(yard){
     var suffix = yard.num_results > 1 ?  " vehicles" : " vehicle";
     return `
@@ -73,7 +90,7 @@ function createMarkerIcon(isSelected = false) {
         `,
         iconSize: [size, size],
         iconAnchor: [size / 2, size],
-        popupAnchor: [0, -size]
+        popupAnchor: [2, -size - 6]
     });
 }
 

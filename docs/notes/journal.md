@@ -3,10 +3,6 @@
 ## 2/17/26
 
 ### Objectives
-*   ~~Update map marker buttons to also trigger collapse icons~~
-*   ~~ Move map building js to external sheet~~
-
-
 #### Updating map marker buttons to trigger collapse icons 
 
 Clicking 'See X Vehicles' on the map would expand the correct inventory but not change the collapse icon. 
@@ -30,7 +26,7 @@ Because I pass results data to the `results.html` template, I can access it in J
 
 That method was not secure. A [more secure way](https://adamj.eu/tech/2020/02/18/safely-including-data-for-javascript-in-a-django-template/) involved using the `json_script` template tag to output the data to the external JS (HTML injection proof)
 
-The data that was being passed was not JSON serializable. To serialize querysets or model instances I used `model_to_dict` when needed and altered the template variables used in `results.html` 
+The data being passed was not JSON serializable. I used `model_to_dict` to serialize the querysets or model instances when needed and altered the corresponding variables used in `results.html` 
 
 With the data serializable, I can refactor the external map building JS .
 
@@ -38,7 +34,16 @@ With the data serializable, I can refactor the external map building JS .
 
 Much of the Leaflet map building JS code relied on data passed from Django template tags ({{}}). Now that I'm passing data to an external JS file, I have to refactor the old JS code. 
 
+#### Update map UI to expand icons onclick
 
+The code I had gotten from that AI had a feature that would expand the map marker icon when clicked. The map felt dull, so I went back to the commit with the original features looking for inspiration.
+
+The original JS for that feature would refresh the map every time a marker got clicked. I reproduced that code by introducing:
+*   `selected_junkyard`: Captures junkyard data for last clicked marker
+*   `isSelected: bool that determines the size of a marker icon
+*   `removeMarkers()`: clears `markers` list and removes icons from map
+*   `handleMarkerClick(*yard*)`: sets `selected_junkyard`, refreshes map, opens popup, and pans to marker. 
+*   `markers`: list of Leaflet markers 
 
 ## 2/16/26
 
