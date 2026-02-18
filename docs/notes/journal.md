@@ -4,7 +4,6 @@
 
 ### Objectives
 *   ~~Update map marker buttons to also trigger collapse icons~~
-*   ~~Fix map marker button exceeding parent wrapper~~
 *   ~~ Move map building js to external sheet~~
 
 #### Updating map marker buttons to trigger collapse icons 
@@ -21,9 +20,6 @@ The line of code that unhides the inventory code is duplicated in the `toggleTab
 *   Unhides an inventory
 *   Triggers the collapse icon animation 
 
-#### Fix map marker button exceeding parent wrapper
-
-The Network tab in inspector tools showed me that leaflets css was included twice. I got rid o the external stylesheet and the problem was fixed. I also downloaded [lealets JS](https://unpkg.com/leaflet@1.9.4/dist/leaflet.js) to reduce number of requests
 
 #### Move map building js to external sheet
 
@@ -33,6 +29,7 @@ Because I pass results data to the `results.html` template, I can access it in J
 
 That method was not secure. A [more secure way](https://adamj.eu/tech/2020/02/18/safely-including-data-for-javascript-in-a-django-template/) involved using the `json_script` template tag to output the data to the external JS (HTML injection proof)
 
+The data that was being passed was not JSON serializable. To serialize querysets or model instances I used `model_to_dict`
 
 ## 2/16/26
 
