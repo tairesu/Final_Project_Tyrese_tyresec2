@@ -75,6 +75,17 @@ def format_results(results, t0):
 			formatted_results.append(formatted_result)
 	return (formatted_results, get_avg(lats), get_avg(longs))
 
+def serialize_results(formatted_results):
+	serializable_results = []
+	#serialize_results['results'] = [instance_to_dict(junkyard) for junkyard in formatted_results]
+	for yard_result in formatted_results:
+		qs = yard_result['results']
+		yard_result.pop('meta')
+		yard_result['results'] = [ instance_to_dict(vehicle) for vehicle in qs]
+		serializable_results.append(yard_result)
+  
+	return serializable_results
+
 def results_view(request):
 	"""
 		renders fetched junkyard results to results.html template
@@ -89,6 +100,7 @@ def results_view(request):
 		formatted_results, avg_lat, avg_long = format_results(results, t0)
 		context = {
 			'fetched_yard_data': formatted_results,
+			'yard_data_json':serialize_results(formatted_results),
 			'query': query,
 			'avg_lat': avg_lat,
 			'avg_long': avg_long,
