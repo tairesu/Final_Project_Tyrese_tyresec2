@@ -24,7 +24,10 @@ I don't fancy the HTML5 provided slides or number inputs. I'd rather users click
 I'll do this in Javascript by first subsituting 5 gear svgs with the rating input.
 The appearance will be controlled in CSS using `.rating-icon`
 These svgs will have number values (1-5) associated with them in their `data-rating` attribute
-Those number values will get passed into a function called `update_ratings(new_rating=int)`
+Those number values will get passed:
+-   into `update_ratings(new_rating=int)` that triggers when clicked
+-   into `hover_prior_ratings(new_rating=int)` that partially highlights prior ratings
+
 
 ##### Logic for update_ratings(new_rating)
 
