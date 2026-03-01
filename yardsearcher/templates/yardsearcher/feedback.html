@@ -13,9 +13,17 @@
                     <p class="text-sm text-muted-foreground mt-1">
                         Click markers to view inventory
                     </p>
+                    <form method="post" class="flex flex-col gap-4">
+                        {% csrf_token %}
+                        <input type="number" name="rating" step="0.1" min="0" max="5" class=""/>
+                        <textarea name="feedback" class="w-full" rows="3"></textarea>
+                        <input type="email" name="email" step="0.1" min="0" max="5"/>
+                        <button type="submit"> Leave Feedback </button>
+                    </form>
                 </div>
             </div>
         </div>
+        
     </div>
 </div>
 {% endblock %}
