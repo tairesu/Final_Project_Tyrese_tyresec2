@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse, JsonResponse
 from yardsearcher.utils.jup import *
 from yardsearcher.utils.lkq import *
@@ -178,8 +178,14 @@ class ReviewView(TemplateView):
         return context
     
     def post(self, *args, **kwargs):
-        print(kwargs)
-        print(self.request)
-    
-    
-        
+        form = ReviewForm(self.request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            Review.objects.create(
+				feedback=cleaned_data['feedback'],
+				email=cleaned_data['email'],
+				rating=cleaned_data['rating'],
+			)
+            return redirect('home_urlpattern')
+
+        return render(self.request, self.template_name, {'form': form})
