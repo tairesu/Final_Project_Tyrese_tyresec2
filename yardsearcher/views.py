@@ -13,6 +13,7 @@ from yardsearcher.models import (
 	Junkyard,
 	Review,
 )
+from yardsearcher.forms import ReviewForm
 
 # For API Use
 VALID_FIELDS = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date']
@@ -171,5 +172,14 @@ def api_sort_table(request):
 		
 class ReviewView(TemplateView):
     template_name = "yardsearcher/feedback.html"
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['form'] = ReviewForm
+        return context
+    
+    def post(self, *args, **kwargs):
+        print(kwargs)
+        print(self.request)
+    
     
         
