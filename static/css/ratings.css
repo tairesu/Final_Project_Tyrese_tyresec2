@@ -1,0 +1,18 @@
+/* Gear Icons for ratings */
+svg.rating-icon{
+    transition: fill 0.3s ease;
+    /* Grey out non-active ones */
+    &:not(.active) {
+        fill: hsl(218 15% 12% / var(--tw-bg-opacity, 1));
+
+        /* slightly illuminate when hovered */
+        &:hover {
+            cursor:pointer;
+            fill:hsl(22 75% 50% / 0.5)
+        }
+    }
+    /* Illuminate for active icons */
+    &.active {
+        fill:hsl(22 75% 50% / var(--tw-bg-opacity, 1))
+    }
+}
