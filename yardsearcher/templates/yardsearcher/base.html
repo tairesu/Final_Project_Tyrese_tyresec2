@@ -40,6 +40,36 @@
         <div name="left-nav" class="d-none d-md-flex bg-secondary px-4 vh-100 flex-md-col col-md-4 col-lg-2">
 
         </div> -->
+        {% block header %}
+            <!-- Header -->
+            <header class="border-b border-border bg-card/50 backdrop-blur-sm z-50">
+                <div class="container mx-auto px-4 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded bg-primary flex items-center justify-center text-lg lg:2xl shadow-lg">
+                                🔧
+                            </div>
+                            <div>
+                                <h1 class="text-lg lg:2xl font-bold text-foreground tracking-tight">
+                                    Junkyard <span class="text-primary">Finder</span>
+                                </h1>
+                                <p class="text-sm text-muted-foreground">Multi-yard inventory search</p>
+                            </div>
+                        </div>
+                        <div class=" hidden md:flex items-center gap-4">
+                            <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
+                                <span class=" mr-1">📍</span>
+                                <span id="yard-count">{{ total_yards }}</span> Yards
+                            </div>
+                            <div class="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-md text-sm font-medium">
+                                <span class=" mr-1">🚗</span>
+                                <span id="vehicle-count">{{ total_vehicles }}</span> Vehicles
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        {% endblock %}
         {% block main_content %}
         {% endblock %}
     </div>
