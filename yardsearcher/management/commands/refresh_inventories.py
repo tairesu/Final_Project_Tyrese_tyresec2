@@ -18,20 +18,24 @@ class Command(BaseCommand):
 
 		"""
 		for yard in KNOWN_YARDS:
-			self.stdout.write(f"Refreshing {yard['name']} Inventory")
-			yard['id'] = get_junkyard_id(yard)
-			scraper = yard['class']("") if 'params' not in yard.keys() else yard['class']("", params=yard['params'])
-			scraper.handle_queries()
-			self.stdout.write(self.style.SUCCESS(f"\tResults are in"))
-			self.cache_scraper_results(scraper.results_as_list(), yard)
-			self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {yard['name']}'s inventory!\n"))
+			try:
+				self.stdout.write(f"Refreshing {yard['name']} Inventory")
+				yard['id'] = get_junkyard_id(yard)
+				scraper = yard['class']("") if 'params' not in yard.keys() else yard['class']("", params=yard['params'])
+				scraper.handle_queries()
+				self.stdout.write(self.style.SUCCESS(f"\tResults are in"))
+				self.cache_scraper_results(scraper.results_as_list(), yard)
+				self.stdout.write(self.style.SUCCESS(f"Successfully refreshed {yard['name']}'s inventory!\n"))
+			except Exception as e:
+				self.stdout.write(self.style.ERROR(f"Skipping over {yard['name']}'s inventory because:\n {e}"))
+				continue
+				
 
 	def cache_scraper_results(self, results, yard):
 		""" 
 			Upserts or deletes vehicles on Vehicle model 
 		"""
 		assert len(results) > 0
-		print(f"\tCaching {len(results)} results")
 		models_list = []
 		scraped_identifiers = [] # Ex: ['stk0192','stk1111']
 
