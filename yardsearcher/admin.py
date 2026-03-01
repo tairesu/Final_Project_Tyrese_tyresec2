@@ -3,6 +3,7 @@ from yardsearcher.models import (
     Junkyard,
     Vehicle,
     Scrape,
+    Review
 )
 
 

@@ -1,13 +1,32 @@
 # Dev Journal
+## 2/29/26
+
+On the 22nd, I introduced Scraphounds to 3 guys @ Autozone. I asked for feedback and they asked if there was a feature to leave reviews. 
+
+Implementing said feature would consist of: 
+*   Developing `Review` model 
+*   Developing a ListView binded to  `POST /reviews`
+*   Developing a template 
+
+### Objectives
+#### Developing `Review` model 
+
+a review consists of a rating, feedback, date created, email, keep_posted. Users are not considered in this version of the application. Not until someone specifically says so in the feedback. 
+
+(it'd be cool to compile all feedback into a list for OpenAI to prioritze implentation order based on relevancy)
+
+
+
 ## 2/28/26
 
 ### Objectives
 
-#### Skip over junkyards that don't successfully refresh
+
+#### [x] Skip over junkyards that don't successfully refresh
 
 Implemented a try-catch on `utils/refresh_inventories.py`
 
-#### Create model to track scrape events 
+#### [x] Create model to track scrape events 
 
 I modified the Lkq scraper work with concurrency but violated the TSL/ SSL protocol. I learned that faster isn't always the most reliable long-term because I'm being blocked on a connection-level:
 
