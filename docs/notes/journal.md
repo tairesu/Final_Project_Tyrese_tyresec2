@@ -1,5 +1,7 @@
 # Dev Journal
-## 2/29/26
+
+
+## 3/1/2026
 
 On the 22nd, I introduced Scraphounds to 3 guys @ Autozone. I asked for feedback and they asked if there was a feature to leave reviews. 
 
@@ -15,6 +17,21 @@ a review consists of a rating, feedback, date created, email, keep_posted. Users
 
 (it'd be cool to compile all feedback into a list for OpenAI to prioritze implentation order based on relevancy)
 
+#### Using gear icons as review scale
+
+I don't fancy the HTML5 provided slides or number inputs. I'd rather users click gear svgs to give a rating. 
+
+I'll do this in Javascript by first subsituting 5 gear svgs with the rating input.
+The appearance will be controlled in CSS using `.rating-icon`
+These svgs will have number values (1-5) associated with them in their `data-rating` attribute
+Those number values will get passed into a function called `update_ratings(new_rating=int)`
+
+##### Logic for update_ratings(new_rating)
+
+if current_rating != new_rating
+1. Turn off all ratings 
+2. Illuminate up to new_rating
+3. set value of hidden rating input for form 
 
 
 ## 2/28/26
