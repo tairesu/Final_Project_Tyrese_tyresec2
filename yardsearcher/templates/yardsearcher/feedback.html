@@ -1,0 +1,36 @@
+{% extends 'yardsearcher/base.html' %}
+{% block main_content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
+        <!-- Map Section -->
+        <div class="w-full self-start">
+            <div class="p-4 bg-card border-2 border-border rounded-lg">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+                        <span class="text-primary">📍</span>
+                        Junkyard Locations
+                    </h2>
+                    <p class="text-sm text-muted-foreground mt-1">
+                        Click markers to view inventory
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block popup-heading-text %} Manage Junkyards {% endblock %}
+{% block popup-button-text %} Save Changes {% endblock %}
+{% block popup-content %}
+    <div class="d-grid gap-2" style="grid-template-columns: 1fr 1fr;">
+        <div class="form-check d-flex gap-2">
+            <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+            <label class="form-check-label d-flex flex-column" for="checkDefault">
+                <span class="">Joliet U pullit</span>
+                <span>X miles away</span>
+            </label>
+        </div>
+    </div>
+{% endblock %}
