@@ -1,4 +1,30 @@
 # Dev Journal
+## 2/28/26
+
+### Objectives
+
+#### Skip over junkyards that don't successfully refresh
+
+Implemented a try-catch on `utils/refresh_inventories.py`
+
+#### Create model to track scrape events 
+
+I modified the Lkq scraper work with concurrency but violated the TSL/ SSL protocol. I learned that faster isn't always the most reliable long-term because I'm being blocked on a connection-level:
+
+```
+# yardsearcher/management/commands/refresh_inventories.py 
+Can't scrape: HTTPSConnectionPool(host='www.pyp.com', port=443): Max retries exceeded with url: /DesktopModules/pyp_vehicleInventory/getVehicleInventory.aspx?page=1&filter=&store=1582 (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)')))
+
+```
+
+I intend on adding this command to a scheduler. In the event that a junkyard isn't updated, I must see the status, the junkyard ID, the reason for failure, and the date. I'll also log the successful scrapes in the same model.
+
+##### Scrape model 1.0.0
+-   status: Success or Fail('1','0') 
+-   error: error message is blank text
+-   junkyardID: foreign key to Junkyard
+-   refresh_date
+
 
 ## 2/25/26 
 

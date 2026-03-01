@@ -68,4 +68,16 @@ class UserAllowedYard(models.Model):
     
     def __str__(self):
         return f'{self.user} allowed {self.junkyard}'
+
+class Scrape(models.Model):
+    STATUSES = (
+        ('1','SUCCESS'),
+        ('0','FAILED'),
+    )
+    junkyard = models.ForeignKey(Junkyard, related_name='scrapes', on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=STATUSES, editable=False)
+    error = models.TextField(blank=True)
+    scraped_at = models.DateTimeField(auto_now=True)
     
+    def __str__(self):
+        return f'[{"SUCCESS" if self.status == "1" else "FAILED"}] {self.junkyard.name} at {self.scraped_at}'
