@@ -1,15 +1,31 @@
-const ratings = document.querySelectorAll('#ratings svg');
-let current_rating = 0;
-let hovering_rating = 0;
+let icons = document.querySelectorAll('#ratings svg');
+let last_clicked_rating = 0;
+let last_hovered_rating = 0;
 
 function update_ratings(new_rating){
-    console.log(new_rating)
-}
+    if (new_rating!=last_clicked_rating){
+       console.log(new_rating)
 
+    }
+}
 function hover_prior_ratings(new_rating){
-    console.log(new_rating)
-}
+    
+    if (new_rating!=last_hovered_rating){
+        last_hovered_rating = new_rating;
+        // Grab the gear icon that was last hovered
+        let icon_index = new_rating - 1;
+        current_icon = icons[icon_index];
+        // Add hovered class to all prior icons
+        icons.forEach((icon,i) => { 
+            if (i <= icon_index)
+                icon.classList.add('hovered')
+        });
 
+    }
+    
+}
 function unhover_prior_ratings(){
-    console.log(new_rating)
+    hovered_icons =  document.querySelectorAll("svg.rating-icon.hovered");
+    if (hovered_icons.length > 0)
+        hovered_icons.forEach((hovered_icon)=>{hovered_icon.classList.remove('hovered')});
 }
