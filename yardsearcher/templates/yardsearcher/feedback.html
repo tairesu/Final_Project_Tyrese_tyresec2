@@ -7,18 +7,23 @@
             <div class="p-4 bg-card border-2 border-border rounded-lg">
                 <div class="mb-4">
                     <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
-                        <span class="text-primary">📍</span>
-                        Junkyard Locations
+                        We value your feedback
                     </h2>
                     <p class="text-sm text-muted-foreground mt-1">
-                        Click markers to view inventory
+                        Tell us how we can improve 
                     </p>
-                    <form method="post" class="flex flex-col gap-4">
+                    <form method="post" class="flex mt-4 flex-col gap-2">
                         {% csrf_token %}
-                        <input type="number" name="rating" step="0.1" min="0" max="5" class=""/>
-                        <textarea name="feedback" class="w-full" rows="3"></textarea>
-                        <input type="email" name="email" step="0.1" min="0" max="5"/>
-                        <button type="submit"> Leave Feedback </button>
+                        <input type="number" name="rating" step="0.1" min="0" max="5" placeholder="Rate us (1-5)"
+                        class="w-full pl-4 pr-12 h-14 text-base md:text-lg bg-background border-2 border-border rounded-lg focus:border-primary/70 focus:outline-none transition-colors text-foreground"
+                        required/>
+                        <textarea name="feedback"  rows="3" placeholder="Let us know what you think here"
+                        class="w-full pl-4 pr-12 pt-[0.8rem] text-base md:text-lg bg-background border-2 border-border rounded-lg focus:border-primary/70 focus:outline-none transition-colors text-foreground"
+                        required></textarea>
+                        <input type="email" name="email" step="0.1" min="1" max="5" placeholder="Enter email"
+                        class="w-full pl-4 pr-12 h-14 text-base md:text-lg bg-background border-2 border-border rounded-lg focus:border-primary/70 focus:outline-none transition-colors text-foreground"
+                        required/>
+                        <button type="submit" class="p-4 mt-4 rounded-lg  bg-primary/35 border-2 border-primary text-foreground"> Leave Feedback </button>
                     </form>
                 </div>
             </div>
