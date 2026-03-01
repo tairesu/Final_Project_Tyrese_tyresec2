@@ -95,4 +95,4 @@ class Review(models.Model):
     )
     
     def __str__(self):
-        return f'[{"SUCCESS" if self.status == "1" else "FAILED"}] {self.junkyard.name} at {self.scraped_at}'
+        return f'{self.email.split("@")[0]} gave us {self.rating}/5 on {self.created_at}'
