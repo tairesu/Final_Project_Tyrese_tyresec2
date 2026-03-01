@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from yardsearcher.models import Junkyard, Vehicle
+from yardsearcher.models import Junkyard, Vehicle, Scrape
 
 from django.db.models import Q
 from yardsearcher.utils.known_yards import KNOWN_YARDS as KNOWN_YARDS
@@ -17,8 +17,11 @@ class Command(BaseCommand):
 			(Also deletes vehicles that are physically removed from the junkyard )
 
 		"""
+		
 		self.stdout.write(f"\n\n Refreshing {len(KNOWN_YARDS)} inventories")
 		for i,yard in enumerate(KNOWN_YARDS):
+			error = ""
+			status = 0
 			try:
 				self.stdout.write(f"\n[{i+1}/{len(KNOWN_YARDS)}] {yard['name']}'s vehicles")
 				yard['id'] = get_junkyard_id(yard)
@@ -26,9 +29,14 @@ class Command(BaseCommand):
 				scraper.handle_queries()
 				self.cache_scraper_results(scraper.results_as_list(), yard)
 				self.stdout.write(self.style.SUCCESS(f"-\tran successfully"))
+				status = 1
 			except Exception as e:
-				self.stdout.write(self.style.ERROR(f"-\tCan't scrape: {e}"))
+				error = e
+				self.stdout.write(self.style.ERROR(f"-\tCan't scrape: {error}"))
 				continue
+			finally:
+				self.log_scrape_event(yard=yard, error=error, status=status)
+
 				
 	def cache_scraper_results(self, results, yard):
 		""" 
@@ -82,4 +90,7 @@ class Command(BaseCommand):
 		if len(different_identifiers) > 0:
 			self.stdout.write(f"\t{len(different_identifiers)} removed from site")
 			different_identifiers.delete()
+		
+	def log_scrape_event(self,yard, status, error=""):
+		Scrape.objects.create(junkyard_id=yard['id'], error=error, status=status)
 		
