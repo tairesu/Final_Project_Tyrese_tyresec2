@@ -11,3 +11,4 @@ from yardsearcher.models import (
 admin.site.register(Junkyard)
 admin.site.register(Vehicle)
 admin.site.register(Scrape)
+admin.site.register(Review)
