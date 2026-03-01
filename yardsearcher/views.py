@@ -3,15 +3,15 @@ from django.shortcuts import render
 from django.http.response import HttpResponse, JsonResponse
 from yardsearcher.utils.jup import *
 from yardsearcher.utils.lkq import *
-from django.views.generic import View
+from django.views.generic.base import TemplateView
 from yardsearcher.utils.queries import *
 from django.db.models import Q, Count
 from django.db.models.functions import Lower
-
 from django.forms.models import model_to_dict
 from yardsearcher.models import (
 	Vehicle,
-	Junkyard
+	Junkyard,
+	Review,
 )
 
 # For API Use
@@ -169,3 +169,7 @@ def api_sort_table(request):
 		except AssertionError as e:
 			return JsonResponse({"ok": False, "msg":"Sort Table API needs valid q, order, sortBy, and yardId URL parameters "}, safe=False)
 		
+class ReviewView(TemplateView):
+    template_name = "yardsearcher/feedback.html"
+    
+        
