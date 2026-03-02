@@ -53,7 +53,7 @@
                         <input type="email" name="email" step="0.1" min="1" max="5" placeholder="Enter email"
                         class="w-full pl-4 pr-12 h-14 text-base  bg-background border-2 border-border rounded-lg focus:border-primary/70 focus:outline-none transition-colors text-foreground"
                         required/>
-                        <button type="submit" class="p-4 rounded-lg  text-base  w-full bg-primary/35 border-2 border-primary text-foreground"> Leave Feedback </button>
+                        <button type="submit" class="p-4 rounded-lg  text-base  w-full bg-primary/35 transition-colors duration-[0.3s] hover:bg-primary border-2 border-primary text-foreground"> Leave Feedback </button>
                     </form>
                 </div>
             </div>
@@ -77,5 +77,5 @@
     </div>
 {% endblock %}
 {% block extra_scripts %}
-<script src="{% static 'js/ratings.js'%}?v={{ tz }}"></script>
+    <script src="{% static 'js/ratings.js'%}?v={{ tz }}"></script>
 {% endblock %}
