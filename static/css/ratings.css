@@ -2,15 +2,14 @@
 svg.rating-icon{
     transition: fill 0.3s ease;
     /* Grey out non-active ones */
-    &:hover {
+    &:hover, &.hovered {
         cursor: pointer;
+        fill:hsl(22 75% 50% / 0.25);
     }
     &:not(.hovered){
         fill: hsl(218 15% 12% / var(--tw-bg-opacity, 1));
     }
-    &.hovered{
-        fill:hsl(22 75% 50% / 0.25);
-    }
+    
     /* Illuminate for active icons */
     &.active {
         fill:hsl(22 75% 50% / var(--tw-bg-opacity, 1))
