@@ -1,5 +1,7 @@
 /* Gear Icons for ratings */
 svg.rating-icon{
+    max-width:4rem;
+    max-height: 4rem;
     transition: fill 0.3s ease;
     /* Grey out non-active ones */
     &:hover, &.hovered {
