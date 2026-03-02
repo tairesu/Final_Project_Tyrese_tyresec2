@@ -1,5 +1,6 @@
 let icons = document.querySelectorAll('#ratings svg');
 let rating_input = document.querySelector('#rating_input');
+let rating_form_div = document.querySelector('#rating_form_div');
 
 function update_ratings(new_rating){
     let icon_index = new_rating - 1;
@@ -15,6 +16,8 @@ function update_ratings(new_rating){
     });
     // update input 
     rating_input.value = new_rating;
+    // unhide rating form
+    rating_form_div.classList.remove('opacity-0');
 }
 function hover_prior_ratings(new_rating){
     // Grab the gear icon that was last hovered

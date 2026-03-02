@@ -29,3 +29,8 @@ svg.rating-icon{
     /* right align right-most tag */
     &:nth-child(3) { text-align:right; }
 }
+
+/*  form tuhat appears after clicking rating icon */
+div#rating_form_div{
+    transition:opacity 0.5s ease;
+}
