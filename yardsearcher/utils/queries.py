@@ -31,7 +31,7 @@ def extract_conditionals(query="") -> dict:
     
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
-        year = re.findall("^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$", query)[0].strip()
+        year = re.findall("^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$|^\d{2}$|^\d{4}$", query)[0].strip()
         semantics.pop(semantics.index(year))
     elif is_year_range_present(query):
         conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
@@ -50,7 +50,7 @@ def extract_conditionals(query="") -> dict:
 
 def is_year_present(query="") -> bool:
     # Does the query contains patterns '2004 ' or '08 ' 
-    return True if re.findall(r"(^\d{2}\s)|(^\d{4}\s)|(\s\d{2}\s)|(\s\d{4}\s)|(\s\d{4}$)|(\s\d{2}$)", query) else False
+    return True if re.findall(r"^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$|^\d{2}$|^\d{4}$", query) else False
 
 def is_year_range_present(query="") -> bool:
     # Does the query contains patterns '2004-2012 ' or '02-11'
@@ -64,7 +64,7 @@ def parse_car_year(query="") -> str:
     assert is_year_present(query)
 
     # Find the characters of query matching patterns '02' or '2004'
-    car_year = re.findall(r"^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$", query)[0].strip()
+    car_year = re.findall(r"^\d{2}\s|^\d{4}\s|\s\d{2}\s|\s\d{4}\s|\s\d{4}$|\s\d{2}$|^\d{2}$|^\d{4}$", query)[0].strip()
 
     year_prefix = get_year_prefix(car_year)
     # Place the current year's prefix if car year had 2 characters (e.g: '01'->'2001')  

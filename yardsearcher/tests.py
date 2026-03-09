@@ -38,8 +38,9 @@ class checkQueries(TestCase):
             {"query": "mazda mazda3", "expected": False},
             {"query": "ford f-150", "expected": False},
             {"query": "mazda cx-7 2005", "expected": True},
-            {"query": "2010 xc70", "expected": True},
             {"query": "infiniti g35", "expected": False},
+            {"query": "2010 xc70", "expected": True},
+            {"query": "2006", "expected": True},
             {"query": "g35 infiniti", "expected": False},
             {"query": "bmw 328xi", "expected": False},
         ]
