@@ -1,7 +1,7 @@
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'junkyardfinder.blake4it.com']
+ALLOWED_HOSTS = ['reesesites.pythonanywhere.com', 'localhost', '127.0.0.1', 'junkyardfinder.blake4it.com']
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
