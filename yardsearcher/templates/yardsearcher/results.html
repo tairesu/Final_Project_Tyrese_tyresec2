@@ -171,7 +171,7 @@
                                     <table class="w-full">
                                         <thead class="bg-muted/50" >
                                             <tr data-yardId="{{yard.meta.junkyard_id}}">
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="year" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="year" >
                                                     <span>Year</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -188,7 +188,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="make" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="make" >
                                                     <span>Make</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -205,7 +205,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="model" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="model" >
                                                     <span>Model</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -222,7 +222,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="row" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="row" >
                                                     <span>Row</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -240,7 +240,7 @@
                                                     </svg>
                                                 </th>
                                                 {% if yard.results.last.space %}
-                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="space" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="space" >
                                                         <span>Space</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -259,7 +259,7 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.0.vin %}
-                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="vin" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="vin" >
                                                         <span>VIN</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -278,7 +278,7 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.0.color %}
-                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="color" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="color" >
                                                         <span>Color</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -296,7 +296,7 @@
                                                     </svg>
                                                     </th>
                                                 {% endif %}
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="available_date" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-fieldname="available_date" >
                                                    <span>Entry Date</span>
                                                    <svg
                                                         viewBox="0 0 640 640"
@@ -313,7 +313,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground " data-fieldname="notes" >
                                                     <span>Notes</span>
                                                 </th>
                                                
@@ -345,7 +345,13 @@
                                                         <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.color }}</td>
                                                     {% endif %}
                                                     <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.available_date }}</td>
-                                                    
+                                                    <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                                                        {% if vehicle.notes %}
+                                                        {{ vehicle.notes|truncatechars:17 }}
+                                                        {% else %}
+
+                                                        {% endif %}
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -387,11 +393,10 @@
             const url = "{% url 'api_sort_table_urlpattern' %}";
 
             function get_api_url(th){
-                let sortby = th.dataset['sortby'];
+                let fieldname = th.dataset['fieldname'];
                 let order = th.dataset['order'];
                 let yardId = th.parentNode.dataset['yardid'];
-                console.log(`Params for api:\n yardId: ${yardId} \n sortby: "${sortby}" \n order: "${order}" \n q: "${q}"`);
-                return encodeURI(`${url}?q=${q}&sortBy=${sortby}&order=${order}&yardId=${yardId}`)
+                return encodeURI(`${url}?q=${q}&sortBy=${fieldname}&order=${order}&yardId=${yardId}`)
             }
             async function sortInventory(th) {
                 try {
@@ -429,8 +434,10 @@
 
             function get_inventory_keys(yardId) {
                 let inventory_keys = [];
-                document.querySelectorAll(`#table-${yardId} th`).forEach(th => {
-                     inventory_keys.push(th.dataset['sortby']);
+                let inventory_ths = document.querySelectorAll(`#table-${yardId} th`);
+                console.log("Inventory ths:", inventory_ths)
+                inventory_ths.forEach(th => {
+                     inventory_keys.push(th.dataset['fieldname']);
                 });
                 return inventory_keys
             }
