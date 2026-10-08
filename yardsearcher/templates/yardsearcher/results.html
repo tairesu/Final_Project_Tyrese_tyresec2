@@ -103,7 +103,7 @@
         <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
                 <!-- Map Section -->
-                <div class="w-full lg:sticky lg:top-32 self-start">
+                <div class="w-full lg:sticky lg:top-32 self-start print:hidden">
                     <div class="p-4 bg-card border-2 border-border rounded-lg">
                         {% if fetched_yard_data|length > 0 %}
                             <div class="mb-4">
@@ -171,7 +171,7 @@
                                     <table class="w-full">
                                         <thead class="bg-muted/50" >
                                             <tr data-yardId="{{yard.meta.junkyard_id}}">
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="year" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="year" >
                                                     <span>Year</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -188,7 +188,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="make" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="make" >
                                                     <span>Make</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -205,7 +205,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="model" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="model" >
                                                     <span>Model</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -222,7 +222,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="row" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="row" >
                                                     <span>Row</span>
                                                     <svg
                                                         viewBox="0 0 640 640"
@@ -240,7 +240,7 @@
                                                     </svg>
                                                 </th>
                                                 {% if yard.results.last.space %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="space" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="space" >
                                                         <span>Space</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -259,7 +259,7 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.0.vin %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="vin" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="vin" >
                                                         <span>VIN</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -278,7 +278,7 @@
                                                     </th>
                                                 {% endif %}
                                                 {% if yard.results.0.color %}
-                                                    <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="color" >
+                                                    <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="color" >
                                                         <span>Color</span>
                                                         <svg
                                                         viewBox="0 0 640 640"
@@ -296,7 +296,7 @@
                                                     </svg>
                                                     </th>
                                                 {% endif %}
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="available_date" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" onclick="sortInventory(this)" data-isusing="false" data-order="" data-sortBy="available_date" >
                                                    <span>Entry Date</span>
                                                    <svg
                                                         viewBox="0 0 640 640"
@@ -313,7 +313,7 @@
                                                             class="sort-caret" />
                                                     </svg>
                                                 </th>
-                                                <th class="px-6 py-3 text-left font-bold text-foreground" >
+                                                <th class="px-6 py-3 print:p-1 text-left font-bold text-foreground" >
                                                     <span>Notes</span>
                                                 </th>
                                                
@@ -322,29 +322,29 @@
                                         <tbody id="tbody-{{yard.meta.junkyard_id}}">
                                             {% for vehicle in yard.results %}
                                                 <tr class="border-t border-border hover:bg-muted/50 transition-colors cursor-pointer group">
-                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.year }}</td>
-                                                    <td class="px-6 py-3 text-foreground">
+                                                    <td class="px-6 py-3 print:p-1 text-foreground">{{ vehicle.year }}</td>
+                                                    <td class="px-6 py-3 print:p-1 text-foreground">
                                                         {{ vehicle.make|upper }}
                                                     </td>
-                                                    <td class="px-6 py-3 text-foreground">{{ vehicle.model|upper }}</td>
+                                                    <td class="px-6 py-3 print:p-1 text-foreground">{{ vehicle.model|upper }}</td>
                                                     {% if vehicle.row > 0 %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
                                                     {% else %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
 
                                                     {% endif %}
                                                     {% if yard.results.last.space and vehicle.space %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.space }}</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.space }}</td>
                                                     {% elif yard.results.last.space and not vehicle.space %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
                                                     {% endif %}
                                                     {% if vehicle.vin %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.vin }}</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.vin }}</td>
                                                     {% endif %}
                                                     {% if vehicle.color %}
-                                                        <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.color }}</td>
+                                                        <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.color }}</td>
                                                     {% endif %}
-                                                    <td class="px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.available_date }}</td>
+                                                    <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.available_date }}</td>
                                                     
                                                 </tr>
                                             {% endfor %}
@@ -444,9 +444,9 @@
                     let td_html = vehicle[field];
                     if (foreground_fields.includes(field)) {
                         // Use this class
-                        td_class = 'px-6 py-3 text-foreground uppercase';
+                        td_class = 'px-6 py-3 print:p-1 text-foreground uppercase';
                     } else {
-                        td_class = 'px-6 py-3 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
+                        td_class = 'px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
                     }
                     tr.innerHTML += `<td class="${td_class}">${td_html}</td>`;
                 });
