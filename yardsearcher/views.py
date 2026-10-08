@@ -16,7 +16,7 @@ from yardsearcher.models import (
 from yardsearcher.forms import ReviewForm
 
 # For API Use
-VALID_FIELDS = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date']
+VALID_FIELDS = ['year', 'make', 'model', 'vin', 'row','color', 'space', 'available_date', 'notes']
 VALID_ORDERS = ("","-")
 
 def get_avg(li):
@@ -122,6 +122,7 @@ def instance_to_dict(instance)->dict:
 		"space": instance.space,
 		"row": instance.row,
 		"available_date": instance.get_duration(),
+		"notes": instance.notes,
 	}
     
 def api_test_json_response(request):
