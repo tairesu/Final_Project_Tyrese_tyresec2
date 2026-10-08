@@ -102,27 +102,12 @@
         <!-- Main Content -->
         <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
-                <!-- Map Section -->
-                <div class="w-full lg:sticky lg:top-32 self-start print:hidden">
-                    <div class="p-4 bg-card border-2 border-border rounded-lg">
-                        {% if fetched_yard_data|length > 0 %}
-                            <div class="mb-4">
-                                <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
-                                    <span class="text-primary">📍</span>
-                                    Junkyard Locations
-                                </h2>
-                                <p class="text-sm text-muted-foreground mt-1">
-                                    Click markers to view inventory
-                                </p>
-                            </div>
-                            <div id="map" class="h-[500px] lg:h-[600px] rounded-lg z-0 border-2 border-border "></div>
-                        {% else %}
-                            <img src="{% static '/noresult.png'%}"/>
-                            <div id="map" class="hidden "></div>
-                        {% endif %}
-                    </div>
+                <div class="text-center text-sm text-muted-foreground">
+                    <span>Located<span>
+                        <span class="font-semibold"> {{ num_results }} {% if num_results == 1 %} car {% else %} cars {% endif %} </span>
+                        <span> across</span>
+                        <span class="font-semibold"> {{ fetched_yard_data|length }} {% if fetched_yard_data|length == 1 %} junkyard {% else %} junkyards {% endif %} </span>
                 </div>
-
                 <!-- Inventory Tables Section -->
                 <div id="inventory-container" class="space-y-6">
                     {% for yard in fetched_yard_data %}
@@ -346,6 +331,26 @@
                             </div>
                         </div>
                     {% endfor %}
+                </div>
+                 <!-- Map Section -->
+                <div class="w-full lg:sticky lg:top-32 self-start print:hidden">
+                    <div class="p-4 bg-card border-2 border-border rounded-lg">
+                        {% if fetched_yard_data|length > 0 %}
+                            <div class="mb-4">
+                                <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+                                    <span class="text-primary">📍</span>
+                                    Junkyard Locations
+                                </h2>
+                                <p class="text-sm text-muted-foreground mt-1">
+                                    Click markers to view inventory
+                                </p>
+                            </div>
+                            <div id="map" class="h-[500px] lg:h-[600px] rounded-lg z-0 border-2 border-border "></div>
+                        {% else %}
+                            <img src="{% static '/noresult.png'%}"/>
+                            <div id="map" class="hidden "></div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
