@@ -98,6 +98,7 @@ def results_view(request):
 		formatted_results, avg_lat, avg_long = format_results(results, t0)
 		context = {
 			'fetched_yard_data': formatted_results,
+			'num_results': len(results),
 			'query': query,
 			'total_yards': Junkyard.objects.all().count,
 			'total_vehicles': Vehicle.objects.all().count,
