@@ -333,7 +333,7 @@
                                                     <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.available_date }}</td>
                                                     <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                                                         {% if vehicle.notes %}
-                                                        {{ vehicle.notes|truncatechars:17 }}
+                                                        {{ vehicle.notes|truncatechars:20 }}
                                                         {% else %}
 
                                                         {% endif %}
@@ -440,6 +440,10 @@
                         td_class = 'px-6 py-3 print:p-1 text-foreground uppercase';
                     } else {
                         td_class = 'px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors';
+                    }
+                    // Truncate field notes if value is too long
+                    if (field == "notes" && td_html.length > 20){
+                        td_html = td_html.substr(0,20) + "…";
                     }
                     tr.innerHTML += `<td class="${td_class}">${td_html}</td>`;
                 });
