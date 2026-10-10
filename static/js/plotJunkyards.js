@@ -7,10 +7,11 @@ var markers = [];
 var selectedJunkyard = null;
 
 function initMap(){
-    map = L.map('map').setView(center = [AVG_LAT, AVG_LONG], 9);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    map = L.map('map').setView(center=[AVG_LAT, AVG_LONG], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom: 2,
-        attribution: '© <a href="https://carto.com/attributions">CARTO</a>'
+       attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+       referrerPolicy: "no-referrer-when-downgrade",
       }).addTo(map);
     createMarkers();
 }
