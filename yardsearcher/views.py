@@ -91,8 +91,8 @@ def results_view(request):
 	context = {}
 	if request.method == "GET":
 		
-		query = request.GET.get('q')
 		t0 = time.time()
+		query = request.GET.get('q')
 		queries = get_query_conditionals(query)
 		results = get_query_results(queries)
 		formatted_results, avg_lat, avg_long = format_results(results, t0)
@@ -102,6 +102,7 @@ def results_view(request):
 			'query': query,
 			'total_yards': Junkyard.objects.all().count,
 			'total_vehicles': Vehicle.objects.all().count,
+			'time_elapsed': time.time() - t0,
 			'yard_data_json':{
        			"avg_lat": avg_lat,
 				"avg_long": avg_long,
