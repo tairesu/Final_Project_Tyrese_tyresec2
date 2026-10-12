@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import requests
+from curl_cffi import requests
 import io
 import re
 import time
@@ -30,8 +30,7 @@ class YardSearch:
         self.name = ''
         self.elem_id = ''
         self.time_elapsed = 0
-        self.session = requests.Session()
-        self.session.headers.update(self.base_headers)
+        self.session = requests.Session(impersonate='chrome', headers=self.base_headers, params=self.base_params)
 
     def appendLocation(self):
         YardSearch.lats.append(self.lat)
