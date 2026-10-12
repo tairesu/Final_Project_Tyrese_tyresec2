@@ -23,33 +23,20 @@ def get_query_conditionals(query)-> list:
     return [ extract_conditionals(vehicle_query) for vehicle_query in query.lower().split(",")]
 
 def extract_conditionals(query="") -> dict:
-    """
-    honda -> make:honda
-    honda civic -> make:honda,model:civic
-    02 honda -> year:2002, make:honda
-    
-    """
-    query = query.strip()
-    conditionals = {'original_query': query}
-    semantics = query.lower().split(" ") # Seperates via whitespaces
-    
+    conditionals = {}
+    semantics = query.strip().split(' ')
+
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
-        year = re.findall(YEAR_REGEXP, query)[0].strip()
-        semantics.pop(semantics.index(year))
-    elif is_year_range_present(query):
-        conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
-        year_range = re.findall(RANGE_REGEXP, query)[0]
-        semantics.pop(semantics.index(year_range))
-    
-    # now that there are no more years or year ranges
-    if len(semantics) > 1:
-        conditionals['make'] = semantics[0]
         semantics.pop(0)
-        conditionals['model'] = ' '.join(semantics) # the remaining strings
-    elif len(semantics) == 1:
-        conditionals['make'] = semantics[0]
-        
+    elif not is_year_present(query) and is_year_range_present(query):
+        conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
+        semantics.pop(0)
+    
+    conditionals['original_query'] = query
+    conditionals['make'] = semantics[0]
+    semantics.pop(0)
+    conditionals['model'] = ' '.join(semantics)
     return conditionals
 
 def is_year_present(query="") -> bool:
@@ -91,6 +78,8 @@ def parse_car_year_range(query="") -> tuple:
 
     return (formatted_min_year,formatted_max_year)
 
-
-
-
+def replace_em_dashes(query="") -> str:
+    """
+    Replaces em-dashes and hyphens (in query) with a default '-'
+    """
+    return query.replace('–', '-').replace('—', '-')

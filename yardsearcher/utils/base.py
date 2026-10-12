@@ -6,7 +6,7 @@ import time
 import cProfile
 import random
 from concurrent.futures import ThreadPoolExecutor
-
+from yardsearcher.utils.queries import (replace_em_dashes, extract_conditionals)
 
 class YardSearch:
     """
@@ -16,7 +16,7 @@ class YardSearch:
     lats = []
     longs = []
     def __init__(self, query_str):
-        self.searched_query = self.replace_em_dashes(query_str)
+        self.searched_query = replace_em_dashes(query_str)
         self.queries = self.searched_query.strip().split(',')
         self.base_headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0",
@@ -49,74 +49,9 @@ class YardSearch:
     def update_headers(self, new_headers={}):
         self.base_headers.update(new_headers)
 
-    def update_params(self, new_params={}):
-        self.base_params.update(new_params)
-        print("Base params After Update:", self.base_params)
-
     def set_time_elapsed(self, time_elapsed):
         self.time_elapsed = time_elapsed
-
-    def replace_em_dashes(self, query="") -> str:
-        """
-        Replaces em-dashes and hyphens (in query) with a default '-'
-        """
-        return query.replace('–', '-').replace('—', '-')
-
-    def is_year_present(self, query="") -> bool:
-        # Does the query contains patterns '2004 ' or '08 ' 
-        return True if re.findall(r"^\d{2}\s|^\d{4}\s", query) else False
-
-    def is_year_range_present(self, query="") -> bool:
-        # Does the query contains patterns '2004-2012 ' or '02-11'
-        return True if re.findall(r"^(\d{2}-\d{2}\s)|^(\d{4}-\d{4}\s)", query) else False
-
-    def parse_car_year(self, query="") -> str:
-        """
-        Strips a given query str of it's year
-        parse_car_year('2004 Honda Civic') => '2004'
-        """
-        assert self.is_year_present(query)
-
-        # Find the characters of query matching patterns '02' or '2004'
-        car_year = re.findall(r"^\d{2}\s|^\d{4}\s", query)[0].strip()
-
-        # Place the current year's prefix if car year had 2 characters (e.g: '01'->'2001')  
-        formatted_car_year = car_year if len(car_year) == 4 else f"20{car_year}"
-        return formatted_car_year
-
-    def parse_car_year_range(self, query="") -> tuple:
-        """
-        Strips a given query str of minimum and maximum years
-
-        parse_car_year_range('2004-2008 Honda Civic') => ('2004','2008')
-        """
-        assert self.is_year_range_present(query)
-        range_str = re.findall(r"^\d{2}-\d{2}|^\d{4}-\d{4}", query.strip())[0]
-        min_year = range_str.split('-')[0]
-        max_year = range_str.split('-')[1]
-        formatted_min_year = "20" + min_year if len(min_year) == 2 else min_year 
-        formatted_max_year = "20" + max_year if len(max_year) == 2 else max_year 
-
-        return (formatted_min_year,formatted_max_year)
-
-
-    def extract_conditionals(self, query="") -> dict:
-        conditionals = {}
-        semantics = query.strip().split(' ')
-
-        if self.is_year_present(query):
-            conditionals['year'] = self.parse_car_year(query)
-            semantics.pop(0)
-        elif not self.is_year_present(query) and self.is_year_range_present(query):
-            conditionals['minYear'], conditionals['maxYear'] = self.parse_car_year_range(query)
-            semantics.pop(0)
-        
-        conditionals['original_query'] = query
-        conditionals['make'] = semantics[0]
-        semantics.pop(0)
-        conditionals['model'] = ' '.join(semantics)
-        return conditionals
-
+   
     def satisfies_conditionals(self, inventory_vehicle_tuple, conditionals):
         """
         Given extracted vehicle tuple, return True if the vehicle tuple passes year based conditonals
@@ -145,7 +80,7 @@ class YardSearch:
         queries = queries if len(queries) > 0 else self.queries
         t0 = time.time()
         for query_iteration, query in enumerate(queries):
-            conditionals = self.extract_conditionals(query)
+            conditionals = extract_conditionals(query)
             #... grab matching vehicles from online inventory that matches the filter, and satisfies the conditional 
             self.fetch_inventory(conditionals=conditionals)
         t1 = time.time()
@@ -162,18 +97,6 @@ class YardSearch:
             raise ValueError(f"Response status code = {response.status_code}; headers = {self.base_headers}; params = {self.base_params}; base url = {self.base_url}; request headers = {response.request.headers} ; request url = {response.request.url}")
         soup = BeautifulSoup(response.text, "lxml")
         return soup
-
-    def data_as_dict(self):
-        return {
-            "name": self.name, 
-            "elem_id" : self.elem_id,
-            "num_results": len(self.results),
-            "time_elapsed": self.time_elapsed,
-            "result_headers": self.inventory_headers,
-            "results": self.results,
-            "lat": self.lat,
-            "long": self.long,
-        }
 
     def results_as_list(self):
         results_list = []
