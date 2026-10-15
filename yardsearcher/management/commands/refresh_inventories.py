@@ -57,18 +57,22 @@ class Command(BaseCommand):
 		""" 
 			Upserts or deletes vehicles on Vehicle model 
 		"""
-		assert len(results) > 0
-		vehicle_instances = []
-		scraped_identifiers = [] # Ex: ['stk0192','stk1111']
+		try:
 
-		# Format results to django model instances (<Vehicle>) 
-		for result in results:
-			vehicle_instance = self.format_result(result, yard)
-			scraped_identifiers.append(vehicle_instance.junkyard_identifier)
-			vehicle_instances.append(vehicle_instance)
-		self.upsert_vehicle_instances(vehicle_instances)
-		self.handle_removed_results(scraped_identifiers, yard['id'])
-	
+			assert len(results) > 0
+			vehicle_instances = []
+			scraped_identifiers = [] # Ex: ['stk0192','stk1111']
+
+			# Format results to django model instances (<Vehicle>) 
+			for result in results:
+				vehicle_instance = self.format_result(result, yard)
+				scraped_identifiers.append(vehicle_instance.junkyard_identifier)
+				vehicle_instances.append(vehicle_instance)
+			self.upsert_vehicle_instances(vehicle_instances)
+			self.handle_removed_results(scraped_identifiers, yard['id'])
+
+		except Exception as e:
+			raise ValueError(e)
 	def format_result(self, result, yard):
 		"""
 		Turns any scraped result into a <Vehicle> instance
@@ -88,8 +92,7 @@ class Command(BaseCommand):
                 vin=extract_vin(result)
             )
 		except ValueError as e:
-			print(f"{e} appeared at this result: {result}")
-			raise ValueError
+			raise ValueError(f"{e} appeared at this result: {result}")
 
 	def upsert_vehicle_instances(self, vehicle_instances):
 		# Upsert list of <Vehicle> instances
