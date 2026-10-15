@@ -1,7 +1,9 @@
 from .base import YardSearch
 import cProfile
+import sys
 
 class LKQSearch(YardSearch):
+
     """
     Represents a search on the LKQ junkyard data
     
@@ -34,7 +36,7 @@ class LKQSearch(YardSearch):
         }
         self.base_params = {}
         self.temp_inventory_headers = []
-        self.inventory_headers = ()
+        self.inventory_headers = ("year","make","model","color","stock #","available","vin","section","row", "space")
         self.lat = 41.6325570
         self.long = -87.6731408
         self.elem_id = "lkq"
@@ -42,12 +44,14 @@ class LKQSearch(YardSearch):
         super().appendLocation()
 
     def fetch_inventory(self, conditionals={}):
-        page_number = 1
-        #While valid page exists 
-        while(self.is_page_valid(page_number, conditionals)):
-            page_number += 1
-        return self.results
-
+        try:
+            page_number = 1
+            while(self.is_page_valid(page_number, conditionals)):
+                page_number += 1
+            return self.results
+        
+        except Exception as e:
+            raise ValueError(e)
 
     def is_page_valid(self, page_number, conditionals={}) -> bool:
         # Grabs all divs HTML 
@@ -72,48 +76,32 @@ class LKQSearch(YardSearch):
         for card in vehicle_cards:
             vehicle_data = self.extract_card_html(card)
             if super().satisfies_conditionals(vehicle_data, conditionals):
-                self.results.append(vehicle_data)
+                super().add_result(vehicle_data)
 
 
     # Turns matching vehicle card HTML and formats the content into a dictionary
     def extract_card_html(self,card_html) -> dict:
         inventory_car = {}
+
         year_make_model = card_html.find(class_="pypvi_ymm").get_text(' ', strip=True)
         inventory_car['year'] = year_make_model.split(' ')[0]
         inventory_car['make'] = year_make_model.split(' ')[1]
-        inventory_car['model'] = year_make_model.split(' ')[2]
-        details = card_html.find_all(class_="pypvi_detailItem")
-        #loop through each detail item (color, stock, available inventory_car, etc)
-        for detail in details:
-            items = detail.find_all('b')
-            if len(items) > 0:
-                for item in items:
-                    field_name = item.get_text(strip=True).replace(':','').lower().strip()
-                    self.temp_inventory_headers.append(field_name)
-                    if('available' in field_name):
-                        item_value = detail.find('time').get_text()
-                    else: 
-                        item_value = item.next_sibling.strip()
-                    inventory_car[field_name] = item_value
-
-  
-        return self.convert_car_to_tuple(inventory_car)
-
-    def convert_car_to_tuple(self, inventory_car):
-        self.inventory_headers = tuple(inventory_car.keys())
-        return (
-            inventory_car['year'], 
-            inventory_car['make'],
-            inventory_car['model'],
-            inventory_car['color'],
-            inventory_car['vin'],
-            inventory_car['section'],
-            inventory_car['row'],
-            inventory_car['space'],
-            inventory_car['stock #'],
-            inventory_car['available'],
-        )
+        inventory_car['model'] = ' '.join(year_make_model.split(' ')[2:])
         
+        color_stock = card_html.find(class_="pypvi_stock").get_text(' ', strip=True).split(' · ')
+        inventory_car['color'] = color_stock[0]
+        inventory_car['stock #'] = color_stock[1]
+        inventory_car['available'] = card_html.find('time').get_text(strip=True)
+
+        vin_str = card_html.select_one('[class="pypvi_detailItem"]').get_text(strip=True) # VIN 1GTJC33G06F243724
+        inventory_car['vin'] = vin_str.split(' ')[1]
+        
+        car_locate = card_html.find_all("td")
+        for td in car_locate:
+            field_name = td.span.get_text(' ', strip=True).lower()
+            field_value = td.b.get_text(strip=True)
+            inventory_car[field_name] = field_value
+        return inventory_car
 
     def display_data(self):
         if len(self.results) == 0:
