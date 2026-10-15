@@ -24,19 +24,24 @@ def get_query_conditionals(query)-> list:
 
 def extract_conditionals(query="") -> dict:
     conditionals = {}
-    semantics = query.strip().split(' ')
+    conditionals['original_query'] = query
+    query_bits = query.strip().split(' ')
 
+    # Choose correct parser based on query
     if is_year_present(query):
         conditionals['year'] = parse_car_year(query)
-        semantics.pop(0)
+        query_bits.pop(0)
     elif not is_year_present(query) and is_year_range_present(query):
         conditionals['minYear'], conditionals['maxYear'] = parse_car_year_range(query)
-        semantics.pop(0)
-    
-    conditionals['original_query'] = query
-    conditionals['make'] = semantics[0]
-    semantics.pop(0)
-    conditionals['model'] = ' '.join(semantics)
+        query_bits.pop(0)
+
+    # Handle whats left of remaining query components
+    if len(query_bits) > 1:
+        conditionals['make'] = query_bits[0]
+        query_bits.pop(0)
+        conditionals['model'] = ' '.join(query_bits) # the remaining strings
+    elif len(query_bits) == 1:
+        conditionals['make'] = query_bits[0]
     return conditionals
 
 def is_year_present(query="") -> bool:
