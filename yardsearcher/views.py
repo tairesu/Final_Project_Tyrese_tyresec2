@@ -5,6 +5,8 @@ from yardsearcher.utils.jup import *
 from yardsearcher.utils.lkq import *
 from django.views.generic.base import TemplateView
 from yardsearcher.utils.queries import *
+from django.shortcuts import render
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q, Count
 from django.db.models.functions import Lower
 from django.forms.models import model_to_dict
@@ -12,6 +14,7 @@ from yardsearcher.models import (
 	Vehicle,
 	Junkyard,
 	Review,
+	Scrape
 )
 from yardsearcher.forms import ReviewForm
 
@@ -192,3 +195,14 @@ class ReviewView(TemplateView):
             return redirect('home_urlpattern')
 
         return render(self.request, self.template_name, {'form': form})
+
+@staff_member_required
+def admin_dashboard(request):
+	# Lets send a list junkyard scrape dicts
+	#[{'junkyard_name': 'Joliet U pull it', 'scrapes' : [<>,<>,<>]}]
+	all_yards = Junkyard.objects.all()
+	scrape_data_list = [{'junkyard_name': yard.name, 'all_scrapes': Scrape.objects.filter(id=yard.pk).order_by("scraped_at")} for yard in all_yards]
+	context = {
+		'scrapes': scrape_data_list 
+	} 
+	return render(request, 'yardsearcher/dashboard.html', context )
