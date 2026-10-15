@@ -39,7 +39,7 @@ class Jup(YardSearch):
             # Find all table headers w/i the inventory table 
             th_elems = inventory_table.find_all('th')
             # Extract the text from every table header element into a tuple
-            inventory_headers = tuple([th.get_text(strip=True).lower() for th in th_elems])
+            inventory_headers = [th.get_text(strip=True).lower() for th in th_elems]
             # Now set the inventory_headers to this tuple
             self.set_inventory_headers(inventory_headers)
 
@@ -52,7 +52,7 @@ class Jup(YardSearch):
             # Find every cell w/in this inventory_table_row
             td_elems = inventory_table_row.find_all('td')
             # Extract the text of each cell into a tuple
-            inventory_vehicle = tuple([td.get_text(strip=True).lower() for td in td_elems])
+            inventory_vehicle = {self.inventory_headers[header_index]: td.get_text(strip=True).lower() for header_index, td in enumerate(td_elems)}
             # If the vehicle tuple satisfies the conditionals 
             if super().satisfies_conditionals(inventory_vehicle, conditionals):
                 self.add_result(inventory_vehicle)

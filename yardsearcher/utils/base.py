@@ -51,16 +51,13 @@ class YardSearch:
     def set_time_elapsed(self, time_elapsed):
         self.time_elapsed = time_elapsed
    
-    def satisfies_conditionals(self, inventory_vehicle_tuple, conditionals):
+    def satisfies_conditionals(self, inventory_vehicle, conditionals):
         """
         Given extracted vehicle tuple, return True if the vehicle tuple passes year based conditonals
         """
         # Let's find the year of the given tuple
         try:
-            # Grabbing the index of 'year' from this junkyard's inventory headers (int)
-            vehicle_year_index = self.inventory_headers.index('year')
-            # Locate the vehicle's year from the given tuple using that index (str)
-            vehicle_year = inventory_vehicle_tuple[vehicle_year_index]
+            vehicle_year = inventory_vehicle['year']
             
         except ValueError as e:
             return False
@@ -72,8 +69,7 @@ class YardSearch:
         #print(f'extracted_year: {vehicle_year} \n conditionals: {conditionals} \n match_year:{vehicle_matches_year} \n vehicle_in_range:{vehicle_in_year_range} \n ignore_year_and_range: {ignore_year_and_range}')
         if(vehicle_matches_year or vehicle_in_year_range or ignore_year_and_range):
             return True
-        else: 
-            return False
+        return False
 
     def handle_queries(self, queries=[]):
         queries = queries if len(queries) > 0 else self.queries
@@ -98,10 +94,4 @@ class YardSearch:
         return soup
 
     def results_as_list(self):
-        results_list = []
-        for result in self.results:
-            results_dict = {}
-            for header_index,header in enumerate(self.inventory_headers):
-                results_dict[header] = result[header_index]
-            results_list.append(results_dict)
-        return results_list
+        return self.results
