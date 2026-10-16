@@ -354,23 +354,7 @@
         <script src="{% static 'js/leaflet.js' %}?v={{ tz }}"></script> 
         {{ yard_data_json|json_script:"yard_data"}}
         <script src="{% static 'js/plotJunkyards.js' %}?v={{ tz }}" defer></script> 
-        <script>
-            function toggleTable(junkyardId, justshow = false) {
-                const table = document.getElementById(`table-${junkyardId}`);
-                const chevron = document.getElementById(`chevron-${junkyardId}`);
-                
-                if ( justshow || table.classList.contains('hidden')) {
-                    table.classList.remove('hidden');
-                    chevron.classList.add('chevron-opened');
-                    chevron.style.transform = 'rotate(0deg)';
-                } else {
-                    table.classList.add('hidden');
-                    chevron.classList.remove('chevron-opened');
-                    chevron.style.transform = 'rotate(-180deg)';
-                }
-            }
-
-        </script>
+        <script src="{% static 'js/toggleTable.js' %}?v={{ tz }}" defer></script>
         <script>
             const querySearchURL = window.location.search;
             const urlParams = new URLSearchParams(querySearchURL);
