@@ -201,7 +201,7 @@ def admin_dashboard(request):
 	# Lets send a list junkyard scrape dicts
 	#[{'junkyard_name': 'Joliet U pull it', 'scrapes' : [<>,<>,<>]}]
 	all_yards = Junkyard.objects.all()
-	scrape_data_list = [{'junkyard_name': yard.name, 'all_scrapes': Scrape.objects.filter(id=yard.pk).order_by("scraped_at")} for yard in all_yards]
+	scrape_data_list = [{'junkyard_name': yard.name, 'all_scrapes': Scrape.objects.filter(junkyard=yard.pk).order_by("-scraped_at")[:10]} for yard in all_yards]
 	context = {
 		'scrapes': scrape_data_list 
 	} 
