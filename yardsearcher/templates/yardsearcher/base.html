@@ -46,9 +46,9 @@
                             </div>
                             <div>
                                 <h1 class="text-lg lg:2xl font-bold text-foreground tracking-tight">
-                                    Junkyard <span class="text-primary">Finder</span>
+                                    {% block primary-nav-text %} Junkyard {% endblock%} <span class="text-primary">{% block secondary-nav-text %} Finder {% endblock%}</span>
                                 </h1>
-                                <p class="text-sm text-muted-foreground">Multi-yard inventory search</p>
+                                <p class="text-sm text-muted-foreground">{% block subtext %} Multi-yard inventory search {% endblock subtext %}</p>
                             </div>
                         </div>
                         {% if total_vehicles and total_yards %}
