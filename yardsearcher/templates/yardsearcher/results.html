@@ -292,7 +292,7 @@
                                                         {{ vehicle.make|upper }}
                                                     </td>
                                                     <td class="px-6 py-3 print:p-1 text-foreground">{{ vehicle.model|upper }}</td>
-                                                    {% if vehicle.row > 0 %}
+                                                    {% if vehicle.row >= 0 %}
                                                         <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">{{ vehicle.row }}</td>
                                                     {% else %}
                                                         <td class="px-6 py-3 print:p-1 font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors">-</td>
