@@ -1,5 +1,34 @@
 {% extends 'yardsearcher/base.html' %}
 
+{% block primary-nav-text %}Yo {% endblock primary-nav-text %}
+{% block secondary-nav-text %}
+    {{ request.user|capfirst }}
+{% endblock secondary-nav-text %}
+{% block subtext %}Here's the latest{% endblock subtext %}
 {% block main_content %}
+<main class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
+        
+        <!-- Scrape Data -->
+        {% for yard in scrapes %}
+            <article>
+                <div class=" p-4 border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border text-foreground">
+                       <h2> {{yard.junkyard_name}} </h2>  
+                       <div class="flex-col flex">
+                           {% for scrape in yard.all_scrapes %}
+                                <!-- Same row-->
+                                <div class="flex items-center mt-2 justify-between gap-2 {% if scrape.status == '1' %}text-green-300 {% else %} text-red-500{% endif %}">
+                                    <span class="text-sm  ">{{ scrape.scraped_at }}</span>
+                                    <span class="text-sm opacity-50">#{{ scrape.pk }}</span>
+                                </div>
+                                <span class="px-4 text-xs text-muted-foreground">{{ scrape.error }}</span>
+                               
+                           {% endfor %}                   
+                       </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}
 
