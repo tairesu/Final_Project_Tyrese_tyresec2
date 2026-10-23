@@ -7,28 +7,48 @@
 {% block subtext %}Here's the latest{% endblock subtext %}
 {% block main_content %}
 <main class="container mx-auto px-4 py-8">
-    <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8">
-        
+    <section class="flex overflow-x-auto flex-row  flex-nowrap gap-6">
         <!-- Scrape Data -->
         {% for yard in scrapes %}
-            <article>
-                <div class=" p-4 border-2 rounded-lg transition-all duration-300 scroll-mt-8 border-border text-foreground">
-                       <h2> {{yard.junkyard_name}} </h2>  
-                       <div class="flex-col flex">
-                           {% for scrape in yard.all_scrapes %}
-                                <!-- Same row-->
-                                <div class="flex items-center mt-2 justify-between gap-2 {% if scrape.status == '1' %}text-green-300 {% else %} text-red-500{% endif %}">
-                                    <span class="text-sm  ">{{ scrape.scraped_at }}</span>
-                                    <span class="text-sm opacity-50">#{{ scrape.pk }}</span>
-                                </div>
-                                <span class="px-4 text-xs text-muted-foreground">{{ scrape.error }}</span>
-                               
-                           {% endfor %}                   
-                       </div>
+        
+            <article class=" shrink-0  w-3/4 lg:w-1/2 cursor-pointer select-none" onclick="toggleTable({{ forloop.counter }})">
+                <div class="bg-gradient-to-r from-card to-muted p-4 flex items-center justify-between">
+                    {% comment %} Meta {% endcomment %}
+                    <div class="truncate text-ellipsis">
+                        <h3 class="text-lg lg:text-2xl w-full font-bold text-foreground mb-1">
+                            {{ yard.junkyard_name }}
+                        </h3>
+                        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span class="hidden md:visible">📍</span>
+                            Last updated {{ yard.latest_update_date }}
+                        </div>
+                    </div>
+
+                    {% comment %} Chevron {% endcomment %}
+                    <div class="flex items-center gap-3">
+                        <svg id="chevron-{{ forloop.counter }}" class="w-6 h-6 transition-transform transition-fill chevron chevron-opened" fill="none" stroke="currentColor" viewBox="0 0 640 640" style="transform: rotate(0deg);">
+                            <path d="M480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544zM320 416C313.3 416 307 413.2 302.4 408.3L198.4 296.3C191.9 289.3 190.2 279.1 194 270.4C197.8 261.7 206.5 256 216 256L424 256C433.5 256 442.2 261.7 446 270.4C449.8 279.1 448.1 289.3 441.6 296.3L337.6 408.3C333.1 413.2 326.7 416 320 416z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-muted/50 p-4 hidden" id="table-{{ forloop.counter }}">
+                    {% for scrape in yard.all_scrapes %}
+                        <div class="flex items-center mt-3 justify-between gap-2 {% if scrape.status == '1' %}text-green-300 {% else %} text-red-500{% endif %}">
+                            <span class="text-sm  ">{{ scrape.scraped_at }}</span>
+                            <span class="text-sm opacity-50">#{{ scrape.pk }}</span>
+                        </div>
+                        {% if scrape.status == "0" %}
+                        <span class="ml-4 text-xs text-muted-foreground">{{ scrape.error }}</span>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </article>
         {% endfor %}
-    </div>
+    </section>
 </main>
 {% endblock %}
 
+{% block extra_scripts %}
+{% load static %}
+    <script src="{% static 'js/toggleTable.js' %}?v={{ tz }}" defer></script>
+{% endblock %}
