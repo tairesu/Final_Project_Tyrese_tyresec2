@@ -80,7 +80,23 @@ class Scrape(models.Model):
     status = models.CharField(max_length=1, choices=STATUSES, editable=False)
     error = models.TextField(blank=True)
     scraped_at = models.DateTimeField(auto_now=True)
-    
+
+
+    def get_duration(self)-> str:
+            output = ""
+            today = datetime.date.today()
+            time_delta = self.scraped_at.date() - today
+            num_days = abs(time_delta.days)
+            num_months = num_days // 30
+            if num_days == 0:
+                return "Today"
+            
+            if num_months > 0:     
+                output = f"{num_months} months" if num_months > 1 else f"{num_months} month" 
+            else:
+                output = f"{num_days} days" if num_days > 1 else f"{num_days} day"
+            return output + " ago"
+        
     def __str__(self):
         return f'[{"SUCCESS" if self.status == "1" else "FAILED"}] {self.junkyard.name} at {self.scraped_at}'
 
