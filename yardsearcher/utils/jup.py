@@ -27,7 +27,7 @@ class Jup(YardSearch):
 
     def extract_inventory_table_rows(self, inventory_soup):
         # Grab Jups inventory table (table#cars-table)
-        inventory_table = inventory_soup.find(id="cars-table")
+        inventory_table = inventory_soup.find('table')
         # If the table doesn't exists
         if not inventory_table or not inventory_table.find(['td']):
             # Let it be known
