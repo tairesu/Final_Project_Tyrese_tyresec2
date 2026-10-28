@@ -66,10 +66,14 @@ class Command(BaseCommand):
 			# Format results to django model instances (<Vehicle>) 
 			for result in results:
 				vehicle_instance = self.format_result(result, yard)
-				scraped_identifiers.append(vehicle_instance.junkyard_identifier)
 				vehicle_instances.append(vehicle_instance)
+
+			existing_identifiers = set(
+				Vehicle.objects.filter(junkyard_id=yard['id'])
+				.values_list('junkyard_identifier', flat=True)
+			)
 			self.upsert_vehicle_instances(vehicle_instances)
-			self.handle_removed_results(scraped_identifiers, yard['id'])
+			self.handle_removed_results(vehicle_instances, yard['id'], existing_identifiers)
 
 		except Exception as e:
 			raise ValueError(e)
@@ -99,15 +103,19 @@ class Command(BaseCommand):
 		Vehicle.objects.bulk_create(vehicle_instances, update_conflicts=True, unique_fields=['junkyard_identifier','junkyard'], update_fields=['year','make','model'])
 		self.stdout.write(f"-\t{len(vehicle_instances)} upserted")
 
-	def handle_removed_results(self, scraped_identifiers, junkyard_id):
+	def handle_removed_results(self, vehicle_instances, junkyard_id, existing_identifiers):
 		"""
 			Removes vehicles from <Vehicle> model 
    			that have id of junkyard_id and are NOT in freshly scraped results 
 		"""
+		scraped_identifiers = [vehicle_instance.junkyard_identifier for vehicle_instance in vehicle_instances]
+		new_vehicles = [scraped_identifier for scraped_identifier in scraped_identifiers if scraped_identifier not in existing_identifiers]
 		different_identifiers = Vehicle.objects.filter(Q(junkyard_id=junkyard_id) & ~Q(junkyard_identifier__in=scraped_identifiers) )
 		if len(different_identifiers) > 0:
 			self.stdout.write(f"\t{len(different_identifiers)} removed from site")
 			different_identifiers.delete()
+		
+		self.stdout.write(f"\t{len(new_vehicles)} added to site")
 		
 	def log_scrape_event(self, junkyard_id, status, error=""):
 		Scrape.objects.create(junkyard_id=junkyard_id, error=error, status=status)
