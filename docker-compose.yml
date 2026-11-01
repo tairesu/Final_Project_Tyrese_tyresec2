@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: scraphounds-container
+    restart: unless-stopped
+    ports:
+      # Matches your exact 127.0.0.1 binding so only Nginx/Tunnels can reach it locally
+      - "127.0.0.1:8000:8000"
+    volumes:
+      # Keeps your scraper database safe on your red computer's hard drive
+      - ./data:/scraphounds/data
+    env_file:
+      - .env
