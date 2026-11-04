@@ -7,7 +7,6 @@ WORKDIR /scraphounds
 # Prevent Python from writing .pyc files and buffer outputs
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=scraphounds.settings.production
 # Include both the root and the inner directory in Python's lookup path
 ENV PYTHONPATH=/scraphounds:/scraphounds/scraphounds
 
