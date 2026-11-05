@@ -13,5 +13,10 @@ class Command(BaseCommand):
 		except Exception as e:
 			print(e)
 
-	def insert_gens(self, gens: dict)-> None:
-		print(gens)
+	def insert_gens(self, gens: list)-> None:
+		gens_to_create = [
+			Generation(name=name,make=make,model=model,yearStart=yearStart, yearEnd=yearEnd) 
+			for (name,make,model,yearStart,yearEnd) in gens]
+		if gens_to_create:
+			Generation.objects.bulk_create(gens_to_create, ignore_conflicts=True)
+			self.stdout.write(f'{len(gens_to_create)} gens created')
