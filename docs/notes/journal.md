@@ -1,5 +1,26 @@
 # Dev Journal
 
+## 11/5/2026
+
+Scarphounds has been turned to an online plateform may months ago. The logging efforts can be more consistent. 
+The application will see a feature listing vehicle generations upon searches. The goal is to optimize the inventory searching process. 
+Take "2017 corolla" for example. 
+
+1.  Python will extracts conditionals from form 
+2.  Dynamically create a query w/ conditionals 
+3.  Searches the DB w/ conditionals
+4.   sends only 2017 corollas to the template
+
+In reality, it is likely the 2017 corolla shares the same parts as the 2013, 2014, 2015, 2016, 2018, and 2019 corolla. 
+Instead of automatically mapping a querying w/ year make and model, there will be dynamic anchor tags popping up on the results page with the appropriate vehicles's generational year ranges. 
+
+### The Public Github
+Github Link https://github.com/gor3a/vehicle-makes-models: data/json/all.json provides the data for vehicle generations.
+
+### The model
+Attrs are a generations starting year, ending year, make, and model. 
+
+
 
 ## 3/1/2026
 

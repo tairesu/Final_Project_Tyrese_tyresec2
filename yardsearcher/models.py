@@ -113,3 +113,13 @@ class Review(models.Model):
     
     def __str__(self):
         return f'{self.email.split("@")[0]} gave us {self.rating}/5 on {self.created_at}'
+
+class Generation(models.Model):
+    name =  make = models.CharField(max_length=40, blank=True)
+    make = models.CharField(max_length=40, blank=False)
+    model = models.CharField(max_length=40, blank=False)
+    yearStart = models.IntegerField(blank=False)
+    yearEnd = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.make} {self.model} started in {self.yearStart} {"and is still going" if self.yearEnd== None else f"ended in {self.yearEnd}" }'
