@@ -122,4 +122,4 @@ class Generation(models.Model):
     yearEnd = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.make} {self.model} started in {self.yearStart} {"and is still going" if self.yearEnd== None else f"ended in {self.yearEnd}" }'
+        return f'The {self.yearStart} {self.name} started in {self.yearStart} {"and is still going" if self.yearEnd== None else f"ended in {self.yearEnd}" }'
