@@ -14,7 +14,8 @@ from yardsearcher.models import (
 	Vehicle,
 	Junkyard,
 	Review,
-	Scrape
+	Scrape,
+	Generation
 )
 from yardsearcher.forms import ReviewForm
 
@@ -32,9 +33,17 @@ def get_query_results(queries):
 	"""
 	
 	constructed_query = construct_db_query(queries)
-	print(f"generated query: {constructed_query}")
-	return Vehicle.objects.filter(constructed_query)
+	print(f"generated  vehicle query: {constructed_query}")
+	return Vehicle.objects.filter(constructed_query) if constructed_query else Vehicle.objects.none()
 
+def get_generation_results(queries):
+	"""
+	Returns generations matching searched queries
+	"""
+	
+	constructed_query = construct_generation_query(queries)
+	print(f"generated  generationquery: {constructed_query}")
+	return Generation.objects.filter(constructed_query).order_by('yearStart','name') if constructed_query else Generation.objects.none()
 
 def construct_db_query(queries):
 	""" 
@@ -56,6 +65,25 @@ def construct_db_query(queries):
 		constructed_query |= condition
 
 	return constructed_query
+
+def construct_generation_query(queries):
+	""" 
+		Constructs a single Q object from list of query dicts
+	"""
+	constructed_generation_query = Q()
+	for search_dict in queries:
+		condition = Q()
+		# make is assumed already given
+		if 'make' in search_dict.keys() and 'model' not in search_dict.keys():
+			condition &= Q(model__icontains=search_dict['make'])
+		elif set(['make', 'model']) < set(search_dict.keys()):
+			condition &= Q(model__icontains=search_dict['model'], make__icontains=search_dict['make'])
+
+		if 'year' in search_dict.keys(): 
+			condition &= Q(yearStart__lte=search_dict['year'], yearEnd__gte=search_dict['year'] )
+		constructed_generation_query |= condition
+		
+	return constructed_generation_query
 
 def format_results(results, t0):
 	lats = []
@@ -98,6 +126,7 @@ def results_view(request):
 		query = request.GET.get('q')
 		queries = get_query_conditionals(query)
 		results = get_query_results(queries)
+		generations = get_generation_results(queries)
 		formatted_results, avg_lat, avg_long = format_results(results, t0)
 		context = {
 			'fetched_yard_data': formatted_results,
@@ -106,6 +135,7 @@ def results_view(request):
 			'total_yards': Junkyard.objects.all().count,
 			'total_vehicles': Vehicle.objects.all().count,
 			'time_elapsed': time.time() - t0,
+			'generations': generations,
 			'yard_data_json':{
        			"avg_lat": avg_lat,
 				"avg_long": avg_long,
