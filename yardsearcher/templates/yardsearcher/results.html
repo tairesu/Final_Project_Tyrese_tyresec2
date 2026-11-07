@@ -346,6 +346,20 @@
                         {% endif %}
                     </div>
                 </div>
+                <!-- Generations section-->
+                {% if generations.exists %}
+                    <div class="w-full">
+                        <div class="border-primary p-4 flex flex-col items-start">
+                            <p class="text-base font-bold text-primary mb-4">Generations </p>
+                            {% for generation in generations %}
+                                <a href="{{ generation.get_absolute_url }}" class="indent-4 text-sm text-foreground/65 transition-all duration-[0.3s] no-underline hover:text-primary "> {{ generation.name }}
+                                    <span>{{ generation.yearStart}}-{{ generation.yearEnd }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
             </div>
         </div>
     {% endblock %} 
