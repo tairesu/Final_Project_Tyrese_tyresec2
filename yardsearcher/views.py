@@ -86,6 +86,10 @@ def construct_generation_query(queries):
 
 		if 'year' in search_dict.keys(): 
 			condition &= Q(yearStart__lte=search_dict['year'], yearEnd__gte=search_dict['year'] )
+		elif set(['make','minYear','maxYear']) < set(search_dict.keys()):
+			# either bounds of searched year rane is inside generation year range
+			condition &= Q(yearStart__lte=search_dict['minYear'], yearEnd__gte=search_dict['minYear'] ) | Q(yearStart__lte=search_dict['maxYear'], yearEnd__gte=search_dict['maxYear'] )
+
 		constructed_generation_query |= condition
 		
 	return constructed_generation_query
