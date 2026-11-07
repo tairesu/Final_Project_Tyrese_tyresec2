@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from yardsearcher.utils.queries import *
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Min
 from django.db.models.functions import Lower
 from django.forms.models import model_to_dict
 from yardsearcher.models import (
@@ -43,7 +43,12 @@ def get_generation_results(queries):
 	
 	constructed_query = construct_generation_query(queries)
 	print(f"generated  generationquery: {constructed_query}")
-	return Generation.objects.filter(constructed_query).order_by('yearStart','name') if constructed_query else Generation.objects.none()
+	if not constructed_query:
+		return Generation.objects.none()
+
+	# remove gen duplicates because gen start and ends appear more than once 
+	matching_unique_gen_ids = Generation.objects.filter(constructed_query).values('yearStart','yearEnd').annotate(unique_gen_id=Min('id')).values_list('unique_gen_id', flat=True)
+	return Generation.objects.filter(id__in=matching_unique_gen_ids).order_by('name', '-yearStart')
 
 def construct_db_query(queries):
 	""" 
