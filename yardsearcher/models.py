@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
+from django.utils.http import urlencode
 import datetime
 # Create your models here.
 class Junkyard(models.Model):
@@ -123,3 +124,11 @@ class Generation(models.Model):
 
     def __str__(self):
         return f'The {self.yearStart} {self.name} started in {self.yearStart} {"and is still going" if self.yearEnd== None else f"ended in {self.yearEnd}" }'
+
+    def get_absolute_url(self):
+        base_url = reverse("results_urlpattern")
+        query_params = {
+            'q': f'{self.yearStart}-{str(self.yearEnd) if self.yearEnd else datetime.datetime.now().year} { self.model.split(' ')[0] }'
+        }
+        query_str = urlencode(query_params)
+        return f'{base_url}?{query_str}'
